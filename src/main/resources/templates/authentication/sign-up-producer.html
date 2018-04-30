@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:replace="head :: head"> </div>
+
+<body>
+    <div th:replace="mainMenu :: mainMenu"> </div>
+    <div class="content">
+
+        <form th:action="@{/view/sign-up/producer}" method="post">
+            <div>
+                <label>Nip: </label>
+                <input type="text" name="nip" th:value="${nip}" />
+            </div>
+            <div>
+                <label>Telefon: </label>
+                <input type="text" name="phone" th:value="${phon}" />
+            </div>
+            <div>
+                <label>Adres: </label>
+                <input type="text" name="address" th:value="${address}" />
+            </div>
+            <div>
+                <label>Pełna nazwa firmy: </label>
+                <input type="text" name="companyName" th:value="${companyName}" />
+            </div>
+            <div>
+                <label>Email: </label>
+                <input type="text" name="email" th:value="${email}" />
+            </div>
+            <div>
+                <label>Login: </label>
+                <input type="text" name="login" th:value="${login}" />
+            </div>
+            <div>
+                <label>Hasło: </label>
+                <input type="password" name="password" />
+            </div>
+            <div>
+                <label>Powtórz hasło: </label>
+                <input type="password" name="repeatedPassword" />
+            </div>
+            <button type="submit">Zarejestruj</button>
+        </form>
+        <div id="message"> [[${message}]] </div>
+    </div>
+
+    <div th:replace="footer :: footer"> </div>
+</body>
+
+</html>

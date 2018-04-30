@@ -13,6 +13,6 @@ public class MainController {
 
 	@GetMapping("/")
 	public String getMainView() {
-		return getTemplateDir("mainMenu");
+		return getTemplateDir("homeView");
 	}
 }

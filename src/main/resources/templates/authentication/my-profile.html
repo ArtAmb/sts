@@ -1,0 +1,22 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:replace="head :: head"> </div>
+
+<body>
+
+
+    <div th:replace="mainMenu :: mainMenu"> </div>
+    <div class="content">
+        Welcome, [[${userLogin}]]
+
+        <form th:action="@{/logout}" method="post">
+            <button type="submit">Wyloguj</button>
+        </form>
+
+    </div>
+
+    <div th:replace="footer :: footer"> </div>
+</body>
+
+</html>

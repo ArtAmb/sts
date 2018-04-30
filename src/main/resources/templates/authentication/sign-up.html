@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:replace="head :: head"> </div>
+
+<body>
+    <div th:replace="mainMenu :: mainMenu"> </div>
+    <div class="content">
+
+        <form th:action="@{/view/sign-up}" method="post">
+            <div>
+                <label>Email: </label>
+                <input type="text" name="email" th:value="${email}" />
+            </div>
+            <div>
+                <label>Login: </label>
+                <input type="text" name="login" th:value="${login}"/>
+            </div>
+            <div>
+                <label>Hasło: </label>
+                <input type="password" name="password" />
+            </div>
+            <div>
+                <label>Powtórz hasło: </label>
+                <input type="password" name="repeatedPassword" />
+                <button type="submit">Zarejestruj</button>
+            </div>
+        </form>
+        <div id="message"> [[${message}]] </div>
+    </div>
+
+    <div th:replace="footer :: footer"> </div>
+</body>
+
+</html>
