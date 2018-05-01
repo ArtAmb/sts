@@ -51,7 +51,7 @@ public class AuthenticationController {
 	public String singUp(@ModelAttribute AuthorizationDTO dto, Model model) {
 
 		try {
-			authService.createNewUser(dto, Roles.ROLE_CLIENT.toRole());
+			authService.createNewUser(dto, Roles.ROLE_VIEWER.toRole());
 		} catch (Exception e) {
 			model.addAttribute("message", e.getMessage());
 			model.addAttribute("email", dto.getEmail());
@@ -68,7 +68,7 @@ public class AuthenticationController {
 	public String singUpProducer() {
 		return getTemplateDir("sign-up-producer");
 	}
-	
+
 	@PostMapping("/view/sign-up/producer")
 	public String singUpProducer(@ModelAttribute AuthorizationDTO dto, Model model) {
 

@@ -37,14 +37,14 @@ public class Initializer {
 
 		List<Role> developerRoles = new LinkedList<>();
 		developerRoles.add(Roles.ROLE_ADMIN.toRole());
-		developerRoles.add(Roles.ROLE_CLIENT.toRole());
+		developerRoles.add(Roles.ROLE_VIEWER.toRole());
 		developerRoles.add(Roles.ROLE_PRODUCER.toRole());
 
 		userRepo.save(User.builder()
-				.login("client")
-				.email("client@test.pl")
+				.login("viewer")
+				.email("viewer@test.pl")
 				.password(encoder.encode("test"))
-				.roles(Collections.singletonList((Roles.ROLE_CLIENT.toRole())))
+				.roles(Collections.singletonList((Roles.ROLE_VIEWER.toRole())))
 				.build());
 		
 		userRepo.save(User.builder()
