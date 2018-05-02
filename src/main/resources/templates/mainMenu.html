@@ -5,7 +5,7 @@
         </div>
         <ul class="nav navbar-nav">
             <li><a sec:authorize="isAuthenticated()" href="">Moje seriale</a></li>
-            <li><a href="">Seriale</a></li>
+            <li><a th:href="@{/view/seriale-test}">Seriale</a></li>
             <li><a sec:authorize="hasRole('ROLE_CLIENT')" href="">Playlista</a></li>
             <li><a sec:authorize="!isAuthenticated()" th:href="@{/view/sign-in}">Logowanie</a></li>
             <li><a sec:authorize="isAuthenticated()" th:href="@{/view/my-profile}">Moj profil</a></li>

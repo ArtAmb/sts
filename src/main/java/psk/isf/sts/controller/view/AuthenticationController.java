@@ -85,5 +85,5 @@ public class AuthenticationController {
 		model.addAttribute("message", "Udało sie założyć konto");
 		return getTemplateDir("logIn");
 	}
-
+	
 }
