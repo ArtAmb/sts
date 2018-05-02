@@ -4,6 +4,11 @@
     margin: auto;
     
     }
+
+    .main-menu img{
+        width: 50px;
+        height: 35px; 
+        }
     
     .lonewolfbutton{
         margin-top: 10px;
