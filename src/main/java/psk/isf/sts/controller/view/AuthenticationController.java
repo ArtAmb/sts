@@ -1,5 +1,6 @@
 package psk.isf.sts.controller.view;
 
+import java.io.IOException;
 import java.security.Principal;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +11,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import psk.isf.sts.entity.registration.Roles;
+import psk.isf.sts.entity.registration.User;
 import psk.isf.sts.service.authorization.AuthorizationService;
+import psk.isf.sts.service.authorization.UserService;
 import psk.isf.sts.service.authorization.dto.AuthorizationDTO;
+import psk.isf.sts.service.profile.dto.MyProfileDTO;
 
 @Controller
 public class AuthenticationController {
@@ -20,6 +24,9 @@ public class AuthenticationController {
 
 	@Autowired
 	private AuthorizationService authService;
+
+	@Autowired
+	private UserService userService;
 
 	private String getTemplateDir(String templateName) {
 		return templateDirRoot + templateName;
@@ -38,7 +45,33 @@ public class AuthenticationController {
 
 	@GetMapping("/view/my-profile")
 	public String myProfile(Model model, Principal principal) {
+		User user = userService.findByLogin(principal.getName());
 		model.addAttribute("userLogin", principal.getName());
+
+		if (user.getThumbnail() != null)
+			model.addAttribute("thumbnailUrl", user.getThumbnail().toURL());
+
+		return getTemplateDir("my-profile");
+	}
+
+	@PostMapping("/view/my-profile")
+	public String saveProfileSettings(@ModelAttribute MyProfileDTO dto, Model model, Principal principal)
+			throws IllegalStateException, IOException {
+		User user = userService.setThumbnailForUserByLogin(principal.getName(), dto.getPicture());
+
+		model.addAttribute("userLogin", principal.getName());
+		if (user.getThumbnail() != null)
+			model.addAttribute("thumbnailUrl", user.getThumbnail().toURL());
+
+		return getTemplateDir("my-profile");
+	}
+
+	@PostMapping("/view/my-profile/delete-thumbnail")
+	public String deleteThumbnail(Model model, Principal principal) throws IllegalStateException, IOException {
+		model.addAttribute("userLogin", principal.getName());
+		User user = userService.findByLogin(principal.getName());
+		user.setThumbnail(null);
+		userService.saveUser(user);
 		return getTemplateDir("my-profile");
 	}
 

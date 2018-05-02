@@ -1,4 +1,5 @@
 <nav class="navbar navbar-default main-menu" th:fragment="mainMenu">
+
     <div class="container-fluid">
         <div class="navbar-header">
             <a class="navbar-brand" href="#">STS</a>
@@ -8,7 +9,23 @@
             <li><a href="">Seriale</a></li>
             <li><a sec:authorize="hasRole('ROLE_CLIENT')" href="">Playlista</a></li>
             <li><a sec:authorize="!isAuthenticated()" th:href="@{/view/sign-in}">Logowanie</a></li>
-            <li><a sec:authorize="isAuthenticated()" th:href="@{/view/my-profile}">Moj profil</a></li>
+            <li>
+                <a sec:authorize="isAuthenticated()" th:href="@{/view/my-profile}">
+                    <img id="tumbnail"></img>
+                    <label id="welcome-message" />
+                </a>
+            </li>
         </ul>
     </div>
+
+<script sec:authorize="isAuthenticated()" th:inline='javascript'>
+    $.get("/rest/user/instance", function (response) {
+        if (response.thumbnail == null)
+            $("#tumbnail").attr("src", "/images/default-face.png");
+        else
+            $("#tumbnail").attr("src", "/images/" + response.thumbnail.name);
+        $("#welcome-message").html("Witaj, " + response.login + "!");
+    });
+</script>
+
 </nav>
