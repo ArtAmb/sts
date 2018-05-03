@@ -105,6 +105,7 @@ public class Initializer {
 	@PostConstruct
 	void initApplication() {
 		addSystemUsers();
+		addSerials();
 	}
 
 }

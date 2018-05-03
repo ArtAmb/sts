@@ -39,11 +39,13 @@ public class SerialElement {
 	@Enumerated(EnumType.STRING)
 	private SerialElementType elementType;
 
+	private float rating;
+
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "serial")
 	private Collection<SerialElement> elements;
 
-	@OneToMany
+	@ManyToMany
 	private Collection<Actor> actors;
 
 	@ManyToOne
@@ -52,13 +54,15 @@ public class SerialElement {
 	@ManyToMany
 	private Collection<Genre> genres;
 
-	@ManyToMany
+	@OneToMany
+	@JoinColumn(name = "serialElement")
 	private Collection<Comment> comments;
 
 	private Timestamp startDate;
 	private long durationInSec;
 
 	private long daysToNextEpisode;
+	@Builder.Default
 	private boolean active = true;
 	private String linkToWatch;
 

@@ -7,10 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import psk.isf.sts.entity.registration.Role;
+import psk.isf.sts.entity.UserType;
+import psk.isf.sts.entity.registration.Roles;
 import psk.isf.sts.entity.registration.User;
 import psk.isf.sts.repository.UserRepository;
 import psk.isf.sts.service.authorization.dto.AuthorizationDTO;
+import psk.isf.sts.service.authorization.dto.UserDTO;
 
 @Service
 public class AuthorizationService {
@@ -20,11 +22,15 @@ public class AuthorizationService {
 	@Autowired
 	private UserRepository userRepo;
 
-	public boolean createNewUser(AuthorizationDTO dto, Role role) throws Exception {
+	public boolean createNewUser(AuthorizationDTO dto, UserDTO userDTO) throws Exception {
 		validate(dto);
 
 		User user = User.builder().login(dto.getLogin()).password(encoder.encode(dto.getPassword()))
-				.email(dto.getEmail()).roles(Arrays.asList(role)).build();
+				.email(dto.getEmail())
+				.roles(Arrays.asList(userDTO.getRole()))
+				.userType(userDTO.getUserType())
+				.real(userDTO.isReal())
+				.build();
 
 		userRepo.save(user);
 		return true;
@@ -57,5 +63,30 @@ public class AuthorizationService {
 		}
 
 	}
+	
+	public void createNewProducer(AuthorizationDTO dto) throws Exception {
+		validate(dto);
+
+		RandomStringGenerator randomStringGenerator = new RandomStringGenerator(8);
+		String password = randomStringGenerator.rand();
+		
+		User user = User.builder()
+				.login(dto.getLogin())
+				.password(encoder.encode(password))
+				.email(dto.getEmail())
+				.roles(Arrays.asList(Roles.ROLE_PRODUCER.toRole()))
+				.nip(dto.getNip())
+				.phoneNumber(dto.getPhoneNumber())
+				.userType(UserType.PRODUCER)
+				.disabled(true)
+				.real(false)
+				.build();
+
+		
+		
+		userRepo.save(user);
+
+	}
+
 
 }

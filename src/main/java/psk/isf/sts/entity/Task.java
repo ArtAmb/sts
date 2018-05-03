@@ -1,33 +1,35 @@
 package psk.isf.sts.entity;
 
-import java.sql.Timestamp;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import psk.isf.sts.entity.registration.User;
 
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
-public class Comment {
+public class Task {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
 	@ManyToOne
-	private User user;
-
-	private String content;
-	private Timestamp date;
+	private User owner;
 
 	@ManyToOne
-	private SerialElement serialElement;
+	private User producer;
 
-	private boolean accepted;
+	@ManyToOne
+	private Contract contract;
 
 }

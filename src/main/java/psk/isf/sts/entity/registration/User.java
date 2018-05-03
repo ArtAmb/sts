@@ -17,6 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import psk.isf.sts.entity.Contract;
 import psk.isf.sts.entity.Gallery;
 import psk.isf.sts.entity.Picture;
 import psk.isf.sts.entity.SerialElement;
@@ -65,6 +66,15 @@ public class User {
 	private String companyName;
 	private String nip;
 	private String phoneNumber;
+
+	@ManyToOne
+	private Contract contract;
+
+	@Builder.Default
+	private boolean disabled = false;
+
+	@Builder.Default
+	private boolean real = true;
 
 	@ManyToOne
 	private SerialElement currentlyWatchedEpisode;

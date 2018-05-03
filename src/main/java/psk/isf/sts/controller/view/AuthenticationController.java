@@ -12,15 +12,24 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import psk.isf.sts.entity.Contract;
+import psk.isf.sts.entity.UserType;
+import psk.isf.sts.entity.registration.Role;
 import psk.isf.sts.entity.registration.Roles;
 import psk.isf.sts.entity.registration.User;
 import psk.isf.sts.service.authorization.AuthorizationService;
 import psk.isf.sts.service.authorization.UserService;
 import psk.isf.sts.service.authorization.dto.AuthorizationDTO;
+import psk.isf.sts.service.authorization.dto.UserDTO;
 import psk.isf.sts.service.profile.dto.MyProfileDTO;
 
 @Controller
 public class AuthenticationController {
+
+	class SessionConsts {
+		public static final String userToRegister = "userToRegister";
+		public static final String newContract = "newContract";
+	}
 
 	public static String templateDirRoot = "authentication/";
 
@@ -86,7 +95,8 @@ public class AuthenticationController {
 	public String singUp(@ModelAttribute AuthorizationDTO dto, Model model) {
 
 		try {
-			authService.createNewUser(dto, Roles.ROLE_VIEWER.toRole());
+			authService.createNewUser(dto,
+					UserDTO.builder().real(true).role(Roles.ROLE_VIEWER.toRole()).userType(UserType.VIEWER).build());
 		} catch (Exception e) {
 			model.addAttribute("message", e.getMessage());
 			model.addAttribute("email", dto.getEmail());
@@ -121,17 +131,18 @@ public class AuthenticationController {
 			return getTemplateDir("sign-up-producer");
 		}
 
-		session.setAttribute("userToRegister", dto);
+		session.setAttribute(SessionConsts.userToRegister, dto);
+		session.setAttribute(SessionConsts.newContract, new Contract());
 
 		return getTemplateDir("sign-up-producer-contract");
 	}
 
 	@PostMapping("/view/sign-up/producer/contract/accept")
 	public String singUpProducerAcceptContract(HttpSession session, Model model) {
-		AuthorizationDTO userToRegister = (AuthorizationDTO) session.getAttribute("userToRegister");
+		AuthorizationDTO userToRegister = (AuthorizationDTO) session.getAttribute(SessionConsts.userToRegister);
 
 		try {
-			authService.createNewUser(userToRegister, Roles.ROLE_PRODUCER.toRole());
+			authService.createNewProducer(userToRegister);
 		} catch (Exception e) {
 			model.addAttribute("message", e.getMessage());
 			return getTemplateDir("logIn");
@@ -143,7 +154,8 @@ public class AuthenticationController {
 
 	@PostMapping("/view/sign-up/producer/contract/decline")
 	public String singUpProducerDeclineContract(HttpSession session, Model model) {
-		session.removeAttribute("userToRegister");
+		session.removeAttribute(SessionConsts.userToRegister);
+		session.removeAttribute(SessionConsts.newContract);
 
 		model.addAttribute("message", "Anulowano rejestracje konta dla producenta");
 		return getTemplateDir("logIn");
