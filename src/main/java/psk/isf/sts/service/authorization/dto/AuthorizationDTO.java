@@ -14,4 +14,9 @@ public class AuthorizationDTO {
 	private String login;
 	private String password;
 	private String repeatedPassword;
+
+	private String companyName;
+	private String nip;
+	private String address;
+	private String phoneNumber;
 }

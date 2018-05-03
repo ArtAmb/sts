@@ -3,6 +3,8 @@ package psk.isf.sts.controller.view;
 import java.io.IOException;
 import java.security.Principal;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -103,19 +105,47 @@ public class AuthenticationController {
 	}
 
 	@PostMapping("/view/sign-up/producer")
-	public String singUpProducer(@ModelAttribute AuthorizationDTO dto, Model model) {
+	public String singUpProducer(@ModelAttribute AuthorizationDTO dto, HttpSession session, Model model) {
 
 		try {
-			authService.createNewUser(dto, Roles.ROLE_PRODUCER.toRole());
+			authService.validate(dto);
 		} catch (Exception e) {
 			model.addAttribute("message", e.getMessage());
 			model.addAttribute("email", dto.getEmail());
 			model.addAttribute("login", dto.getLogin());
-			model.addAttribute(dto);
+
+			model.addAttribute("companyName", dto.getCompanyName());
+			model.addAttribute("phoneNumber", dto.getPhoneNumber());
+			model.addAttribute("address", dto.getAddress());
+			model.addAttribute("nip", dto.getNip());
 			return getTemplateDir("sign-up-producer");
 		}
 
+		session.setAttribute("userToRegister", dto);
+
+		return getTemplateDir("sign-up-producer-contract");
+	}
+
+	@PostMapping("/view/sign-up/producer/contract/accept")
+	public String singUpProducerAcceptContract(HttpSession session, Model model) {
+		AuthorizationDTO userToRegister = (AuthorizationDTO) session.getAttribute("userToRegister");
+
+		try {
+			authService.createNewUser(userToRegister, Roles.ROLE_PRODUCER.toRole());
+		} catch (Exception e) {
+			model.addAttribute("message", e.getMessage());
+			return getTemplateDir("logIn");
+		}
+
 		model.addAttribute("message", "Udało sie założyć konto");
+		return getTemplateDir("logIn");
+	}
+
+	@PostMapping("/view/sign-up/producer/contract/decline")
+	public String singUpProducerDeclineContract(HttpSession session, Model model) {
+		session.removeAttribute("userToRegister");
+
+		model.addAttribute("message", "Anulowano rejestracje konta dla producenta");
 		return getTemplateDir("logIn");
 	}
 

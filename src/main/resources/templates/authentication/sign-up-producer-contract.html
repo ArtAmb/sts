@@ -1,0 +1,24 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:replace="head :: head"> </div>
+
+<body>
+    <div th:replace="mainMenu :: mainMenu"> </div>
+    <div class="content">
+
+        <form th:action="@{/view/sign-up/producer/contract/accept}" method="post">
+          
+            <button type="submit">Akceptuje</button>
+        </form>
+        <form th:action="@{/view/sign-up/producer/contract/decline}" method="post">
+            <button type="submit">Odrzucam</button>
+        </form>
+
+        <div id="message"> [[${message}]] </div>
+    </div>
+
+    <div th:replace="footer :: footer"> </div>
+</body>
+
+</html>
