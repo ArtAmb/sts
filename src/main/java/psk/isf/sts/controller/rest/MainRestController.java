@@ -35,5 +35,4 @@ public class MainRestController {
 	public User getUserInstance(Principal principal) {
 		return userService.findByLogin(principal.getName());
 	}
-
 }

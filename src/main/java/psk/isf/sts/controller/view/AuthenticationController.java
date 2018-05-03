@@ -148,5 +148,4 @@ public class AuthenticationController {
 		model.addAttribute("message", "Anulowano rejestracje konta dla producenta");
 		return getTemplateDir("logIn");
 	}
-
 }
