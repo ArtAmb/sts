@@ -84,20 +84,20 @@ public class Initializer {
 		Genre horror = genreRepository.save(Genre.builder().name("Horror").build());
 		Genre przygodowy = genreRepository.save(Genre.builder().name("Przygodowy").build());
 
-		serialRepository.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("Wikingowie")
-				.description("Historia o tym co wikingowie jedza, piją i co zabijają :D").producer(user).active(true)
+		serialRepository.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("M jak miłość")
+				.description("Polski serial telewizyjny. Akcja rozgrywa się i tak dalej").producer(user).active(true)
 				.actors(actorList).genres(Arrays.asList(dramat, przygodowy)).build());
 
-		serialRepository.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("Manaty")
-				.description("Historia o tym co manaty jedza, piją i co zabijają :D").producer(user).active(true)
+		serialRepository.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("Pierwsza Miłość")
+				.description("Polski serial telewizyjny. Akcja rozgrywa się i tak dalej").producer(user).active(true)
 				.actors(actorList).genres(Arrays.asList(dramat, przygodowy, horror)).build());
 
-		serialRepository.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("Kanibale")
-				.description("Historia o tym co kanibale jedza, piją i co zabijają :D").producer(user).active(true)
+		serialRepository.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("Na wspólnej")
+				.description("Polski serial telewizyjny. Akcja rozgrywa się i tak dalej").producer(user).active(true)
 				.actors(actorList).genres(Arrays.asList(thiller, przygodowy)).build());
 
-		serialRepository.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("Ptaki")
-				.description("Historia o tym co ptaki jedza, piją i co zabijają :D").producer(user).active(true)
+		serialRepository.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("Przyjaciółki")
+				.description("Polski serial telewizyjny. Akcja rozgrywa się i tak dalej").producer(user).active(true)
 				.actors(actorList).genres(Arrays.asList(thiller, horror)).build());
 
 	}

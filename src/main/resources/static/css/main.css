@@ -91,3 +91,26 @@
         text-align: center;
         padding: 20px;
     }
+    
+.mybutton
+{
+	height: 50px;
+	width: 100px;
+	background: silver;	
+	color: black;	
+	text-align: center;
+	display: block;
+	line-height: 50px;
+	/*font: 10px Arial;*/
+	font-weight: bold;
+	float: left;
+	margin-left: 0.5%;
+	margin-right: 0.5%;
+	
+
+}
+
+.mybutton:hover {
+	background: gray;
+	color: white;
+}
