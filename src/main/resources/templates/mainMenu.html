@@ -6,9 +6,8 @@
         </div>
         <ul class="nav navbar-nav">
             <li><a sec:authorize="isAuthenticated()" href="">Moje seriale</a></li>
-            <li><a th:href="@{/view/seriale-test}">Seriale</a></li>
+            <li><a th:href="@{/view/serials}">Seriale</a></li>
             <li><a sec:authorize="hasRole('ROLE_VIEWER')" href="">Playlista</a></li>
-
             <li><a sec:authorize="hasRole('ROLE_ADMIN')" href="">Komentarze</a></li>
             <li><a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/view/tasks/table}">Zadania</a></li>
 

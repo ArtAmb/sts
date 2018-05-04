@@ -1,123 +1,133 @@
-
 .main-menu {
-    position: relative;
-    margin: auto;
-    
-    }
-
-.main-menu img{
-    width: 50px;
-    height: 35px; 
-    }
-    
-.lonewolfbutton{
-    margin-top: 10px;
+	position: relative;
+	margin: auto;
 }
-    
-    .simplebutton {
-        background-color: #4CAF50; /* Green */
-        border: none;
-        color: white;
-        padding: 15px 32px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 16px;
-        cursor: pointer;
-    }
-    
-    .simplebutton:hover {
-        background-color: #3e8e41;
-    }
-    
-    .important_button{
-        background-color: red !important;
-    }
-    
-    .clickable{
-    cursor: pointer;
-    }
-    
-    
-    .edit_button{
-    cursor: pointer;
-    }
-    
-    
-    .medical_action_button{
-    cursor: pointer;
-    }
-    
-    
-    .delete_button{
-    cursor: pointer;
-    }
-    
-    .table{
-        margin-top: 25px;
-        text-align: left;
-        line-height: 40px;
-        border-collapse: separate;
-        border-spacing: 10px;
-        border: 2px solid #ed1c40;
-        width: 500px;
-        border-radius: .25rem;
-    }
-    
-    tr{
-    border: 1px solid black;
-    } 
-    
-  
-   
-.required{
-           border-width: 2px;
-           border-style: solid;
-           border-color: #FF0000; 
-       }
-    
-       .deactivate {
-        background-color: #909090;
-        pointer-events: none;
-        cursor: not-allowed;
-       }
-    
-    .starter-template{
-        text-align: center;
-        padding: 20px;
-    }
 
+.main-menu img {
+	width: 50px;
+	height: 35px;
+}
 
-    .tab {
-        border-collapse: collapse;
-        
-    }
-    
-    .tab td, .tab th {
-        margin:0 20px;
-        border: 1px solid #ddd;
-        padding: 8px;
-    }
-    
-    .tab tr:nth-child(even) {
-        background-color: #f2f2f2;
-    }
-    
-    .tab tr:hover {
-        background-color: #ddd;
-        cursor: pointer;
-    }
-    
-    .tab th {
-        padding-top: 12px;
-        padding-bottom: 12px;
-        text-align: left;
-        background-color: #4c99e2;
-        color: white;
-    }
+.lonewolfbutton {
+	margin-top: 10px;
+}
 
+.simplebutton {
+	background-color: #4CAF50; /* Green */
+	border: none;
+	color: white;
+	padding: 15px 32px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	cursor: pointer;
+}
 
-.contract-iframe{
-    min-width: 800px;
-    min-height: 500px;
+.simplebutton:hover {
+	background-color: #3e8e41;
+}
+
+.important_button {
+	background-color: red !important;
+}
+
+.clickable {
+	cursor: pointer;
+}
+
+.edit_button {
+	cursor: pointer;
+}
+
+.medical_action_button {
+	cursor: pointer;
+}
+
+.delete_button {
+	cursor: pointer;
+}
+
+.table {
+	margin-top: 25px;
+	text-align: left;
+	line-height: 40px;
+	border-collapse: separate;
+	border-spacing: 10px;
+	border: 2px solid #ed1c40;
+	width: 500px;
+	border-radius: .25rem;
+}
+
+tr {
+	border: 1px solid black;
+}
+
+.required {
+	border-width: 2px;
+	border-style: solid;
+	border-color: #FF0000;
+}
+
+.deactivate {
+	background-color: #909090;
+	pointer-events: none;
+	cursor: not-allowed;
+}
+
+.starter-template {
+	text-align: center;
+	padding: 20px;
+}
+
+.tab {
+	border-collapse: collapse;
+}
+
+.tab td, .tab th {
+	margin: 0 20px;
+	border: 1px solid #ddd;
+	padding: 8px;
+}
+
+.tab tr:nth-child(even) {
+	background-color: #f2f2f2;
+}
+
+.tab tr:hover {
+	background-color: #ddd;
+	cursor: pointer;
+}
+
+.tab th {
+	padding-top: 12px;
+	padding-bottom: 12px;
+	text-align: left;
+	background-color: #4c99e2;
+	color: white;
+}
+
+.contract-iframe {
+	min-width: 800px;
+	min-height: 500px;
+}
+
+.mybutton {
+	height: 50px;
+	width: 100px;
+	background: silver;
+	color: black;
+	text-align: center;
+	display: block;
+	line-height: 50px;
+	/*font: 10px Arial;*/
+	font-weight: bold;
+	float: left;
+	margin-left: 0.5%;
+	margin-right: 0.5%;
+}
+
+.mybutton:hover {
+	background: gray;
+	color: white;
 }
