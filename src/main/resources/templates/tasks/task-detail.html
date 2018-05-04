@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:replace="head :: head"> </div>
+
+<body>
+    <div th:replace="mainMenu :: mainMenu"> </div>
+    <div class="content">
+
+        <div>
+            <lable>ID: </lable>
+            <span th:text="${detailInfo.id}" />
+        </div>
+        <div>
+            <lable>Typ: </lable>
+            <span th:switch='${detailInfo.type.name()}'>
+                <th:block th:case='ACCEPT_CONTRACT'>Umowa do akceptacji</th:block>
+            </span>
+        </div>
+        <div>
+            <lable>Stan: </lable>
+            <span th:switch='${detailInfo.state.name()}'>
+                <th:block th:case='NEW'>Nowe</th:block>
+                <th:block th:case='IN_PROGRESS'>W trakcie</th:block>
+                <th:block th:case='CLOSED'>Zamkniete</th:block>
+            </span>
+        </div>
+        <div>
+            <lable>Producent: </lable>
+            <span th:text="${detailInfo.producer.companyName}" />
+        </div>
+
+        <div>
+            <lable>Data: </lable>
+            <span th:text="${detailInfo.date}" />
+        </div>
+        <div>
+            <h1 th:if="${contractPath != null} ">Umowa</h1>
+            <iframe class="contract-iframe" th:if="${contractPath != null} " th:src="${contractPath}"></iframe>
+
+        </div>
+
+        <div th:replace="footer :: footer"> </div>
+</body>
+
+</html>

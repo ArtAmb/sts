@@ -35,7 +35,6 @@ public class PictureService {
 		multipartFile.transferTo(destination);
 
 		return pictureRepository.save(Picture.builder().name(name).path(destination.getPath()).build());
-
 	}
 
 }

@@ -6,11 +6,13 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import psk.isf.sts.entity.registration.User;
 
 @Entity
 @Data
@@ -29,7 +31,10 @@ public class Contract {
 	private String name;
 	private String path;
 
+	@ManyToOne
+	private User producer;
+
 	public String toURL() {
-		return "/images/" + name;
+		return "/contracts/" + producer.getLogin() + "/" + name;
 	}
 }
