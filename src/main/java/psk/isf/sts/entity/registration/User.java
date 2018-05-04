@@ -66,6 +66,7 @@ public class User {
 	private String companyName;
 	private String nip;
 	private String phoneNumber;
+	private String address;
 
 	@ManyToOne
 	private Contract contract;

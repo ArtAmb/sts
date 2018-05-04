@@ -7,11 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import psk.isf.sts.entity.Contract;
 import psk.isf.sts.entity.UserType;
 import psk.isf.sts.entity.registration.Roles;
 import psk.isf.sts.entity.registration.User;
 import psk.isf.sts.repository.UserRepository;
 import psk.isf.sts.service.authorization.dto.AuthorizationDTO;
+import psk.isf.sts.service.authorization.dto.ProducerDTO;
 import psk.isf.sts.service.authorization.dto.UserDTO;
 
 @Service
@@ -26,11 +28,8 @@ public class AuthorizationService {
 		validate(dto);
 
 		User user = User.builder().login(dto.getLogin()).password(encoder.encode(dto.getPassword()))
-				.email(dto.getEmail())
-				.roles(Arrays.asList(userDTO.getRole()))
-				.userType(userDTO.getUserType())
-				.real(userDTO.isReal())
-				.build();
+				.email(dto.getEmail()).roles(Arrays.asList(userDTO.getRole())).userType(userDTO.getUserType())
+				.real(userDTO.isReal()).build();
 
 		userRepo.save(user);
 		return true;
@@ -63,13 +62,42 @@ public class AuthorizationService {
 		}
 
 	}
-	
-	public void createNewProducer(AuthorizationDTO dto) throws Exception {
-		validate(dto);
+
+	public void validateForProducer(AuthorizationDTO dto) throws Exception {
+		if (StringUtils.isNullOrEmpty(dto.getEmail())) {
+			throw new Exception("Email nie moze byc pusty");
+		}
+		if (StringUtils.isNullOrEmpty(dto.getLogin())) {
+			throw new Exception("Login nie moze byc pusty");
+		}
+		if (StringUtils.isNullOrEmpty(dto.getNip())) {
+			throw new Exception("Nip nie moze byc pusty");
+		}
+		if (StringUtils.isNullOrEmpty(dto.getPhoneNumber())) {
+			throw new Exception("Telefon nie moze byc pusty");
+		}
+		if (StringUtils.isNullOrEmpty(dto.getCompanyName())) {
+			throw new Exception("Nazwa firmy jest wymagana");
+		}
+		if (StringUtils.isNullOrEmpty(dto.getAddress())) {
+			throw new Exception("Adres jest wymagany");
+		}
+		if (userRepo.existsByLogin(dto.getLogin())) {
+			throw new Exception("Uzytkownik o takim loginie juz istnieje");
+		}
+
+		if (userRepo.existsByEmail(dto.getEmail())) {
+			throw new Exception("Konto na ten mail juz isntnieje");
+		}
+
+	}
+
+	public User createNewProducer(AuthorizationDTO dto) throws Exception {
+		validateForProducer(dto);
 
 		RandomStringGenerator randomStringGenerator = new RandomStringGenerator(8);
 		String password = randomStringGenerator.rand();
-		
+
 		User user = User.builder()
 				.login(dto.getLogin())
 				.password(encoder.encode(password))
@@ -77,16 +105,15 @@ public class AuthorizationService {
 				.roles(Arrays.asList(Roles.ROLE_PRODUCER.toRole()))
 				.nip(dto.getNip())
 				.phoneNumber(dto.getPhoneNumber())
+				.address(dto.getAddress())
+				.companyName(dto.getCompanyName())
 				.userType(UserType.PRODUCER)
 				.disabled(true)
 				.real(false)
 				.build();
 
-		
-		
-		userRepo.save(user);
+		return userRepo.save(user);
 
 	}
-
 
 }

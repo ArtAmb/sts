@@ -63,10 +63,6 @@ tr {
 	border: 1px solid black;
 }
 
-th, td {
-	
-}
-
 .required {
 	border-width: 2px;
 	border-style: solid;
@@ -82,6 +78,38 @@ th, td {
 .starter-template {
 	text-align: center;
 	padding: 20px;
+}
+
+.tab {
+	border-collapse: collapse;
+}
+
+.tab td, .tab th {
+	margin: 0 20px;
+	border: 1px solid #ddd;
+	padding: 8px;
+}
+
+.tab tr:nth-child(even) {
+	background-color: #f2f2f2;
+}
+
+.tab tr:hover {
+	background-color: #ddd;
+	cursor: pointer;
+}
+
+.tab th {
+	padding-top: 12px;
+	padding-bottom: 12px;
+	text-align: left;
+	background-color: #4c99e2;
+	color: white;
+}
+
+.contract-iframe {
+	min-width: 800px;
+	min-height: 500px;
 }
 
 .mybutton {
