@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import psk.isf.sts.entity.MySerial;
 import psk.isf.sts.entity.SerialElement;
 import psk.isf.sts.entity.SimpleSerialElement;
 import psk.isf.sts.entity.registration.User;
@@ -51,11 +52,38 @@ public class SeriesController {
 		//model.addAttribute("serials", serialService.allSerials());
 		return getTemplateDir("season-detail");
 	}
+	
+	@GetMapping("/serial/addToMine/{id}")
+	public String addToMine(@PathVariable Long id, Principal principal, Model model) {
+		SerialElement serialElement = serialService.findById(id);
+		model.addAttribute("serial", serialElement);
+		model.addAttribute("thumbnailUrl", serialElement.getThumbnail().toURL());
 
+		if (principal == null) {
+			model.addAttribute("message2", "Musisz sie zalogować!");
+			return getTemplateDir("serial-detail");
+		}
+
+		User user = userService.findByLogin(principal.getName());
+
+		try {
+			serialService.addToMine(serialElement, user);
+		} catch (Exception e) {
+			model.addAttribute("message2", e.getMessage());
+			model.addAttribute("serial", serialElement);
+			return getTemplateDir("serial-detail");
+		}
+
+		model.addAttribute("message2", "Dodano !");
+		return getTemplateDir("serial-detail");
+	}
+	
 	@GetMapping("/view/serial/{id}")
 	public String serialsDetailView(@PathVariable Long id, Model model) {
 		SerialElement serialElement = serialService.findById(id);
+		//model.addAttribute("mySerials", serialService.allMySerials());
 		model.addAttribute("serial", serialElement);
+		model.addAttribute("thumbnailUrl", serialElement.getThumbnail().toURL());
 		return getTemplateDir("serial-detail");
 	}
 

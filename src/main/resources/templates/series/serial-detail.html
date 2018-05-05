@@ -13,13 +13,14 @@
 		<div class="serial">
 
 			<div class="serial-general">
-				<img src="1.jpg">
+				<image th:src="${thumbnailUrl}" width="100" height="100"/>
 				<div class="follow-checkbox">
 					<label> <input type="checkbox">Śledź
 					</label>
 				</div>
-				<button type="submit" class="serial-button">Dodaj do
-					"moich"</button>
+				<a sec:authorize="isAuthenticated()" th:href="@{'/serial/addToMine/' + ${serial.id}}" type="submit" class="simplebutton">Dodaj do
+					"moich" </a>
+					<div id="message2" th:text="${message2}"></div>
 				<button type="submit" class="serial-button">Dodaj do
 					obejrzanych</button>
 				<button type="submit" class="serial-button">Strona

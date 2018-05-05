@@ -6,11 +6,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import lombok.Builder;
 import lombok.Data;
 import psk.isf.sts.entity.registration.User;
 
 @Entity
 @Data
+@Builder
 public class MySerial {
 
 	@Id

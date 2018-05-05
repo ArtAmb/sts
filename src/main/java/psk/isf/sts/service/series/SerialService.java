@@ -8,9 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import psk.isf.sts.entity.Comment;
+import psk.isf.sts.entity.MySerial;
 import psk.isf.sts.entity.SerialElement;
 import psk.isf.sts.entity.registration.User;
 import psk.isf.sts.repository.CommentRepository;
+import psk.isf.sts.repository.MySerialRepository;
 import psk.isf.sts.repository.SerialRepository;
 import psk.isf.sts.service.series.dto.CommentDTO;
 
@@ -19,11 +21,17 @@ public class SerialService {
 
 	@Autowired
 	private SerialRepository serialRepo;
-
+	
+	@Autowired
+	private MySerialRepository mySerialRepo;
+	
 	public Collection<SerialElement> allSerials() {
 		return (Collection<SerialElement>) serialRepo.findAll();
 	}
 	
+	public Collection<MySerial> allMySerials() {
+		return (Collection<MySerial>) mySerialRepo.findAll();
+	}
 
 	public SerialElement findById(Long id) {
 		return serialRepo.findById(id).get();
@@ -44,6 +52,11 @@ public class SerialService {
 		
 
 		return commentRepo.save(comment);
+	}
+	
+	public void addToMine(SerialElement serialElement, User user)
+	{
+		mySerialRepo.save(MySerial.builder().user(user).serial(serialElement).build());
 	}
 
 	public void validate(CommentDTO dto) throws Exception {
