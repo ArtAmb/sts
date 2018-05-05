@@ -2,6 +2,7 @@ package psk.isf.sts.controller.view;
 
 import java.security.Principal;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,27 @@ public class SeriesController {
     return getTemplateDir("serials");
 	}
 	
+	@GetMapping("/view/my-serials")
+	public String mySerialsView(Model model, Principal principal) {
+		Collection<MySerial> mySerials = serialService.allMySerials();
+		Collection<SerialElement> serials = new LinkedList<>();
+		User user;
+		for(MySerial element : mySerials)
+		{
+			user = element.getUser();
+			if((user.getLogin().equals(principal.getName())));
+			{
+				 serials.add(element.getSerial());
+			}
+		}
+		Collection<SimpleSerialElement> serials2 = serials
+			      .stream()
+			      .map(el->el.toSimpleSerialElement())
+			      .collect(Collectors.toList()); 
+		model.addAttribute("serials", serials2);
+		return getTemplateDir("my-serials");
+	}
+	
 	@GetMapping("/view/season-detail")
 	public String seasonView(Model model) {
 		//model.addAttribute("serials", serialService.allSerials());
@@ -56,6 +78,7 @@ public class SeriesController {
 	@GetMapping("/serial/addToMine/{id}")
 	public String addToMine(@PathVariable Long id, Principal principal, Model model) {
 		SerialElement serialElement = serialService.findById(id);
+		Collection<MySerial> mySerials = serialService.allMySerials();
 		model.addAttribute("serial", serialElement);
 		model.addAttribute("thumbnailUrl", serialElement.getThumbnail().toURL());
 
@@ -63,9 +86,25 @@ public class SeriesController {
 			model.addAttribute("message2", "Musisz sie zalogować!");
 			return getTemplateDir("serial-detail");
 		}
-
+		
 		User user = userService.findByLogin(principal.getName());
-
+		User user2;
+		SerialElement serial2;
+		for(MySerial element : mySerials)
+		{
+			user2 = element.getUser();
+			serial2 = element.getSerial();
+			if(user2.getLogin().equals(principal.getName()));
+			{
+				if((serial2.getId().equals(id)))
+				{
+				model.addAttribute("message2", "Ten serial już został dodany wczesniej!");
+				return getTemplateDir("serial-detail");
+				}
+				
+			}
+		}
+		
 		try {
 			serialService.addToMine(serialElement, user);
 		} catch (Exception e) {
@@ -81,7 +120,6 @@ public class SeriesController {
 	@GetMapping("/view/serial/{id}")
 	public String serialsDetailView(@PathVariable Long id, Model model) {
 		SerialElement serialElement = serialService.findById(id);
-		//model.addAttribute("mySerials", serialService.allMySerials());
 		model.addAttribute("serial", serialElement);
 		model.addAttribute("thumbnailUrl", serialElement.getThumbnail().toURL());
 		return getTemplateDir("serial-detail");
