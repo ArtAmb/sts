@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import psk.isf.sts.entity.Contract;
-import psk.isf.sts.entity.ContractState;
 import psk.isf.sts.entity.Task;
 import psk.isf.sts.entity.TaskState;
 import psk.isf.sts.entity.TaskType;
@@ -24,14 +23,19 @@ public class TaskService {
 	private TaskRepository taskRepository;
 
 	public void addAcceptContractTask(User producer, Contract contract) {
-		taskRepository.save(Task
-				.builder()
-				.producer(producer)
-				.contract(contract)
-				.type(TaskType.ACCEPT_CONTRACT)
-				.date(new Timestamp(System.currentTimeMillis()))
-				.state(TaskState.NEW)
-				.build());
+		taskRepository.save(Task.builder().producer(producer).contract(contract).type(TaskType.ACCEPT_CONTRACT)
+				.date(new Timestamp(System.currentTimeMillis())).state(TaskState.NEW).build());
+	}
+
+	public void closeTask(Task task) {
+		task.setState(TaskState.CLOSED);
+		taskRepository.save(task);
+	}
+
+	public void closeTaskWithRejectedContract(Task task) {
+		task.setState(TaskState.CLOSED);
+		task.setContract(null);
+		taskRepository.save(task);
 	}
 
 }

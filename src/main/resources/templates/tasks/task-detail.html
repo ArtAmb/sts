@@ -37,8 +37,14 @@
         <div>
             <h1 th:if="${contractPath != null} ">Umowa</h1>
             <iframe class="contract-iframe" th:if="${contractPath != null} " th:src="${contractPath}"></iframe>
-
         </div>
+        
+        <form th:if="${contractPath != null}" th:action="@{'/view/task/' + ${detailInfo.id} + '/acceptContract'}" method="POST">
+            <button type="submit">Akceptuj</button>
+        </form>
+        <form th:if="${contractPath != null}" th:action="@{'/view/task/' + ${detailInfo.id} + '/rejectContract'}" method="POST">
+            <button type="submit">Odrzuć</button>
+        </form>
 
         <div th:replace="footer :: footer"> </div>
 </body>

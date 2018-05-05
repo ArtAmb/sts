@@ -40,6 +40,9 @@ public class AuthenticationController {
 	}
 
 	@Autowired
+	private ContractService contractService;
+
+	@Autowired
 	private AuthorizationService authService;
 
 	@Autowired
@@ -141,9 +144,6 @@ public class AuthenticationController {
 		model.addAttribute("contractTemplateUrl", "/contract-templates/contract-template-1.txt");
 		return getTemplateDir("sign-up-producer-contract");
 	}
-
-	@Autowired
-	private ContractService contractService;
 
 	@PostMapping("/view/sign-up/producer/contract/accept")
 	public String singUpProducerAcceptContract(HttpSession session, Model model) {
