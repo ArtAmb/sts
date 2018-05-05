@@ -80,26 +80,26 @@ tr {
 	padding: 20px;
 }
 
-.tab {
+table, .tab {
 	border-collapse: collapse;
 }
 
-.tab td, .tab th {
+table td, table th,.tab td, .tab th {
 	margin: 0 20px;
 	border: 1px solid #ddd;
 	padding: 8px;
 }
 
-.tab tr:nth-child(even) {
+table tr:nth-child(even), .tab tr:nth-child(even) {
 	background-color: #f2f2f2;
 }
 
-.tab tr:hover {
+table tr:hover, .tab tr:hover {
 	background-color: #ddd;
 	cursor: pointer;
 }
 
-.tab th {
+table th, .tab th {
 	padding-top: 12px;
 	padding-bottom: 12px;
 	text-align: left;
