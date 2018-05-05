@@ -1,7 +1,6 @@
 package psk.isf.sts.controller.view;
 
 import java.security.Principal;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import psk.isf.sts.entity.SerialElement;
 import psk.isf.sts.entity.registration.User;
-import psk.isf.sts.repository.SerialRepository;
 import psk.isf.sts.service.authorization.UserService;
 import psk.isf.sts.service.series.SerialService;
 import psk.isf.sts.service.series.dto.CommentDTO;
@@ -22,11 +20,8 @@ import psk.isf.sts.service.series.dto.CommentDTO;
 public class SeriesController {
 	@Autowired
 	private SerialService serialService;
-	@Autowired	
-    private UserService userService;
-
 	@Autowired
-	private SerialRepository serialRepo;
+	private UserService userService;
 
 	public static String templateDirRoot = "series/";
 
@@ -40,24 +35,25 @@ public class SeriesController {
 		return getTemplateDir("serials");
 	}
 
-	
 	@GetMapping("/view/serial/{id}")
 	public String serialsDetailView(@PathVariable Long id, Model model) {
-		SerialElement serialElement = serialService.findById(id); 
+		SerialElement serialElement = serialService.findById(id);
 		model.addAttribute("serial", serialElement);
-		return getTemplateDir("serial-detail");}	
-	
-	
-	
+		return getTemplateDir("serial-detail");
+	}
+
 	@PostMapping("/view/serial/{id}")
-	 public String addComment(@PathVariable Long id, @ModelAttribute CommentDTO dto, Principal principal, Model model) {
-		//if(principal == null)			
-    	//throw new NotAuthorizedException();
-	
-    User user = userService.findByLogin(principal.getName()); 
-    SerialElement serialElement = serialService.findById(id); 
-    
-		
+	public String addComment(@PathVariable Long id, @ModelAttribute CommentDTO dto, Principal principal, Model model) {
+		SerialElement serialElement = serialService.findById(id);
+		model.addAttribute("serial", serialElement);
+
+		if (principal == null) {
+			model.addAttribute("message", "Musisz sie zalogować!");
+			return getTemplateDir("serial-detail");
+		}
+
+		User user = userService.findByLogin(principal.getName());
+
 		try {
 			serialService.addComment(serialElement, user, dto);
 		} catch (Exception e) {

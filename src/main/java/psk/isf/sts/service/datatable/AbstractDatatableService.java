@@ -22,6 +22,10 @@ public abstract class AbstractDatatableService<Element> {
 			return "";
 	}
 
+	protected Page<Element> findElements(PageDTO page, PagingAndSortingRepository<Element, Long> repository) {
+		return repository.findAll(PageRequest.of(page.getStart(), page.getHowMany()));
+	}
+
 	abstract public Row prepareOneRow(Element element);
 
 	abstract public List<String> getHeaders();
@@ -31,7 +35,7 @@ public abstract class AbstractDatatableService<Element> {
 			page.setStart(0);
 		if (page.getHowMany() == 0)
 			page.setHowMany(10);
-		Page<Element> elements = repository.findAll(PageRequest.of(page.getStart(), page.getHowMany()));
+		Page<Element> elements = findElements(page, repository);
 
 		List<Row> rows = new LinkedList<>();
 		for (Element element : elements.getContent()) {

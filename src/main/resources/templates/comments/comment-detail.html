@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:replace="head :: head"> </div>
+
+<body>
+    <div th:replace="mainMenu :: mainMenu"> </div>
+    <div class="content">
+
+        <div>
+            <lable>ID: </lable>
+            <span th:text="${detailInfo.id}" />
+        </div>
+        <div>
+            <lable>Uzytkownik: </lable>
+            <span th:value='${detailInfo.user.login}'></span>
+        </div>
+        <div>
+            <lable>Data: </lable>
+            <span th:text="${detailInfo.date}" />
+        </div>
+        <div>
+            <lable>Typ: </lable>
+            <span th:text="${detailInfo.serialElement.elementType}" />
+        </div>
+        <div>
+            <lable>Tytuł: </lable>
+            <span th:text="${detailInfo.serialElement.title}" />
+        </div>
+
+        <form th:action="@{'/view/comment/' + ${detailInfo.id}}" method="POST">
+            <div>
+                <h1>Treść</h1>
+                <textarea th:if="${!detailInfo.accepted}" name="content" col="10" row="8" th:text=${detailInfo.content}></textarea>
+                <textarea th:if="${detailInfo.accepted}" col="10" row="8" th:text=${detailInfo.content} disabled></textarea>
+            </div>
+
+            <button th:if="${!detailInfo.accepted}" type="submit">Akceptuj</button>
+        </form>
+        <form th:action="@{'/view/comment/' + ${detailInfo.id} + '/decline'}" method="POST">
+            <div>
+                <label th:if="${!detailInfo.accepted}">Powód odrzucenia</label><br/>
+                <textarea th:if="${!detailInfo.accepted}" name="rejectionCause" col="10" row="8" th:text=${detailInfo.content}></textarea>
+            </div>
+            <button th:if="${!detailInfo.accepted}" type="submit">Odrzuć</button>
+        </form>
+
+    </div>
+
+
+    <br/>
+    <br/>
+    <a th:href="@{/view/comments/table}">Wróć</a>
+
+    <div th:replace="footer :: footer"> </div>
+</body>
+
+</html>
