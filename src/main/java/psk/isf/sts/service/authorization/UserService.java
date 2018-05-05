@@ -4,19 +4,27 @@ import java.io.IOException;
 
 import org.h2.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import psk.isf.sts.entity.Contract;
 import psk.isf.sts.entity.Picture;
 import psk.isf.sts.entity.registration.User;
+import psk.isf.sts.repository.ContractRepository;
 import psk.isf.sts.repository.UserRepository;
 import psk.isf.sts.service.PictureService;
 
 @Service
 public class UserService {
 
+	private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
 	@Autowired
 	private UserRepository userRepo;
+
+	@Autowired
+	private ContractRepository contractRepository;
 
 	@Autowired
 	private PictureService pictureService;
@@ -41,6 +49,27 @@ public class UserService {
 		Picture picture = pictureService.savePicture(login, thumbnail);
 		user.setThumbnail(picture);
 		return saveUser(user);
+	}
+
+	public void deleteUser(User user) {
+		userRepo.deleteById(user.getId());
+	}
+
+	public String activateProducerAccount(User user) {
+		RandomStringGenerator rsg = new RandomStringGenerator(8);
+		String rawPassword = rsg.rand();
+
+		user.setPassword(encoder.encode(rawPassword));
+		user.setReal(true);
+		user.setDisabled(true);
+		saveUser(user);
+
+		return rawPassword;
+	}
+
+	public void removeNotRegisteredProducerAccount(User user, Contract contract) {
+		contractRepository.deleteById(contract.getId());
+		deleteUser(user);
 	}
 
 }

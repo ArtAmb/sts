@@ -1,0 +1,16 @@
+<div th:fragment="datatable">
+    <table class="tab">
+        <th th:each="tableHeader : ${headers}" th:text="${tableHeader}" />
+
+        <tr th:id="'element-' + ${row.id}" th:each="row : ${rows}">
+            <td th:each="value : ${row.values}" th:text="${value}" />
+
+            <script th:inline='javascript'>
+                $("#element-" + [[${ row.id }]]).click(function () {
+                    location.replace([[${ row.detailPath }]])
+                });
+
+            </script>
+        </tr>
+    </table>
+</div>

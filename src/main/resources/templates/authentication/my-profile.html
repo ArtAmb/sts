@@ -8,14 +8,14 @@
 
     <div th:replace="mainMenu :: mainMenu"> </div>
     <div class="content">
-        Welcome, [[${userLogin}]]
+        Welcome, [[${stsUser.login}]]
 
         <form th:action="@{/logout}" method="post">
             <button type="submit">Wyloguj</button>
         </form>
 
         <br/><br/>
-        <image th:src="${thumbnailUrl}" />
+        <image th:if="${stsUser.url != null}" th:src="${stsUser.url}" />
         <form th:action="@{/view/my-profile}" method="post" enctype="multipart/form-data">
             <label>Profilowe: </label>
             <input name="picture" type="file" />

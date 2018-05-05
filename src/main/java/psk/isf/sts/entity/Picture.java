@@ -27,4 +27,12 @@ public class Picture {
 	public String toURL() {
 		return "/images/" + name;
 	}
+	
+	public ViewPicture toViewPicture() {
+		return ViewPicture.builder()
+				.id(id)
+				.name(name)
+				.url(toURL())
+				.build();
+	}
 }

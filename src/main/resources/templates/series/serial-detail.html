@@ -1,10 +1,99 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:replace="head :: head"></div>
+
 <body>
 
+
+	<div th:replace="mainMenu :: mainMenu"></div>
+	<div class="content">
+
+
+		<div class="serial">
+
+			<div class="serial-general">
+				<img src="1.jpg">
+				<div class="follow-checkbox">
+					<label> <input type="checkbox">Śledź
+					</label>
+				</div>
+				<button type="submit" class="serial-button">Dodaj do
+					"moich"</button>
+				<button type="submit" class="serial-button">Dodaj do
+					obejrzanych</button>
+				<button type="submit" class="serial-button">Strona
+					producenta</button>
+				<h3>Obsada:</h3>
+				<div class="actors" th:each="actor : ${serial.actors}">
+					<figure>
+						<img src="1.jpg">
+						<figcaption th:text="${actor.name} + ' '+ ${actor.surname}"></figcaption>
+					</figure>
+				</div>
+
+			</div>
+
+			<div class="serial-content">
+				<h1 th:text="${serial.title}"></h1>
+
+				<p th:text="${serial.description}"></p>
+				<p>
+					<b>Stan: </b><span th:text="${serial.state}"></span>
+				</p>
+				<p>
+					<b>Ocena: </b><span th:text="${serial.rating}"></span>
+				</p>
+				<p>
+					<b>Gatunek:</b> <span class="genres"
+						th:each="genre : ${serial.genres}" th:text="${genre.name}"></span>
+				</p>
+
+
+				<div class="seasons">
+					<h1>Sezony</h1>
+					<div class="season">
+						<h4>
+							Sezon 1 <a class="details-button">Szczegóły</a>
+						</h4>
+						<div class="progress">
+							<div class="progress-bar" role="progressbar" aria-valuenow="70"
+								aria-valuemin="0" aria-valuemax="100" style="width: 70%">
+								70%</div>
+						</div>
+					</div>
+				</div>
+
+
+				<h1>Komentarze</h1>
+				<form th:action="@{'/view/serial/' + ${serial.id}}" method="post">
+					<h3>Dodaj komentarz:</h3>
+					<textarea style="width: 100%; height: 100px;" class="add-comment"
+						name="content" th:value="${content}"></textarea>
+					<button type="submit">Dodaj</button>
+				</form>
+				<div id="message" th:text="${message}"></div>
+
+
+				<h3>Wszystkie komentarze:</h3>
+				<div class="comments" th:each="comment : ${serial.comments}">
+					<div class="comment" th:if="${comment.accepted}==true">
+						<i th:text="${comment.date}"></i> <b
+							th:text="${comment.user.login}"></b> napisał:
+						<p th:text="${comment.content}"></p>
+					</div>
+
+				</div>
+			</div>
+			<div style="clear: both"></div>
+		</div>
+
+
+
+
+	</div>
+
+	<div th:replace="footer :: footer"></div>
 </body>
+
 </html>

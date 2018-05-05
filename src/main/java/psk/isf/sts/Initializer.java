@@ -1,5 +1,8 @@
 package psk.isf.sts;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -9,6 +12,7 @@ import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -48,6 +52,9 @@ public class Initializer {
 	
 	@Autowired
 	private PictureRepository pictureRepo;
+
+	@Value("${sts.path.to.contract.templates}")
+	private String pathToContractTemplate;
 
 	private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
@@ -112,10 +119,22 @@ public class Initializer {
 
 	}
 
+	void setContractTemplate() throws IOException {
+		File file = new File(pathToContractTemplate + "/contract-template-1.txt");
+		if (file.exists())
+			return;
+
+		File source = new File("src/main/resources/static/contract-templates/contract-template-1.txt");
+		// File destination = new File(pathToContractTemplate + File.separator);
+
+		Files.copy(source.toPath(), file.toPath());
+	}
+
 	@PostConstruct
-	void initApplication() {
+	void initApplication() throws IOException {
 		addSystemUsers();
 		addSerials();
+		setContractTemplate();
 	}
 
 }

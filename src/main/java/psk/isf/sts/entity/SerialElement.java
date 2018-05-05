@@ -1,9 +1,12 @@
 package psk.isf.sts.entity;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.sql.Timestamp;
 import java.util.Collection;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -30,6 +33,7 @@ public class SerialElement {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
+	@Column(nullable = false)
 	private String title;
 	private String description;
 
@@ -37,6 +41,7 @@ public class SerialElement {
 	private State state;
 
 	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
 	private SerialElementType elementType;
 
 	private float rating;
@@ -74,4 +79,28 @@ public class SerialElement {
 
 	@ManyToOne
 	private Picture thumbnail;
+	
+	public SimpleSerialElement toSimpleSerialElement() {
+		return SimpleSerialElement
+				.builder()
+				.id(id)
+				.title(title)
+				.description(description)
+				.state(state)
+				.elementType(elementType)
+				.rating(rating)
+				.elementType(elementType)
+				.actors(actors)
+				.genres(genres)
+				.comments(comments)
+				.startDate(startDate)
+				.durationInSec(durationInSec)
+				.daysToNextEpisode(daysToNextEpisode)
+				.active(active)
+				.linkToWatch(linkToWatch)
+				.producer(producer)
+				.gallery(gallery)
+				.thumbnail(thumbnail != null ? thumbnail.toViewPicture() : null)
+				.build();
+	}
 }

@@ -14,13 +14,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import psk.isf.sts.entity.Contract;
 import psk.isf.sts.entity.UserType;
-import psk.isf.sts.entity.registration.Role;
 import psk.isf.sts.entity.registration.Roles;
 import psk.isf.sts.entity.registration.User;
+import psk.isf.sts.service.TaskService;
 import psk.isf.sts.service.authorization.AuthorizationService;
 import psk.isf.sts.service.authorization.UserService;
 import psk.isf.sts.service.authorization.dto.AuthorizationDTO;
 import psk.isf.sts.service.authorization.dto.UserDTO;
+import psk.isf.sts.service.contract.ContractService;
+import psk.isf.sts.service.contract.dto.ContractDTO;
 import psk.isf.sts.service.profile.dto.MyProfileDTO;
 
 @Controller
@@ -33,15 +35,21 @@ public class AuthenticationController {
 
 	public static String templateDirRoot = "authentication/";
 
+	private String getTemplateDir(String templateName) {
+		return templateDirRoot + templateName;
+	}
+
+	@Autowired
+	private ContractService contractService;
+
 	@Autowired
 	private AuthorizationService authService;
 
 	@Autowired
 	private UserService userService;
 
-	private String getTemplateDir(String templateName) {
-		return templateDirRoot + templateName;
-	}
+	@Autowired
+	private TaskService taskService;
 
 	@GetMapping("/view/sign-in")
 	public String singIn() {
@@ -118,7 +126,7 @@ public class AuthenticationController {
 	public String singUpProducer(@ModelAttribute AuthorizationDTO dto, HttpSession session, Model model) {
 
 		try {
-			authService.validate(dto);
+			authService.validateForProducer(dto);
 		} catch (Exception e) {
 			model.addAttribute("message", e.getMessage());
 			model.addAttribute("email", dto.getEmail());
@@ -132,30 +140,43 @@ public class AuthenticationController {
 		}
 
 		session.setAttribute(SessionConsts.userToRegister, dto);
-		session.setAttribute(SessionConsts.newContract, new Contract());
 
+		model.addAttribute("contractTemplateUrl", "/contract-templates/contract-template-1.txt");
 		return getTemplateDir("sign-up-producer-contract");
 	}
 
 	@PostMapping("/view/sign-up/producer/contract/accept")
 	public String singUpProducerAcceptContract(HttpSession session, Model model) {
 		AuthorizationDTO userToRegister = (AuthorizationDTO) session.getAttribute(SessionConsts.userToRegister);
+		Contract contract = null;
 
+		User producer = null;
 		try {
-			authService.createNewProducer(userToRegister);
+			producer = authService.createNewProducer(userToRegister);
+			contract = contractService.createNewContract(
+					ContractDTO.builder().producer(producer).contractTemplateName("contract-template-1.txt").build());
+
 		} catch (Exception e) {
-			model.addAttribute("message", e.getMessage());
+			if (producer != null)
+				userService.deleteUser(producer);
+
+			String message = e.getMessage() == null
+					? "Błąd. Nie udało sie utworzyc konta. Prosze sie skontaktowac z administratorem"
+					: e.getMessage();
+			model.addAttribute("message", message);
 			return getTemplateDir("logIn");
 		}
 
+		taskService.addAcceptContractTask(producer, contract);
+
 		model.addAttribute("message", "Udało sie założyć konto");
+		session.removeAttribute(SessionConsts.userToRegister);
 		return getTemplateDir("logIn");
 	}
 
 	@PostMapping("/view/sign-up/producer/contract/decline")
 	public String singUpProducerDeclineContract(HttpSession session, Model model) {
 		session.removeAttribute(SessionConsts.userToRegister);
-		session.removeAttribute(SessionConsts.newContract);
 
 		model.addAttribute("message", "Anulowano rejestracje konta dla producenta");
 		return getTemplateDir("logIn");
