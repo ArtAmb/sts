@@ -40,6 +40,7 @@ public class SerialService {
 		comment.setDate(new Timestamp(System.currentTimeMillis()));
 		comment.setUser(user);
 		comment.setSerialElement(serialElement);
+		
 
 		return commentRepo.save(comment);
 	}

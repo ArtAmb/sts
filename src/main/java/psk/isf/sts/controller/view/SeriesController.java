@@ -34,6 +34,12 @@ public class SeriesController {
 		model.addAttribute("serials", serialService.allSerials());
 		return getTemplateDir("serials");
 	}
+	
+	@GetMapping("/view/season-detail")
+	public String seasonView(Model model) {
+		//model.addAttribute("serials", serialService.allSerials());
+		return getTemplateDir("season-detail");
+	}
 
 	@GetMapping("/view/serial/{id}")
 	public String serialsDetailView(@PathVariable Long id, Model model) {
