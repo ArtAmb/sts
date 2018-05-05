@@ -4,18 +4,16 @@
 <div th:replace="head :: head"> </div>
 
 <body>
-
-
     <div th:replace="mainMenu :: mainMenu"> </div>
     <div class="content">
-        Welcome, [[${stsUser.login}]]
+        Welcome, [[${userLogin}]]
 
         <form th:action="@{/logout}" method="post">
             <button type="submit">Wyloguj</button>
         </form>
 
         <br/><br/>
-        <image th:if="${stsUser.url != null}" th:src="${stsUser.url}" />
+        <image th:if="${thumbnailUrl != null}" th:src="${thumbnailUrl}" />
         <form th:action="@{/view/my-profile}" method="post" enctype="multipart/form-data">
             <label>Profilowe: </label>
             <input name="picture" type="file" />
