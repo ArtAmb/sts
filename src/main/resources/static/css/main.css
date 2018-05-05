@@ -3,6 +3,93 @@
 	margin: auto;
 }
 
+    .main-menu img{
+        width: 50px;
+        height: 35px; 
+        }
+    
+    .lonewolfbutton{
+        margin-top: 10px;
+    }
+    
+    .simplebutton {
+        background-color: #4CAF50; /* Green */
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    
+    .simplebutton:hover {
+        background-color: #3e8e41;
+    }
+    
+    .important_button{
+        background-color: red !important;
+    }
+    
+    .clickable{
+    cursor: pointer;
+    }
+    
+    
+    .edit_button{
+    cursor: pointer;
+    }
+    
+    
+    .medical_action_button{
+    cursor: pointer;
+    }
+    
+    
+    .delete_button{
+    cursor: pointer;
+    }
+    
+    .table{
+        margin-top: 25px;
+        text-align: left;
+        line-height: 40px;
+        border-collapse: separate;
+        border-spacing: 10px;
+        border: 2px solid #ed1c40;
+        width: 500px;
+        border-radius: .25rem;
+    }
+    
+    tr{
+    border: 1px solid black;
+    } 
+    
+    th, td{
+    
+    } 
+    
+    
+   
+    
+       .required{
+           border-width: 2px;
+           border-style: solid;
+           border-color: #FF0000; 
+       }
+    
+       .deactivate {
+        background-color: #909090;
+        pointer-events: none;
+        cursor: not-allowed;
+       }
+    
+    .starter-template{
+        text-align: center;
+        padding: 20px;
+    }
+=======
 .main-menu img {
 	width: 50px;
 	height: 35px;
@@ -295,3 +382,4 @@ button:hover, button:focus, input[type=file]:hover, input[type=file]:focus
 		from(#2d8be3),
 		to(#02192e));
 }
+
