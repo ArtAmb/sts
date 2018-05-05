@@ -31,7 +31,7 @@ public class SimpleSerialElement {
 	private String linkToWatch;
 	private User producer;
 	private Gallery gallery;
-	private Picture thumbnail;
+	private ViewPicture thumbnail;
 	// private Collection<SerialElement> elements;
 	// private SerialElement parent;
 
