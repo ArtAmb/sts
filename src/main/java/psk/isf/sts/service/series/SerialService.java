@@ -23,6 +23,7 @@ public class SerialService {
 	public Collection<SerialElement> allSerials() {
 		return (Collection<SerialElement>) serialRepo.findAll();
 	}
+	
 
 	public SerialElement findById(Long id) {
 		return serialRepo.findById(id).get();

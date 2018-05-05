@@ -1,6 +1,8 @@
 package psk.isf.sts.controller.view;
 
 import java.security.Principal;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import psk.isf.sts.entity.SerialElement;
+import psk.isf.sts.entity.SimpleSerialElement;
 import psk.isf.sts.entity.registration.User;
 import psk.isf.sts.service.authorization.UserService;
 import psk.isf.sts.service.series.SerialService;
@@ -31,8 +34,16 @@ public class SeriesController {
 
 	@GetMapping("/view/serials")
 	public String serialsView(Model model) {
-		model.addAttribute("serials", serialService.allSerials());
-		return getTemplateDir("serials");
+		
+		
+    Collection<SimpleSerialElement> serials = serialService.allSerials()
+      .stream()
+      .map(el->el.toSimpleSerialElement())
+      .collect(Collectors.toList()); 
+    
+        
+    model.addAttribute("serials", serials);
+    return getTemplateDir("serials");
 	}
 	
 	@GetMapping("/view/season-detail")
