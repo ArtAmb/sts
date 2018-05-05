@@ -28,7 +28,7 @@ public class Comment {
 	private Timestamp date;
 
 	@ManyToOne
-	@JoinColumn(name = "serial", nullable = false)
+	@JoinColumn(name = "serialElement", nullable = false)
 	private SerialElement serialElement;
 
 	private boolean accepted;
