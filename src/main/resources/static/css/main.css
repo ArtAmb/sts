@@ -112,7 +112,7 @@ table th, .tab th {
 	min-height: 500px;
 }
 
-.mybutton {
+.mybutton2 {
 	height: 50px;
 	width: 100px;
 	background: silver;
@@ -127,7 +127,7 @@ table th, .tab th {
 	margin-right: 0.5%;
 }
 
-.mybutton:hover {
+.mybutton2:hover {
 	background: gray;
 	color: white;
 }
@@ -206,10 +206,11 @@ button {
 	margin-top: 10px;
 }
 
-.comment {
+.comment, .episode {
 	background-color: #efefef;
-	padding: 10px;
-	margin: 10px 0;
+	padding: 15px;
+	margin: 15px 0;
+	border-radius: 4px;
 }
 
 .genres:after {
@@ -249,12 +250,12 @@ button {
 	font-size: 16px;
 }
 .details-button:hover
-{
-	
+{	
 	color: #424242;
 	cursor: pointer;
 }
-button, input[type=file]{
+
+.mybutton, button, input[type=file]{
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 14px;
 	color: #ffffff;
@@ -284,7 +285,7 @@ button, input[type=file]{
 		0px -1px 0px rgba(000,000,000,1),
 		0px 1px 0px rgba(255,255,255,0.2);
 }
-button:hover, button:focus, input[type=file]:hover, input[type=file]:focus
+.mybutton:hover, .mybutton:focus, button:hover, button:focus, input[type=file]:hover, input[type=file]:focus
 {
 		background: -moz-linear-gradient(
 		top,
@@ -294,4 +295,6 @@ button:hover, button:focus, input[type=file]:hover, input[type=file]:focus
 		linear, left top, left bottom,
 		from(#2d8be3),
 		to(#02192e));
+		text-decoration:none;
+		color: #ffffff;
 }
