@@ -1,0 +1,45 @@
+<div th:replace="head :: head"> </div>
+
+<body>
+    <div th:replace="mainMenu :: mainMenu"> </div>
+    <div class="content">
+        Welcome, [[${user.login}]]
+
+        <form th:action="@{/logout}" method="post">
+            <button type="submit">Wyloguj</button>
+        </form>
+
+
+        <button id="pay-button">Aktywuj konto</button>
+        
+        <form th:action="@{/view/producer/account/activation}" method="POST">
+            <button type="submit">Aktywuj konto przez serwer</button>
+        </form>
+
+
+        <script th:if="${linkToPayment != null}" th:inline='javascript'>
+            location.replace([[${linkToPayment}]]);
+        </script>
+
+
+
+        <div>
+            System śledzenia seriali powstał w ramach projektu z Inżynierii Systemów Informacyjnych na Politechnice Świętokrzyskiej.<br/>
+            <h1>NIEDOZWOLONE JEST WPISYWANIE REALNYCH DANYCH, W SZCZEGÓLNOŚCI W RAMACH PRZELEWU. </h1>
+            <br/>
+            <br/>
+            Poniżej przykładowe dane umożliwające przetestowanie systemu.  
+            <br/>
+            <br/>
+            <iframe class="contract-iframe" src="http://developers.payu.com/pl/overview.html#sandbox">
+
+            </iframe>
+        </div>
+        
+
+    </div>
+
+    <div th:replace="footer :: footer"> </div>
+</body>
+
+</html>

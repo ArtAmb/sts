@@ -63,10 +63,10 @@ public class TaskController {
 			throw new IllegalStateException("To zadanie nie posiada umowy lub umowa został już akceptowana");
 		}
 
-		User user = task.getContract().getProducer();
-		String rawPassword = userService.activateProducerAccount(user);
-		emailService.sendContractConfirmationEmail(user, rawPassword);
-		taskService.closeTask(task);
+		// User user = task.getContract().getProducer();
+		// String rawPassword = userService.activateProducerAccount(user);
+		// emailService.sendContractConfirmationEmail(user, rawPassword);
+		taskService.processTaskWithContract(task);
 
 		model.addAttribute("detailInfo", task);
 		model.addAttribute("contractPath", task.getContract() != null ? task.getContract().toURL() : null);

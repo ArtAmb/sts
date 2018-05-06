@@ -1,6 +1,8 @@
 package psk.isf.sts.service.contract;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -10,7 +12,9 @@ import java.nio.file.Paths;
 import org.h2.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
@@ -157,6 +161,10 @@ public class ContractService {
 			para.add(Chunk.NEWLINE);
 
 		return para;
+	}
+
+	public MultipartFile contractToMultipartFile(Contract contract) throws FileNotFoundException, IOException {
+		return new MockMultipartFile(contract.getName(), new FileInputStream(contract.getPath()));
 	}
 
 }

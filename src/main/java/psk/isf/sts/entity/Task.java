@@ -43,4 +43,6 @@ public class Task {
 	private TaskState state;
 
 	private Timestamp date;
+
+	private String comments;
 }

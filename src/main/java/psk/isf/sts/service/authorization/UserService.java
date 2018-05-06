@@ -67,6 +67,11 @@ public class UserService {
 		return rawPassword;
 	}
 
+	public void makeProducerAccountFullActive(User user) {
+		user.setDisabled(false);
+		saveUser(user);
+	}
+
 	public void removeNotRegisteredProducerAccount(User user, Contract contract) {
 		contractRepository.deleteById(contract.getId());
 		deleteUser(user);

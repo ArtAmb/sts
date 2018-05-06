@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import psk.isf.sts.entity.Contract;
 import psk.isf.sts.entity.UserType;
@@ -28,9 +29,10 @@ import psk.isf.sts.service.profile.dto.MyProfileDTO;
 @Controller
 public class AuthenticationController {
 
+	public static final String activateUserControlParam = "controlParam";
+
 	class SessionConsts {
 		public static final String userToRegister = "userToRegister";
-		public static final String newContract = "newContract";
 	}
 
 	public static String templateDirRoot = "authentication/";
@@ -63,12 +65,20 @@ public class AuthenticationController {
 	}
 
 	@GetMapping("/view/my-profile")
-	public String myProfile(Model model, Principal principal) {
+	public String myProfile(
+			@RequestParam(name = activateUserControlParam, required = false) String requestParamControlParam,
+			HttpSession session, Model model, Principal principal) {
 		User user = userService.findByLogin(principal.getName());
 		model.addAttribute("userLogin", principal.getName());
 
 		if (user.getThumbnail() != null)
 			model.addAttribute("thumbnailUrl", user.getThumbnail().toURL());
+
+		String controlParam = (String) session.getAttribute(activateUserControlParam);
+		if (controlParam != null && requestParamControlParam != null && controlParam.equals(requestParamControlParam)) {
+			userService.makeProducerAccountFullActive(user);
+			session.removeAttribute(requestParamControlParam);
+		}
 
 		return getTemplateDir("my-profile");
 	}

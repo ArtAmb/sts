@@ -49,7 +49,7 @@ public class Initializer {
 
 	@Autowired
 	private GenreRepository genreRepository;
-	
+
 	@Autowired
 	private PictureRepository pictureRepo;
 
@@ -78,6 +78,10 @@ public class Initializer {
 		userRepo.save(User.builder().login("producer").email("producer@test.pl").password(encoder.encode("test"))
 				.roles(Collections.singletonList((Roles.ROLE_PRODUCER.toRole()))).build());
 
+		userRepo.save(User.builder().login("newproducer").email("psk-isf-sts@wp.pl").password(encoder.encode("test"))
+				.roles(Collections.singletonList((Roles.ROLE_PRODUCER.toRole()))).companyName("TestFirmaNewProducer")
+				.address("Tajna 5/12 Kielce").phoneNumber("123456789").disabled(true).build());
+
 		userRepo.save(User.builder().login("developer").email("developer@test.pl").password(encoder.encode("test"))
 				.roles(developerRoles).build());
 	}
@@ -90,7 +94,7 @@ public class Initializer {
 				actorRepo.save(Actor.builder().name("Teodor").surname("Teodorski").build()),
 				actorRepo.save(Actor.builder().name("Agnieszka").surname("Anieszkowska").build()),
 				actorRepo.save(Actor.builder().name("Klaudia").surname("Klaudiowska").build()));
-		
+
 		Picture mJakMilosc = pictureRepo.save(Picture.builder().name("m_jak_milosc.png").build());
 		Picture pierwszaMilosc = pictureRepo.save(Picture.builder().name("pierwsza_milosc.jpg").build());
 		Picture naWspolnej = pictureRepo.save(Picture.builder().name("na_wspolnej.jpg").build());

@@ -2,7 +2,7 @@
 
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="#">STS</a>
+            <a class="navbar-brand" href="/">STS</a>
         </div>
         <ul class="nav navbar-nav">
             <li><a sec:authorize="isAuthenticated()" href="/">Moje seriale</a></li>
@@ -28,6 +28,15 @@
         else
             $("#tumbnail").attr("src", "/images/" + response.thumbnail.name);
         $("#welcome-message").html("Witaj, " + response.login + "!");
+
+
+        // if(location.pathname == "/view/my-profile"){
+            
+        // }
+        if(response.disabled) {
+            if(!(location.pathname == "/view/producer/account/activation"))
+                location.replace("/view/producer/account/activation");
+        }
     });
 </script>
 
