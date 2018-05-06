@@ -95,7 +95,7 @@ public class Initializer {
 				actorRepo.save(Actor.builder().name("Agnieszka").surname("Anieszkowska").build()),
 				actorRepo.save(Actor.builder().name("Klaudia").surname("Klaudiowska").build()));
 
-		Picture mJakMilosc = pictureRepo.save(Picture.builder().name("m_jak_milosc.png").build());
+		Picture mJakMilosc = pictureRepo.save(Picture.builder().name("m_jak_milosc.jpg").build());
 		Picture pierwszaMilosc = pictureRepo.save(Picture.builder().name("pierwsza_milosc.jpg").build());
 		Picture naWspolnej = pictureRepo.save(Picture.builder().name("na_wspolnej.jpg").build());
 		Picture przyjaciolki = pictureRepo.save(Picture.builder().name("przyjaciolki.jpg").build());

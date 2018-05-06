@@ -7,11 +7,11 @@
 
 
     <div th:replace="mainMenu :: mainMenu"> </div>
-    <div id="serials-view" class="content">
-        Wszystkie seriale: <br>
+    <div id="my-serials-view" class="content">
+        Wszystkie moje seriale:
         <table border="0">
         <tr th:if="${serials.empty}">
-        	<td colspan="4">Brak seriali</td>
+        	<td colspan="4">Brak dodanych seriali</td>
         </tr>
         <tr th:each="serials : ${serials}">
         	<td><image th:src="${serials.thumbnail.url}" width="100" height="100"/></td>
@@ -20,7 +20,7 @@
         	<td> <a th:id="'serial-detail' + ${serials.id}" th:href="@{'/view/serial/' + ${serials.id}}" class="mybutton">Szczegoly</a></td>
         	</tr>
         
-        </table>
+        </table> 
 
     </div>
 
