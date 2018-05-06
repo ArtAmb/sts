@@ -22,7 +22,7 @@
 				<a th:href="@{'/serial/addToMine/' + ${serial.id}}" type="submit" class="mybutton" >Dodaj do
 					"moich" </a></div>
 				<div th:if="${czyDodano == true}">
-				<a th:href="@{'/serial/addToMine/' + ${serial.id}}" type="submit" class="mybutton" >Usun z
+				<a th:href="@{'/serial/deleteFromMine/' + ${mySerial.id}}" type="submit" class="mybutton" >Usun z
 					"moich" </a></div>
 			
 					<div id="message2" th:text="${message2}"></div>

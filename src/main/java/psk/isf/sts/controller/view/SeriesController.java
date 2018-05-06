@@ -124,12 +124,14 @@ public class SeriesController {
 	
 	@GetMapping("/serial/addToMine/{id}")
 	public String addToMine(@PathVariable Long id, Principal principal, Model model) {
+		boolean czyDodano = false;
 		SerialElement serialElement = serialService.findById(id);
 		Collection<MySerial> mySerials = serialService.allMySerials();
 		model.addAttribute("serial", serialElement);
 		model.addAttribute("thumbnailUrl", serialElement.getThumbnail().toURL());
 
 		if (principal == null) {
+			model.addAttribute("czyDodano", czyDodano);
 			model.addAttribute("message2", "Musisz sie zalogować!");
 			return getTemplateDir("serial-detail");
 		}
@@ -145,8 +147,11 @@ public class SeriesController {
 			{
 				if((serial2.getId().equals(id)))
 				{
-				model.addAttribute("message2", "Ten serial już został dodany wczesniej!");
-				return getTemplateDir("serial-detail");
+					czyDodano = true;
+					model.addAttribute("czyDodano", czyDodano);
+					model.addAttribute("message2", "Ten serial już został dodany wczesniej!");
+					model.addAttribute("mySerial", element);
+					return getTemplateDir("serial-detail");
 				}
 				
 			}
@@ -159,8 +164,38 @@ public class SeriesController {
 			model.addAttribute("serial", serialElement);
 			return getTemplateDir("serial-detail");
 		}
-
-		model.addAttribute("message2", "Dodano !");
+		mySerials = serialService.allMySerials();
+		for(MySerial element : mySerials)
+		{
+			user2 = element.getUser();
+			serial2 = element.getSerial();
+			if(user2.getLogin().equals(principal.getName()));
+			{
+				if((serial2.getId().equals(id)))
+				{
+					czyDodano = true;
+					model.addAttribute("czyDodano", czyDodano);
+					model.addAttribute("mySerial", element);
+				}
+				
+			}
+		}
+		model.addAttribute("czyDodano", czyDodano);
+		return getTemplateDir("serial-detail");
+	}
+	
+	@GetMapping("/serial/deleteFromMine/{id}")
+	public String deleteFromMine(@PathVariable Long id, Principal principal, Model model)
+	{
+		boolean czyDodano = true;
+		MySerial mySerial = serialService.findMySerialById(id);
+		SerialElement serialElement = mySerial.getSerial();
+		model.addAttribute("serial", serialElement);
+		model.addAttribute("thumbnailUrl", serialElement.getThumbnail().toURL());
+		serialService.deleteFromMine(id);
+		czyDodano = false;
+		model.addAttribute("czyDodano", czyDodano);
+		model.addAttribute("mySerial", mySerial);
 		return getTemplateDir("serial-detail");
 	}
 	
@@ -186,6 +221,7 @@ public class SeriesController {
 				if((serial2.getId().equals(id)))
 				{
 				czyDodano = true;
+				model.addAttribute("mySerial", element);
 				}
 				
 			}

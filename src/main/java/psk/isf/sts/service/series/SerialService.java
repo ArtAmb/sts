@@ -38,7 +38,11 @@ public class SerialService {
 	public SerialElement findById(Long id) {
 		return serialRepo.findById(id).get();
 	}
-
+	
+	public MySerial findMySerialById(Long id) {
+		return mySerialRepo.findById(id).get();
+	}
+	
 	@Autowired
 	private CommentRepository commentRepo;
 
@@ -59,6 +63,11 @@ public class SerialService {
 	public void addToMine(SerialElement serialElement, User user)
 	{
 		mySerialRepo.save(MySerial.builder().user(user).serial(serialElement).build());
+	}
+	
+	public void deleteFromMine(Long id)
+	{
+		mySerialRepo.deleteById(id);
 	}
 
 	public void validate(CommentDTO dto) throws Exception {
