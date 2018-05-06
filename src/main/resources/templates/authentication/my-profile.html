@@ -4,8 +4,6 @@
 <div th:replace="head :: head"> </div>
 
 <body>
-
-
     <div th:replace="mainMenu :: mainMenu"> </div>
     <div class="content">
         Welcome, [[${userLogin}]]
@@ -15,7 +13,7 @@
         </form>
 
         <br/><br/>
-        <image th:src="${thumbnailUrl}" />
+        <image th:if="${thumbnailUrl != null}" th:src="${thumbnailUrl}" />
         <form th:action="@{/view/my-profile}" method="post" enctype="multipart/form-data">
             <label>Profilowe: </label>
             <input name="picture" type="file" />

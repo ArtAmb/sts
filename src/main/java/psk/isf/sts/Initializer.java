@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import psk.isf.sts.entity.Actor;
 import psk.isf.sts.entity.Genre;
+import psk.isf.sts.entity.Picture;
 import psk.isf.sts.entity.SerialElement;
 import psk.isf.sts.entity.SerialElementType;
 import psk.isf.sts.entity.UserType;
@@ -26,6 +27,7 @@ import psk.isf.sts.entity.registration.Roles;
 import psk.isf.sts.entity.registration.User;
 import psk.isf.sts.repository.ActorRepository;
 import psk.isf.sts.repository.GenreRepository;
+import psk.isf.sts.repository.PictureRepository;
 import psk.isf.sts.repository.RoleRepository;
 import psk.isf.sts.repository.SerialRepository;
 import psk.isf.sts.repository.UserRepository;
@@ -47,6 +49,9 @@ public class Initializer {
 
 	@Autowired
 	private GenreRepository genreRepository;
+	
+	@Autowired
+	private PictureRepository pictureRepo;
 
 	@Value("${sts.path.to.contract.templates}")
 	private String pathToContractTemplate;
@@ -85,6 +90,11 @@ public class Initializer {
 				actorRepo.save(Actor.builder().name("Teodor").surname("Teodorski").build()),
 				actorRepo.save(Actor.builder().name("Agnieszka").surname("Anieszkowska").build()),
 				actorRepo.save(Actor.builder().name("Klaudia").surname("Klaudiowska").build()));
+		
+		Picture mJakMilosc = pictureRepo.save(Picture.builder().name("m_jak_milosc.jpg").build());
+		Picture pierwszaMilosc = pictureRepo.save(Picture.builder().name("pierwsza_milosc.jpg").build());
+		Picture naWspolnej = pictureRepo.save(Picture.builder().name("na_wspolnej.jpg").build());
+		Picture przyjaciolki = pictureRepo.save(Picture.builder().name("przyjaciolki.jpg").build());
 
 		Genre thiller = genreRepository.save(Genre.builder().name("Thriller").build());
 		Genre dramat = genreRepository.save(Genre.builder().name("Dramat").build());
@@ -93,19 +103,19 @@ public class Initializer {
 
 		serialRepository.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("M jak miłość")
 				.description("Polski serial telewizyjny. Akcja rozgrywa się i tak dalej").producer(user).active(true)
-				.actors(actorList).genres(Arrays.asList(dramat, przygodowy)).build());
+				.actors(actorList).genres(Arrays.asList(dramat, przygodowy)).thumbnail(mJakMilosc).build());
 
 		serialRepository.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("Pierwsza Miłość")
 				.description("Polski serial telewizyjny. Akcja rozgrywa się i tak dalej").producer(user).active(true)
-				.actors(actorList).genres(Arrays.asList(dramat, przygodowy, horror)).build());
+				.actors(actorList).genres(Arrays.asList(dramat, przygodowy, horror)).thumbnail(pierwszaMilosc).build());
 
 		serialRepository.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("Na wspólnej")
 				.description("Polski serial telewizyjny. Akcja rozgrywa się i tak dalej").producer(user).active(true)
-				.actors(actorList).genres(Arrays.asList(thiller, przygodowy)).build());
+				.actors(actorList).genres(Arrays.asList(thiller, przygodowy)).thumbnail(naWspolnej).build());
 
 		serialRepository.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("Przyjaciółki")
 				.description("Polski serial telewizyjny. Akcja rozgrywa się i tak dalej").producer(user).active(true)
-				.actors(actorList).genres(Arrays.asList(thiller, horror)).build());
+				.actors(actorList).genres(Arrays.asList(thiller, horror)).thumbnail(przyjaciolki).build());
 
 	}
 

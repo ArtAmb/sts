@@ -1,5 +1,7 @@
 package psk.isf.sts.entity;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.sql.Timestamp;
 import java.util.Collection;
 
@@ -98,7 +100,7 @@ public class SerialElement {
 				.linkToWatch(linkToWatch)
 				.producer(producer)
 				.gallery(gallery)
-				.thumbnail(thumbnail)
+				.thumbnail(thumbnail != null ? thumbnail.toViewPicture() : null)
 				.build();
 	}
 }
