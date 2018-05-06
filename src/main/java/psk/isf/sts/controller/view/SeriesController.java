@@ -165,10 +165,32 @@ public class SeriesController {
 	}
 	
 	@GetMapping("/view/serial/{id}")
-	public String serialsDetailView(@PathVariable Long id, Model model) {
+	public String serialsDetailView(@PathVariable Long id, Principal principal, Model model) {
+		boolean czyDodano = false;
 		SerialElement serialElement = serialService.findById(id);
+		Collection<MySerial> mySerials = serialService.allMySerials();
 		model.addAttribute("serial", serialElement);
 		model.addAttribute("thumbnailUrl", serialElement.getThumbnail().toURL());
+		if (principal == null) {
+			return getTemplateDir("serial-detail");
+		}
+		
+		User user2;
+		SerialElement serial2;
+		for(MySerial element : mySerials)
+		{
+			user2 = element.getUser();
+			serial2 = element.getSerial();
+			if(user2.getLogin().equals(principal.getName()));
+			{
+				if((serial2.getId().equals(id)))
+				{
+				czyDodano = true;
+				}
+				
+			}
+		}
+		model.addAttribute("czyDodano", czyDodano);
 		return getTemplateDir("serial-detail");
 	}
 
