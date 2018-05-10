@@ -17,14 +17,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import psk.isf.sts.entity.Actor;
 import psk.isf.sts.entity.MySerial;
 import psk.isf.sts.entity.SerialElement;
-import psk.isf.sts.entity.registration.Roles;
 import psk.isf.sts.entity.SimpleSerialElement;
+import psk.isf.sts.entity.registration.Roles;
 import psk.isf.sts.entity.registration.User;
 import psk.isf.sts.service.authorization.UserService;
 import psk.isf.sts.service.series.SerialService;
-import psk.isf.sts.service.series.dto.ActorDTO;
 import psk.isf.sts.service.series.dto.CommentDTO;
 import psk.isf.sts.service.series.dto.SerialDTO;
+import psk.isf.sts.service.series.mapper.ActorMapper;
 
 @Controller
 public class SeriesController {
@@ -200,12 +200,9 @@ public class SeriesController {
 		Collection<MySerial> mySerials = serialService.allMySerials();
 		model.addAttribute("serial", serialElement);
 		model.addAttribute("thumbnailUrl", serialElement.getThumbnail().toURL());
-		
-		int index =0;
+
 		Collection<Actor> actors = serialElement.getActors();
-		Collection<ActorDTO> actorsDTO;		
-				
-		//model.addAttribute("actors", actorsDTO);
+		model.addAttribute("actors", actors.stream().map(ActorMapper::map).collect(Collectors.toList()));
 
 		if (principal == null) {
 			return getTemplateDir("serial-detail");
