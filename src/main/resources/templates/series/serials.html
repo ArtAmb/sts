@@ -1,30 +1,38 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<div th:replace="head :: head"> </div>
+<div th:replace="head :: head"></div>
 
 <body>
 
 
-    <div th:replace="mainMenu :: mainMenu"> </div>
-    <div id="serials-view" class="content">
-        Wszystkie seriale: <br>
-        <table border="0">
-        <tr th:if="${serials.empty}">
-        	<td colspan="4">Brak seriali</td>
-        </tr>
-        <tr th:each="serials : ${serials}">
-        	<td><image th:src="${serials.thumbnail.url}" width="100" height="100"/></td>
-        	<td><p th:text="${serials.title}"></p>
-        	<p th:text="${serials.description}"></p></td>
-        	<td> <a th:id="'serial-detail' + ${serials.id}" th:href="@{'/view/serial/' + ${serials.id}}" class="mybutton">Szczegoly</a></td>
-        	</tr>
-        
-        </table>
+	<div th:replace="mainMenu :: mainMenu"></div>
+	<div id="serials-view" class="content">
+		<span style="font-size: 22px;">Wszystkie
+			seriale</span> 
+			<a
+			sec:authorize="hasRole('ROLE_ADMIN') OR hasRole('ROLE_PRODUCER')"
+			th:href="@{add-serial}" class="mybutton">Dodaj serial</a>
+			
 
-    </div>
+		<table style="margin-top:30px;">
+			<tr th:if="${serials.empty}">
+				<td colspan="4">Brak seriali</td>
+			</tr>
+			<tr th:each="serials : ${serials}">
+				<td><image th:src="${serials.thumbnail.url}" width="100"
+						height="100" /></td>
+				<td><p th:text="${serials.title}"></p>
+					<p th:text="${serials.description}"></p></td>
+				<td><a th:id="'serial-detail' + ${serials.id}"
+					th:href="@{'/view/serial/' + ${serials.id}}" class="mybutton">Szczegoly</a></td>
+			</tr>
 
-    <div th:replace="footer :: footer"> </div>
+		</table>
+
+	</div>
+
+	<div th:replace="footer :: footer"></div>
 </body>
 
 </html>

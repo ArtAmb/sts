@@ -101,6 +101,7 @@ public class SeriesController {
 			model.addAttribute("durationInSec", dto.getDurationInSec());
 			model.addAttribute("linkToWatch", dto.getLinkToWatch());
 			model.addAttribute("state", dto.getState());
+			model.addAttribute("thumbnail", dto.getThumbnail());
 			model.addAttribute(dto);
 			return getTemplateDir("add-serial");
 		}
@@ -126,6 +127,9 @@ public class SeriesController {
 		Collection<MySerial> mySerials = serialService.allMySerials();
 		model.addAttribute("serial", serialElement);
 		model.addAttribute("thumbnailUrl", serialElement.getThumbnail().toURL());
+
+		Collection<Actor> actors = serialElement.getActors();
+		model.addAttribute("actors", actors.stream().map(ActorMapper::map).collect(Collectors.toList()));
 
 		if (principal == null) {
 			model.addAttribute("czyDodano", czyDodano);
@@ -232,6 +236,9 @@ public class SeriesController {
 		SerialElement serialElement = serialService.findById(id);
 		model.addAttribute("serial", serialElement);
 		model.addAttribute("thumbnailUrl", serialElement.getThumbnail().toURL());
+
+		Collection<Actor> actors = serialElement.getActors();
+		model.addAttribute("actors", actors.stream().map(ActorMapper::map).collect(Collectors.toList()));
 
 		if (principal == null) {
 			model.addAttribute("message", "Musisz sie zalogować!");

@@ -2,6 +2,8 @@ package psk.isf.sts.service.series.dto;
 
 import java.util.Collection;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,4 +24,5 @@ public class SerialDTO {
 	private Collection<Genre> genres;
 	private long durationInSec;
 	private String linkToWatch;
+	private MultipartFile thumbnail;
 }

@@ -88,22 +88,22 @@ public class Initializer {
 
 	void addSerials() {
 		User user = userRepo.findByLogin("producer");
-		
-		/*Obsada M jak miłość*/
+
 		Picture witoldPyrkosz = pictureRepo.save(Picture.builder().name("Witold_Pyrkosz.jpg").build());
 		Picture teresaLipowska = pictureRepo.save(Picture.builder().name("Teresa_Lipowska.jpg").build());
 		Picture kacperKuszewski = pictureRepo.save(Picture.builder().name("Kacper_Kuszewski.jpg").build());
+		Picture noPhoto = pictureRepo.save(Picture.builder().name("no_photo.jpg").build());
 
 		List<Actor> actorListMJakMilosc = Arrays.asList(
 				actorRepo.save(Actor.builder().name("Witold").surname("Pyrkosz").thumbnail(witoldPyrkosz).build()),
 				actorRepo.save(Actor.builder().name("Teresa").surname("Lipowska").thumbnail(teresaLipowska).build()),
 				actorRepo.save(Actor.builder().name("Kacper").surname("Kuszewski").thumbnail(kacperKuszewski).build()));
-		
+
 		List<Actor> actorList = Arrays.asList(
-				actorRepo.save(Actor.builder().name("Arnold").surname("Arnoldowski").build()),
-				actorRepo.save(Actor.builder().name("Teodor").surname("Teodorski").build()),
-				actorRepo.save(Actor.builder().name("Agnieszka").surname("Anieszkowska").build()),
-				actorRepo.save(Actor.builder().name("Klaudia").surname("Klaudiowska").build()));
+				actorRepo.save(Actor.builder().name("Arnold").surname("Arnoldowski").thumbnail(noPhoto).build()),
+				actorRepo.save(Actor.builder().name("Teodor").surname("Teodorski").thumbnail(noPhoto).build()),
+				actorRepo.save(Actor.builder().name("Agnieszka").surname("Anieszkowska").thumbnail(noPhoto).build()),
+				actorRepo.save(Actor.builder().name("Klaudia").surname("Klaudiowska").thumbnail(noPhoto).build()));
 
 		Picture mJakMilosc = pictureRepo.save(Picture.builder().name("m_jak_milosc.jpg").build());
 		Picture pierwszaMilosc = pictureRepo.save(Picture.builder().name("pierwsza_milosc.jpg").build());
@@ -114,6 +114,10 @@ public class Initializer {
 		Genre dramat = genreRepository.save(Genre.builder().name("Dramat").build());
 		Genre horror = genreRepository.save(Genre.builder().name("Horror").build());
 		Genre przygodowy = genreRepository.save(Genre.builder().name("Przygodowy").build());
+		Genre sciFi = genreRepository.save(Genre.builder().name("sci-fi").build());
+
+		SerialElement season1MjakMilosc = serialRepository.save(SerialElement.builder().elementType(SerialElementType.SEASON)
+				.title("Sezon 1 M jak miłość").description("Pierwszy sezon...").producer(user).active(true).thumbnail(noPhoto).build());
 
 		serialRepository.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("M jak miłość")
 				.description("Polski serial telewizyjny. Akcja rozgrywa się i tak dalej").producer(user).active(true)
@@ -131,6 +135,13 @@ public class Initializer {
 				.description("Polski serial telewizyjny. Akcja rozgrywa się i tak dalej").producer(user).active(true)
 				.actors(actorList).genres(Arrays.asList(thiller, horror)).thumbnail(przyjaciolki).build());
 
+		serialRepository.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("Orphan Black")
+				.description(
+						"Uliczna oszustka, Sarah, będąc świadkiem samobójstwa dziewczyny, która wygląda tak jak ona, postanawia przejąć jej tożsamość, przez co trafia w sam środek śmiertelnego spisku.")
+				.producer(user).active(true).actors(actorList).genres(Arrays.asList(dramat, sciFi)).thumbnail(noPhoto)
+				.build());
+
+		
 	}
 
 	void setContractTemplate() throws IOException {
