@@ -88,7 +88,17 @@ public class Initializer {
 
 	void addSerials() {
 		User user = userRepo.findByLogin("producer");
+		
+		/*Obsada M jak miłość*/
+		Picture witoldPyrkosz = pictureRepo.save(Picture.builder().name("Witold_Pyrkosz.jpg").build());
+		Picture teresaLipowska = pictureRepo.save(Picture.builder().name("Teresa_Lipowska.jpg").build());
+		Picture kacperKuszewski = pictureRepo.save(Picture.builder().name("Kacper_Kuszewski.jpg").build());
 
+		List<Actor> actorListMJakMilosc = Arrays.asList(
+				actorRepo.save(Actor.builder().name("Witold").surname("Pyrkosz").thumbnail(witoldPyrkosz).build()),
+				actorRepo.save(Actor.builder().name("Teresa").surname("Lipowska").thumbnail(teresaLipowska).build()),
+				actorRepo.save(Actor.builder().name("Kacper").surname("Kuszewski").thumbnail(kacperKuszewski).build()));
+		
 		List<Actor> actorList = Arrays.asList(
 				actorRepo.save(Actor.builder().name("Arnold").surname("Arnoldowski").build()),
 				actorRepo.save(Actor.builder().name("Teodor").surname("Teodorski").build()),
@@ -107,7 +117,7 @@ public class Initializer {
 
 		serialRepository.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("M jak miłość")
 				.description("Polski serial telewizyjny. Akcja rozgrywa się i tak dalej").producer(user).active(true)
-				.actors(actorList).genres(Arrays.asList(dramat, przygodowy)).thumbnail(mJakMilosc).build());
+				.actors(actorListMJakMilosc).genres(Arrays.asList(dramat, przygodowy)).thumbnail(mJakMilosc).build());
 
 		serialRepository.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("Pierwsza Miłość")
 				.description("Polski serial telewizyjny. Akcja rozgrywa się i tak dalej").producer(user).active(true)
