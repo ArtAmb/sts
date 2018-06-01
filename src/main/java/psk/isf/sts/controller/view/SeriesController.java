@@ -93,15 +93,15 @@ public class SeriesController {
 		User user = userService.findByLogin(principal.getName());
 
 		try {
-			serialService.addSerial(user, dto);
+			serialService.addSerial(user, dto, principal.getName(), dto.getPicture());
 		} catch (Exception e) {
 			model.addAttribute("message", e.getMessage());
-			model.addAttribute("content", dto.getTitle());
-			model.addAttribute("description", dto.getDescription());
-			model.addAttribute("durationInSec", dto.getDurationInSec());
-			model.addAttribute("linkToWatch", dto.getLinkToWatch());
-			model.addAttribute("state", dto.getState());
-			model.addAttribute("thumbnail", dto.getThumbnail());
+			//model.addAttribute("content", dto.getTitle());
+			//model.addAttribute("description", dto.getDescription());
+			//model.addAttribute("durationInSec", dto.getDurationInSec());
+			//model.addAttribute("linkToWatch", dto.getLinkToWatch());
+			//model.addAttribute("state", dto.getState());
+			//model.addAttribute("thumbnail", dto.getPicture());
 			model.addAttribute(dto);
 			return getTemplateDir("add-serial");
 		}
@@ -235,7 +235,8 @@ public class SeriesController {
 	public String addComment(@PathVariable Long id, @ModelAttribute CommentDTO dto, Principal principal, Model model) {
 		SerialElement serialElement = serialService.findById(id);
 		model.addAttribute("serial", serialElement);
-		model.addAttribute("thumbnailUrl", serialElement.getThumbnail().toURL());
+		if (serialElement.getThumbnail() != null)
+			model.addAttribute("thumbnailUrl", serialElement.getThumbnail().toURL());
 
 		Collection<Actor> actors = serialElement.getActors();
 		model.addAttribute("actors", actors.stream().map(ActorMapper::map).collect(Collectors.toList()));
