@@ -1,0 +1,22 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="head :: head"></div>
+
+<body>
+
+	<div th:replace="mainMenu :: mainMenu"></div>
+
+	<div class="content">
+
+		<form th:action="@{/view/add-playlist}" method="post">
+			<div>
+				<label>Nazwa: </label> <input type="text" name="name" th:value="${name}" />
+			</div>
+			<button type="submit">Akceptuj</button>
+		</form>
+		<div id="message">[[${message}]]</div>
+	</div>
+	<div th:replace="footer :: footer"></div>
+</body>
+
+</html>

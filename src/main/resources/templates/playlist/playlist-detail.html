@@ -1,0 +1,37 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:replace="head :: head"></div>
+
+<body>
+	<div th:replace="mainMenu :: mainMenu"></div>
+	<div id="playlist-view" class="content">
+
+		<span style="font-size: 22px;">Elementy playlisty: </span> 
+		<span style="font-size: 22px;" th:text="${playlist.name}"></span> 
+		
+		<a href="" class="mybutton">Dodaj element do playlisty</a>
+		<a href="" class="mybutton">Zmień kolejność odcinków</a>
+
+	
+		<table style="margin-top:30px;">
+			<tr th:if="${playlistElements.empty}">
+				<td colspan="4">Na tej playliscie nie ma żadnych elementów</td>
+			</tr>
+			<tr th:each="playlistElements : ${playlistElements}">
+			
+				<td><p th:text="${playlistElements.serialElement.title}"></p></td>
+				<td><p th:text="${playlistElements.serialElement.elementType}"></p></td>	
+				<td><p th:text="${playlistElements.serialElement.description}"></p></td>
+	
+				
+				<td><a th:id="'serial-detail' + ${playlistElements.serialElement.id}"
+				th:href="@{'/view/serial/' + ${playlistElements.serialElement.id}}" class="mybutton">Szczegóły</a></td>
+		</tr>
+		</table>
+	</div>
+ 
+	<div th:replace="footer :: footer"></div>
+</body>
+
+</html>

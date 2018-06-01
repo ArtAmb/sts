@@ -219,14 +219,20 @@ public class Initializer {
 		playlistElementRepo.save(element3);
 		
 		List<PlaylistElement> elements = new LinkedList<>();
+		List<PlaylistElement> elements2 = new LinkedList<>();
 		
 		elements.add(element1);
 		elements.add(element2);
 		elements.add(element3);
+		
+		elements2.add(element3);
+		elements2.add(element1);
+		elements2.add(element2);
 
 		Playlist playlist =  Playlist.builder().name("Pierwsza playlista").user(userRepo.findByLogin("viewer")).elements(elements).build();
-		  
+		Playlist playlist2 =  Playlist.builder().name("Druga playlista").user(userRepo.findByLogin("viewer")).elements(elements2).build();
 		playlistRepo.save(playlist);
+		playlistRepo.save(playlist2);
 	}
 
 	
