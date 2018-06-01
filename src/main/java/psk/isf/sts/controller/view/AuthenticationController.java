@@ -6,6 +6,8 @@ import java.security.Principal;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.social.connect.ConnectionRepository;
+import org.springframework.social.facebook.api.Facebook;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,6 +54,9 @@ public class AuthenticationController {
 
 	@Autowired
 	private TaskService taskService;
+
+	private Facebook facebook;
+	private ConnectionRepository connectionRepository;
 
 	@GetMapping("/view/sign-in")
 	public String singIn() {
@@ -191,4 +196,5 @@ public class AuthenticationController {
 		model.addAttribute("message", "Anulowano rejestracje konta dla producenta");
 		return getTemplateDir("logIn");
 	}
+
 }

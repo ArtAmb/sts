@@ -30,6 +30,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private DataSource dataSource;
 
+	// @Autowired
+	// private ConnectionFactoryLocator connectionFactoryLocator;
+	//
+	// @Autowired
+	// private UsersConnectionRepository usersConnectionRepository;
+	//
+	// @Autowired
+	// private FacebookConnectionSignup facebookConnectionSignup;
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
@@ -84,4 +93,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.passwordEncoder(new BCryptPasswordEncoder());
 
 	}
+	/*
+	 * @Bean public ProviderSignInController providerSignInController() {
+	 * ((InMemoryUsersConnectionRepository)
+	 * usersConnectionRepository).setConnectionSignUp(facebookConnectionSignup);
+	 * 
+	 * return new ProviderSignInController(connectionFactoryLocator,
+	 * usersConnectionRepository, new FacebookSignInAdapter()); }
+	 */
 }

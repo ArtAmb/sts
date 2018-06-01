@@ -1,5 +1,6 @@
 package psk.isf.sts.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,5 +25,8 @@ public class PlaylistElement {
 
 	@ManyToOne
 	private PlaylistElement previous;
+
+	@ManyToOne(cascade = { CascadeType.ALL })
+	private Playlist playlist;
 
 }
