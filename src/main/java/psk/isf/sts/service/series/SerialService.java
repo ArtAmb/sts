@@ -97,7 +97,7 @@ public class SerialService {
 		SerialElement serial =SerialElement.builder()
 				.title(dto.getTitle())
 				.description(dto.getDescription())
-				//.state(dto.getState())
+				.state(dto.getState())
 				//.durationInSec(dto.getDurationInSec())
 				.linkToWatch(dto.getLinkToWatch())
 				.active(true)

@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import psk.isf.sts.entity.State;
 
 
 @Data
@@ -16,7 +17,7 @@ public class SerialDTO {
 
 	private String title;
 	private String description;
-	//private State state;
+	private State state;
 	//private Collection<Genre> genres;
 	//private long durationInSec;
 	private String linkToWatch;

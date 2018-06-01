@@ -51,7 +51,7 @@
 				<h1 th:text="${serial.title}"></h1>
 				<p th:text="${serial.description}"></p>
 				<p>
-					<b>Stan: </b><span th:text="${serial.state}"></span>
+					<b>Stan: </b><span th:text="${serial?.state?.displayName}"></span>
 				</p>
 				<p>
 					<b>Czas trwania: </b><span th:text="${serial.durationInSec}"></span>
