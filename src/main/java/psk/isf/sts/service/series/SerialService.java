@@ -5,16 +5,20 @@ import java.util.Collection;
 
 import org.h2.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import psk.isf.sts.entity.Comment;
 import psk.isf.sts.entity.MySerial;
+import psk.isf.sts.entity.Picture;
 import psk.isf.sts.entity.SerialElement;
 import psk.isf.sts.entity.SerialElementType;
 import psk.isf.sts.entity.registration.User;
 import psk.isf.sts.repository.CommentRepository;
 import psk.isf.sts.repository.MySerialRepository;
 import psk.isf.sts.repository.SerialRepository;
+import psk.isf.sts.service.PictureService;
 import psk.isf.sts.service.series.dto.CommentDTO;
 import psk.isf.sts.service.series.dto.SerialDTO;
 
@@ -23,6 +27,7 @@ public class SerialService {
 
 	@Autowired
 	private SerialRepository serialRepo;
+	
 	
 	@Autowired
 	private MySerialRepository mySerialRepo;
@@ -77,20 +82,25 @@ public class SerialService {
 
 	}
 	
-	public SerialElement addSerial(User user, SerialDTO dto) throws Exception {
+	@Autowired
+	private PictureService pictureService;
+	
+	public SerialElement addSerial(User user, SerialDTO dto, String login, MultipartFile thumbnail) throws Exception {
 		validate(dto);
-		
+		Picture picture = pictureService.savePicture(login, thumbnail);	
+		//Picture picture = pictureService.saveSerialPicture(dto.getThumbnail());
 			
 		SerialElement serial =SerialElement.builder()
 				.title(dto.getTitle())
 				.description(dto.getDescription())
-				.state(dto.getState())
-				.durationInSec(dto.getDurationInSec())
+				//.state(dto.getState())
+				//.durationInSec(dto.getDurationInSec())
 				.linkToWatch(dto.getLinkToWatch())
 				.active(true)
 				.elementType(SerialElementType.SERIAL)
-				.build();					
-		
+				.thumbnail(picture)
+				.build();		
+				
 
 		return serialRepo.save(serial);
 	}
@@ -101,6 +111,10 @@ public class SerialService {
 		}
 		if (StringUtils.isNullOrEmpty(dto.getTitle())) {
 			throw new Exception("Opis nie może być pusty!");
+		}
+		if (StringUtils.isNullOrEmpty(dto.getPicture().getOriginalFilename()))
+		{
+			throw new Exception("Błąd dodawania zdjęcia!");
 		}
 		
 

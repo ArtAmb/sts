@@ -19,6 +19,8 @@ import org.springframework.stereotype.Component;
 import psk.isf.sts.entity.Actor;
 import psk.isf.sts.entity.Genre;
 import psk.isf.sts.entity.Picture;
+import psk.isf.sts.entity.Playlist;
+import psk.isf.sts.entity.PlaylistElement;
 import psk.isf.sts.entity.SerialElement;
 import psk.isf.sts.entity.SerialElementType;
 import psk.isf.sts.entity.UserType;
@@ -28,6 +30,8 @@ import psk.isf.sts.entity.registration.User;
 import psk.isf.sts.repository.ActorRepository;
 import psk.isf.sts.repository.GenreRepository;
 import psk.isf.sts.repository.PictureRepository;
+import psk.isf.sts.repository.PlaylistElementRepository;
+import psk.isf.sts.repository.PlaylistRepository;
 import psk.isf.sts.repository.RoleRepository;
 import psk.isf.sts.repository.SerialRepository;
 import psk.isf.sts.repository.UserRepository;
@@ -52,6 +56,12 @@ public class Initializer {
 
 	@Autowired
 	private PictureRepository pictureRepo;
+	
+	@Autowired
+	PlaylistRepository playlistRepo;
+	
+	@Autowired
+	PlaylistElementRepository playlistElementRepo;
 
 	@Value("${sts.path.to.contract.templates}")
 	private String pathToContractTemplate;
@@ -88,22 +98,22 @@ public class Initializer {
 
 	void addSerials() {
 		User user = userRepo.findByLogin("producer");
-		
-		/*Obsada M jak miłość*/
+
 		Picture witoldPyrkosz = pictureRepo.save(Picture.builder().name("Witold_Pyrkosz.jpg").build());
 		Picture teresaLipowska = pictureRepo.save(Picture.builder().name("Teresa_Lipowska.jpg").build());
 		Picture kacperKuszewski = pictureRepo.save(Picture.builder().name("Kacper_Kuszewski.jpg").build());
+		Picture noPhoto = pictureRepo.save(Picture.builder().name("no_photo.jpg").build());
 
 		List<Actor> actorListMJakMilosc = Arrays.asList(
 				actorRepo.save(Actor.builder().name("Witold").surname("Pyrkosz").thumbnail(witoldPyrkosz).build()),
 				actorRepo.save(Actor.builder().name("Teresa").surname("Lipowska").thumbnail(teresaLipowska).build()),
 				actorRepo.save(Actor.builder().name("Kacper").surname("Kuszewski").thumbnail(kacperKuszewski).build()));
-		
+
 		List<Actor> actorList = Arrays.asList(
-				actorRepo.save(Actor.builder().name("Arnold").surname("Arnoldowski").build()),
-				actorRepo.save(Actor.builder().name("Teodor").surname("Teodorski").build()),
-				actorRepo.save(Actor.builder().name("Agnieszka").surname("Anieszkowska").build()),
-				actorRepo.save(Actor.builder().name("Klaudia").surname("Klaudiowska").build()));
+				actorRepo.save(Actor.builder().name("Arnold").surname("Arnoldowski").thumbnail(noPhoto).build()),
+				actorRepo.save(Actor.builder().name("Teodor").surname("Teodorski").thumbnail(noPhoto).build()),
+				actorRepo.save(Actor.builder().name("Agnieszka").surname("Anieszkowska").thumbnail(noPhoto).build()),
+				actorRepo.save(Actor.builder().name("Klaudia").surname("Klaudiowska").thumbnail(noPhoto).build()));
 
 		Picture mJakMilosc = pictureRepo.save(Picture.builder().name("m_jak_milosc.jpg").build());
 		Picture pierwszaMilosc = pictureRepo.save(Picture.builder().name("pierwsza_milosc.jpg").build());
@@ -114,6 +124,10 @@ public class Initializer {
 		Genre dramat = genreRepository.save(Genre.builder().name("Dramat").build());
 		Genre horror = genreRepository.save(Genre.builder().name("Horror").build());
 		Genre przygodowy = genreRepository.save(Genre.builder().name("Przygodowy").build());
+		Genre sciFi = genreRepository.save(Genre.builder().name("sci-fi").build());
+
+		SerialElement season1MjakMilosc = serialRepository.save(SerialElement.builder().elementType(SerialElementType.SEASON)
+				.title("Sezon 1 M jak miłość").description("Pierwszy sezon...").producer(user).active(true).thumbnail(noPhoto).build());
 
 		serialRepository.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("M jak miłość")
 				.description("Polski serial telewizyjny. Akcja rozgrywa się i tak dalej").producer(user).active(true)
@@ -131,6 +145,13 @@ public class Initializer {
 				.description("Polski serial telewizyjny. Akcja rozgrywa się i tak dalej").producer(user).active(true)
 				.actors(actorList).genres(Arrays.asList(thiller, horror)).thumbnail(przyjaciolki).build());
 
+		serialRepository.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("Orphan Black")
+				.description(
+						"Uliczna oszustka, Sarah, będąc świadkiem samobójstwa dziewczyny, która wygląda tak jak ona, postanawia przejąć jej tożsamość, przez co trafia w sam środek śmiertelnego spisku.")
+				.producer(user).active(true).actors(actorList).genres(Arrays.asList(dramat, sciFi)).thumbnail(noPhoto)
+				.build());
+
+		
 	}
 
 	void setContractTemplate() throws IOException {
@@ -144,11 +165,82 @@ public class Initializer {
 		Files.copy(source.toPath(), file.toPath());
 	}
 
+	
+
+
+
+	void addPlaylist() {
+		
+		User user = userRepo.findByLogin("producer");
+		
+		Genre komedia = genreRepository.save(Genre.builder().name("komedia").build());
+		Genre historyczny = genreRepository.save(Genre.builder().name("historyczny").build());
+		Genre kulinarny = genreRepository.save(Genre.builder().name("kulinarny").build());
+		
+		Picture noPhoto = pictureRepo.save(Picture.builder().name("no_photo.jpg").build());
+		
+		List<Actor> actorList = Arrays.asList(
+				actorRepo.save(Actor.builder().name("Aktor1").surname("A").thumbnail(noPhoto).build()),
+				actorRepo.save(Actor.builder().name("Aktor2").surname("B").thumbnail(noPhoto).build()),
+				actorRepo.save(Actor.builder().name("Aktor3").surname("C").thumbnail(noPhoto).build()),
+				actorRepo.save(Actor.builder().name("Aktor4").surname("D").thumbnail(noPhoto).build()));
+		
+		SerialElement serial1 = serialRepository.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("Ewa gotuje")
+				.description("Polski serial telewizyjny. Akcja rozgrywa się i tak dalej").producer(user).active(true)
+				.actors(actorList).genres(Arrays.asList(kulinarny)).thumbnail(noPhoto).build());
+		
+		SerialElement serial2 = serialRepository.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("Jak poznałem Waszą matkę")
+				.description("Polski serial telewizyjny. Akcja rozgrywa się i tak dalej").producer(user).active(true)
+				.actors(actorList).genres(Arrays.asList(komedia)).thumbnail(noPhoto).build());
+			
+		SerialElement serial3 = serialRepository.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("Gra o tron")
+				.description("Polski serial telewizyjny. Akcja rozgrywa się i tak dalej").producer(user).active(true)
+				.actors(actorList).genres(Arrays.asList(historyczny)).thumbnail(noPhoto).build());
+				
+		
+	
+
+		PlaylistElement element1 = PlaylistElement.builder().serialElement(serial1).build();
+		PlaylistElement element2 = PlaylistElement.builder().serialElement(serial2).build();
+		PlaylistElement element3 = PlaylistElement.builder().serialElement(serial3).build();
+		
+		
+		element1.setPrevious(null);
+		element1.setNext(element2);
+		
+		element2.setPrevious(element1);
+		element2.setNext(element3);
+		
+		element3.setPrevious(element2);
+		element3.setNext(null);
+		
+		playlistElementRepo.save(element1);
+		playlistElementRepo.save(element2);
+		playlistElementRepo.save(element3);
+		
+		List<PlaylistElement> elements = new LinkedList<>();
+		List<PlaylistElement> elements2 = new LinkedList<>();
+		
+		elements.add(element1);
+		elements.add(element2);
+		elements.add(element3);
+		
+		elements2.add(element3);
+		elements2.add(element1);
+		elements2.add(element2);
+
+		Playlist playlist =  Playlist.builder().name("Pierwsza playlista").user(userRepo.findByLogin("viewer")).elements(elements).build();
+		Playlist playlist2 =  Playlist.builder().name("Druga playlista").user(userRepo.findByLogin("viewer")).elements(elements2).build();
+		playlistRepo.save(playlist);
+		playlistRepo.save(playlist2);
+	}
+
+	
 	@PostConstruct
 	void initApplication() throws IOException {
 		addSystemUsers();
 		addSerials();
 		setContractTemplate();
+		addPlaylist();
 	}
-
 }

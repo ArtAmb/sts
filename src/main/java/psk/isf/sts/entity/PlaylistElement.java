@@ -7,10 +7,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PlaylistElement {
 
 	@Id
@@ -20,7 +26,7 @@ public class PlaylistElement {
 	@ManyToOne
 	private SerialElement serialElement;
 
-	@ManyToOne
+	@ManyToOne(cascade = { CascadeType.ALL })
 	private PlaylistElement next;
 
 	@ManyToOne

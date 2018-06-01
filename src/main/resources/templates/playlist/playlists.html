@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:replace="head :: head"></div>
+
+<body>
+
+
+	<div th:replace="mainMenu :: mainMenu"></div>
+	<div id="playlist-view" class="content">
+		<span style="font-size: 22px;">Wszystkie playlisty</span> 
+		
+		<a th:href="@{add-playlist}" class="mybutton">Dodaj playliste</a>
+
+		<table style="margin-top: 30px;">
+			<tr th:if="${playlists.empty}">
+				<td colspan="4">Nie stworzyłeś żadnych playlist</td>
+			</tr>
+			<tr th:each="playlists : ${playlists}">
+
+				<td><p th:text="${playlists.name}"></p></td>
+
+				<td><a th:id="'playlist-detail' + ${playlists.id}"
+					th:href="@{'/view/playlists/' + ${playlists.id}}" class="mybutton">Szczegóły</a></td>
+
+			</tr>
+
+		</table>
+
+	</div>
+
+	<div th:replace="footer :: footer"></div>
+</body>
+
+</html>
