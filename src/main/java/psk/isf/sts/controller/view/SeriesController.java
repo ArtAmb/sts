@@ -3,6 +3,7 @@ package psk.isf.sts.controller.view;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import psk.isf.sts.entity.Actor;
 import psk.isf.sts.entity.Genre;
 import psk.isf.sts.entity.MySerial;
 import psk.isf.sts.entity.SerialElement;
+import psk.isf.sts.entity.SerialElementType;
 import psk.isf.sts.entity.SimpleSerialElement;
 import psk.isf.sts.entity.registration.Roles;
 import psk.isf.sts.entity.registration.User;
@@ -35,6 +37,8 @@ public class SeriesController {
 	@Autowired
 	private UserService userService;
 
+	SerialElementType serialElementType;
+	
 	public static String templateDirRoot = "series/";
 
 	private String getTemplateDir(String templateName) {
@@ -44,7 +48,7 @@ public class SeriesController {
 	@GetMapping("/view/serials")
 	public String serialsView(Model model) {
 
-		Collection<SimpleSerialElement> serials = serialService.allSerials().stream()
+		Collection<SimpleSerialElement> serials = serialService.allSerials().stream().filter(serialElementType -> serialElementType.getElementType().toString().equals("SERIAL"))
 				.map(el -> el.toSimpleSerialElement()).collect(Collectors.toList());
 
 		model.addAttribute("serials", serials);
@@ -59,13 +63,13 @@ public class SeriesController {
 		for (MySerial element : mySerials) {
 			user = element.getUser();
 			if ((user.getLogin().equals(principal.getName())))
-				;
 			{
 				serials.add(element.getSerial());
 			}
 		}
 		Collection<SimpleSerialElement> serials2 = serials.stream().map(el -> el.toSimpleSerialElement())
 				.collect(Collectors.toList());
+		
 		model.addAttribute("serials", serials2);
 		return getTemplateDir("my-serials");
 	}
@@ -140,7 +144,13 @@ public class SeriesController {
 
 		Collection<Actor> actors = serialElement.getActors();
 		model.addAttribute("actors", actors.stream().map(ActorMapper::map).collect(Collectors.toList()));
-
+		
+		Collection<SimpleSerialElement> seasons = serialService.allSerials().stream().filter(serialElementType -> serialElementType.getElementType().toString().equals("SEASON"))
+				.filter(serialElement2 -> serialElement2.getParent().getId() == serialElement.getId())
+				.map(el -> el.toSimpleSerialElement()).collect(Collectors.toList());
+		
+		model.addAttribute("seasons", seasons);
+		
 		if (principal == null) {
 			model.addAttribute("czyDodano", czyDodano);
 			model.addAttribute("message2", "Musisz sie zalogować!");
@@ -154,7 +164,6 @@ public class SeriesController {
 			user2 = element.getUser();
 			serial2 = element.getSerial();
 			if (user2.getLogin().equals(principal.getName()))
-				;
 			{
 				if ((serial2.getId().equals(id))) {
 					czyDodano = true;
@@ -204,6 +213,11 @@ public class SeriesController {
 		czyDodano = false;
 		model.addAttribute("czyDodano", czyDodano);
 		model.addAttribute("mySerial", mySerial);
+		Collection<SimpleSerialElement> seasons = serialService.allSerials().stream().filter(serialElementType -> serialElementType.getElementType().toString().equals("SEASON"))
+				.filter(serialElement2 -> serialElement2.getParent().getId() == serialElement.getId())
+				.map(el -> el.toSimpleSerialElement()).collect(Collectors.toList());
+		
+		model.addAttribute("seasons", seasons);
 		return getTemplateDir("serial-detail");
 	}
 
@@ -217,7 +231,11 @@ public class SeriesController {
 
 		Collection<Actor> actors = serialElement.getActors();
 		model.addAttribute("actors", actors.stream().map(ActorMapper::map).collect(Collectors.toList()));
-
+		Collection<SimpleSerialElement> seasons = serialService.allSerials().stream().filter(serialElementType -> serialElementType.getElementType().toString().equals("SEASON"))
+				.filter(serialElement2 -> serialElement2.getParent().getId() == serialElement.getId())
+				.map(el -> el.toSimpleSerialElement()).collect(Collectors.toList());
+		
+		model.addAttribute("seasons", seasons);
 		if (principal == null) {
 			return getTemplateDir("serial-detail");
 		}
@@ -228,7 +246,6 @@ public class SeriesController {
 			user2 = element.getUser();
 			serial2 = element.getSerial();
 			if (user2.getLogin().equals(principal.getName()))
-				;
 			{
 				if ((serial2.getId().equals(id))) {
 					czyDodano = true;
@@ -237,6 +254,8 @@ public class SeriesController {
 
 			}
 		}
+		
+		
 		model.addAttribute("czyDodano", czyDodano);
 		return getTemplateDir("serial-detail");
 	}
@@ -250,7 +269,13 @@ public class SeriesController {
 
 		Collection<Actor> actors = serialElement.getActors();
 		model.addAttribute("actors", actors.stream().map(ActorMapper::map).collect(Collectors.toList()));
-
+		
+		Collection<SimpleSerialElement> seasons = serialService.allSerials().stream().filter(serialElementType -> serialElementType.getElementType().toString().equals("SEASON"))
+				.filter(serialElement2 -> serialElement2.getParent().getId() == serialElement.getId())
+				.map(el -> el.toSimpleSerialElement()).collect(Collectors.toList());
+		
+		model.addAttribute("seasons", seasons);
+		
 		if (principal == null) {
 			model.addAttribute("message", "Musisz sie zalogować!");
 			return getTemplateDir("serial-detail");
@@ -267,7 +292,24 @@ public class SeriesController {
 			model.addAttribute(dto);
 			return getTemplateDir("serial-detail");
 		}
+		boolean czyDodano = false;
+		
+		Collection<MySerial> mySerials = serialService.allMySerials();
+		User user2;
+		SerialElement serial2;
+		for (MySerial element : mySerials) {
+			user2 = element.getUser();
+			serial2 = element.getSerial();
+			if (user2.getLogin().equals(principal.getName()))
+			{
+				if ((serial2.getId().equals(id))) {
+					czyDodano = true;
+					model.addAttribute("mySerial", element);
+				}
 
+			}
+		}
+		model.addAttribute("czyDodano", czyDodano);
 		model.addAttribute("message", "Komentarz zostanie dodany po zatwierdzeniu przez adminiastatora");
 		return getTemplateDir("serial-detail");
 	}
