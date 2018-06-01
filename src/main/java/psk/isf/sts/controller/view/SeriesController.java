@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import psk.isf.sts.entity.Actor;
+import psk.isf.sts.entity.Genre;
 import psk.isf.sts.entity.MySerial;
 import psk.isf.sts.entity.SerialElement;
 import psk.isf.sts.entity.SimpleSerialElement;
@@ -25,6 +26,7 @@ import psk.isf.sts.service.series.SerialService;
 import psk.isf.sts.service.series.dto.CommentDTO;
 import psk.isf.sts.service.series.dto.SerialDTO;
 import psk.isf.sts.service.series.mapper.ActorMapper;
+import psk.isf.sts.service.series.mapper.GenreMapper;
 
 @Controller
 public class SeriesController {
@@ -76,8 +78,12 @@ public class SeriesController {
 
 	@PreAuthorize("hasRole('" + Roles.Consts.ROLE_PRODUCER + "')")
 	@GetMapping("/view/add-serial")
-	public String addSerialView(Model model) {
+	public String addSerialView(@ModelAttribute SerialDTO dto, Principal principal, Model model) {
 
+		Collection<Genre> genres = serialService.allGenres();
+		model.addAttribute("genres", genres.stream().map(GenreMapper::map).collect(Collectors.toList()));
+		
+		
 		return getTemplateDir("add-serial");
 	}
 
@@ -91,7 +97,11 @@ public class SeriesController {
 		}
 
 		User user = userService.findByLogin(principal.getName());
-
+		
+		Collection<Genre> genres = serialService.allGenres();
+		model.addAttribute("genres", genres.stream().map(GenreMapper::map).collect(Collectors.toList()));
+		
+		
 		try {
 			serialService.addSerial(user, dto, principal.getName(), dto.getPicture());
 		} catch (Exception e) {

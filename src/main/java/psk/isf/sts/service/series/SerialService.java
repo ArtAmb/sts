@@ -5,17 +5,18 @@ import java.util.Collection;
 
 import org.h2.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import psk.isf.sts.entity.Comment;
+import psk.isf.sts.entity.Genre;
 import psk.isf.sts.entity.MySerial;
 import psk.isf.sts.entity.Picture;
 import psk.isf.sts.entity.SerialElement;
 import psk.isf.sts.entity.SerialElementType;
 import psk.isf.sts.entity.registration.User;
 import psk.isf.sts.repository.CommentRepository;
+import psk.isf.sts.repository.GenreRepository;
 import psk.isf.sts.repository.MySerialRepository;
 import psk.isf.sts.repository.SerialRepository;
 import psk.isf.sts.service.PictureService;
@@ -28,6 +29,9 @@ public class SerialService {
 	@Autowired
 	private SerialRepository serialRepo;
 	
+
+	@Autowired
+	private GenreRepository genreRepo;
 	
 	@Autowired
 	private MySerialRepository mySerialRepo;
@@ -118,6 +122,10 @@ public class SerialService {
 		}
 		
 
+	}
+	
+	public Collection<Genre> allGenres() {
+		return (Collection<Genre>) genreRepo.findAll();
 	}
 
 }

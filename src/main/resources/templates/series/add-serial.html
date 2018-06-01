@@ -10,15 +10,18 @@
 
 	<div class="content">
 
-		<form th:action="@{/view/add-serial}" method="post" enctype="multipart/form-data">
+		<form th:action="@{/view/add-serial}" method="post"
+			enctype="multipart/form-data">
 			<div>
 				<label>Tytul: </label> <input type="text" name="title"
 					th:value="${title}" />
 			</div>
 
 			<div>
-				<label>Status:</label> <br />
-
+				<label>Status:</label> <br /> <select>
+					<option th:each="state : ${T(psk.isf.sts.entity.State).values()}"
+						th:value="${state}" th:text="${state.displayName}"></option>
+				</select>
 			</div>
 			<div>
 				<label>Opis:</label> <br />
@@ -33,16 +36,17 @@
 				<label>Link do oglądania: </label> <input type="text"
 					name="linkToWatch" th:value="${linkToWatch}" />
 			</div>
-			<!-- <div>
-				<select th:field="*{genre}" >
-					<option th:each="genre : ${genre}"
-						th:value="${genre}" th:text="${genre.description}"></option>
-					
-				</select>
-			</div>-->
-			<div style="margin:10px 0">
-				<label style="margin-top: 5px;">Zdjęcie główne serialu: </label> <input
-					name="picture" type="file" />
+
+			<b>Gatunek:</b>
+			<div style="margin-left: 15px;" th:each="genre : ${genres}">
+
+				<input type="checkbox" th:value="${genre.id}" /> <label
+					th:text="${genre.name}"></label>
+			</div>
+
+			<div style="margin: 10px 0">
+				<label style="margin-top: 5px;">Zdjęcie główne serialu: </label>
+				<input name="picture" type="file" />
 			</div>
 
 			<button type="submit">Dodaj serial</button>
