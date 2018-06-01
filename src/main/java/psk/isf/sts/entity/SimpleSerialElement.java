@@ -22,6 +22,7 @@ public class SimpleSerialElement {
 	private SerialElementType elementType;
 	private float rating;
 	private Collection<Actor> actors;
+	private SerialElement parent;
 	private Collection<Genre> genres;
 	private Collection<Comment> comments;
 	private Timestamp startDate;

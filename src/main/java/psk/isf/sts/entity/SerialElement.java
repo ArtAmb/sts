@@ -46,7 +46,7 @@ public class SerialElement {
 
 	private float rating;
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany//(cascade = CascadeType.ALL)
 	@JoinColumn(name = "serial")
 	private Collection<SerialElement> elements;
 
@@ -91,6 +91,7 @@ public class SerialElement {
 				.rating(rating)
 				.elementType(elementType)
 				.actors(actors)
+				.parent(parent)
 				.genres(genres)
 				.comments(comments)
 				.startDate(startDate)
