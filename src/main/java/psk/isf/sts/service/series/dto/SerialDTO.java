@@ -20,9 +20,9 @@ public class SerialDTO {
 
 	private String title;
 	private String description;
-	private State state;
-	private Collection<Genre> genres;
-	private long durationInSec;
+	//private State state;
+	//private Collection<Genre> genres;
+	//private long durationInSec;
 	private String linkToWatch;
-	private MultipartFile thumbnail;
+	private MultipartFile picture;
 }
