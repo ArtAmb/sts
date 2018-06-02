@@ -1,6 +1,7 @@
 package psk.isf.sts.controller.view;
 
 import java.security.Principal;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.stream.Collectors;
@@ -19,7 +20,6 @@ import psk.isf.sts.entity.Actor;
 import psk.isf.sts.entity.Genre;
 import psk.isf.sts.entity.MySerial;
 import psk.isf.sts.entity.SerialElement;
-import psk.isf.sts.entity.SerialElementType;
 import psk.isf.sts.entity.SimpleSerialElement;
 import psk.isf.sts.entity.registration.Roles;
 import psk.isf.sts.entity.registration.User;
@@ -39,8 +39,6 @@ public class SeriesController {
 	@Autowired
 	private UserService userService;
 
-	SerialElementType serialElementType;
-
 	public static String templateDirRoot = "series/";
 
 	private String getTemplateDir(String templateName) {
@@ -51,7 +49,6 @@ public class SeriesController {
 	public String serialsView(Model model) {
 
 		Collection<SimpleSerialElement> serials = serialService.allSerials().stream()
-				.filter(serialElementType -> serialElementType.getElementType().toString().equals("SERIAL"))
 				.map(el -> el.toSimpleSerialElement()).collect(Collectors.toList());
 
 		model.addAttribute("serials", serials);
@@ -78,28 +75,24 @@ public class SeriesController {
 
 	@GetMapping("/view/serial/{id}/season/{id}")
 	public String seasonView(@PathVariable Long id, Principal principal, Model model) {
-		
+
 		SerialElement serialElement = serialService.findById(id);
-		
+
 		model.addAttribute("serial", serialElement);
 		model.addAttribute("thumbnailUrl", serialElement.getThumbnail().toURL());
 
 		Collection<Actor> actors = serialElement.getActors();
 		model.addAttribute("actors", actors.stream().map(ActorMapper::map).collect(Collectors.toList()));
-		
-			
-		Collection<SimpleSerialElement> episodes = serialService.allSerials().stream()
-				.filter(serialElementType -> serialElementType.getElementType().toString().equals("EPISODE"))
-				.filter(serialElement2 -> serialElement2.getParent().getId() == serialElement.getId())
+
+		Collection<SimpleSerialElement> episodes = serialService.findAllEpisodesOfSeason(serialElement).stream()
 				.map(el -> el.toSimpleSerialElement()).collect(Collectors.toList());
 
 		model.addAttribute("episodes", episodes);
-		
+
 		if (principal == null) {
 			return getTemplateDir("season-detail");
 		}
 
-		
 		return getTemplateDir("season-detail");
 	}
 
@@ -123,7 +116,6 @@ public class SeriesController {
 		}
 
 		User user = userService.findByLogin(principal.getName());
-		
 
 		Collection<Genre> genres = serialService.allGenres();
 		model.addAttribute("genres", genres.stream().map(GenreMapper::map).collect(Collectors.toList()));
@@ -143,12 +135,12 @@ public class SeriesController {
 	@PreAuthorize("hasRole('" + Roles.Consts.ROLE_PRODUCER + "')")
 	@GetMapping("/view/serial/{id}/add-season")
 	public String addSeasonView(@PathVariable Long id, Model model) {
-		
+
 		SerialElement serialElement = serialService.findById(id);
 		model.addAttribute("serial", serialElement);
-		
+
 		model.addAttribute("thumbnailUrl", serialElement.getThumbnail().toURL());
-		
+
 		return getTemplateDir("add-season");
 	}
 
@@ -156,10 +148,9 @@ public class SeriesController {
 	@PostMapping("/view/serial/{id}/add-season")
 	public String addSeason(@PathVariable Long id, @ModelAttribute SeasonDTO dto, Principal principal, Model model) {
 
-		
 		SerialElement serialElement = serialService.findById(id);
 		model.addAttribute("serial", serialElement);
-		
+
 		if (principal == null) {
 			model.addAttribute("message", "Tylko producent może dodawać sezony!");
 			return getTemplateDir("add-season");
@@ -167,7 +158,6 @@ public class SeriesController {
 
 		User user = userService.findByLogin(principal.getName());
 
-		
 		try {
 			serialService.addSeason(user, dto, serialElement, principal.getName(), dto.getPicture());
 		} catch (Exception e) {
@@ -180,26 +170,24 @@ public class SeriesController {
 		return getTemplateDir("add-season");
 	}
 
-	
 	@PreAuthorize("hasRole('" + Roles.Consts.ROLE_PRODUCER + "')")
 	@GetMapping("/view/serial/{id}/add-episode")
 	public String addEpisodeView(@PathVariable Long id, Model model) {
-		
+
 		SerialElement serialElement = serialService.findById(id);
 		model.addAttribute("serial", serialElement);
-		
+
 		model.addAttribute("thumbnailUrl", serialElement.getThumbnail().toURL());
-		
+
 		return getTemplateDir("add-episode");
 	}
-	
+
 	@PostMapping("/view/serial/{id}/add-episode")
 	public String addEpisode(@PathVariable Long id, @ModelAttribute EpisodeDTO dto, Principal principal, Model model) {
 
-		
 		SerialElement serialElement = serialService.findById(id);
 		model.addAttribute("serial", serialElement);
-		
+
 		if (principal == null) {
 			model.addAttribute("message", "Tylko producent może dodawać odcinki!");
 			return getTemplateDir("add-episode");
@@ -207,7 +195,6 @@ public class SeriesController {
 
 		User user = userService.findByLogin(principal.getName());
 
-		
 		try {
 			serialService.addEpisode(user, dto, serialElement, principal.getName(), dto.getPicture());
 		} catch (Exception e) {
@@ -221,7 +208,8 @@ public class SeriesController {
 	}
 
 	@GetMapping("/view/addToMine/{id}")
-	public String addToMine(@PathVariable Long id, Principal principal, Model model, @RequestParam("context") String contextTemplate) {
+	public String addToMine(@PathVariable Long id, Principal principal, Model model,
+			@RequestParam("context") String contextTemplate) {
 		boolean czyDodano = false;
 		SerialElement serialElement = serialService.findById(id);
 		Collection<MySerial> mySerials = serialService.allMySerials();
@@ -231,9 +219,7 @@ public class SeriesController {
 		Collection<Actor> actors = serialElement.getActors();
 		model.addAttribute("actors", actors.stream().map(ActorMapper::map).collect(Collectors.toList()));
 
-		Collection<SimpleSerialElement> seasons = serialService.allSerials().stream()
-				.filter(serialElementType -> serialElementType.getElementType().toString().equals("SEASON"))
-				.filter(serialElement2 -> serialElement2.getParent().getId() == serialElement.getId())
+		Collection<SimpleSerialElement> seasons = serialService.findAllSeasonsOfSerial(serialElement).stream()
 				.map(el -> el.toSimpleSerialElement()).collect(Collectors.toList());
 
 		model.addAttribute("seasons", seasons);
@@ -289,7 +275,8 @@ public class SeriesController {
 	}
 
 	@GetMapping("/view/deleteFromMine/{id}")
-	public String deleteFromMine(@PathVariable Long id, Principal principal, Model model, @RequestParam("context") String contextTemplate) {
+	public String deleteFromMine(@PathVariable Long id, Principal principal, Model model,
+			@RequestParam("context") String contextTemplate) {
 		boolean czyDodano = true;
 		MySerial mySerial = serialService.findMySerialById(id);
 		SerialElement serialElement = mySerial.getSerial();
@@ -299,9 +286,7 @@ public class SeriesController {
 		czyDodano = false;
 		model.addAttribute("czyDodano", czyDodano);
 		model.addAttribute("mySerial", mySerial);
-		Collection<SimpleSerialElement> seasons = serialService.allSerials().stream()
-				.filter(serialElementType -> serialElementType.getElementType().toString().equals("SEASON"))
-				.filter(serialElement2 -> serialElement2.getParent().getId() == serialElement.getId())
+		Collection<SimpleSerialElement> seasons = serialService.findAllSeasonsOfSerial(serialElement).stream()
 				.map(el -> el.toSimpleSerialElement()).collect(Collectors.toList());
 
 		model.addAttribute("seasons", seasons);
@@ -318,9 +303,7 @@ public class SeriesController {
 
 		Collection<Actor> actors = serialElement.getActors();
 		model.addAttribute("actors", actors.stream().map(ActorMapper::map).collect(Collectors.toList()));
-		Collection<SimpleSerialElement> seasons = serialService.allSerials().stream()
-				.filter(serialElementType -> serialElementType.getElementType().toString().equals("SEASON"))
-				.filter(serialElement2 -> serialElement2.getParent().getId() == serialElement.getId())
+		Collection<SimpleSerialElement> seasons = serialService.findAllSeasonsOfSerial(serialElement).stream()
 				.map(el -> el.toSimpleSerialElement()).collect(Collectors.toList());
 
 		model.addAttribute("seasons", seasons);
@@ -356,9 +339,7 @@ public class SeriesController {
 		Collection<Actor> actors = serialElement.getActors();
 		model.addAttribute("actors", actors.stream().map(ActorMapper::map).collect(Collectors.toList()));
 
-		Collection<SimpleSerialElement> seasons = serialService.allSerials().stream()
-				.filter(serialElementType -> serialElementType.getElementType().toString().equals("SEASON"))
-				.filter(serialElement2 -> serialElement2.getParent().getId() == serialElement.getId())
+		Collection<SimpleSerialElement> seasons = serialService.findAllSeasonsOfSerial(serialElement).stream()
 				.map(el -> el.toSimpleSerialElement()).collect(Collectors.toList());
 
 		model.addAttribute("seasons", seasons);
@@ -399,5 +380,5 @@ public class SeriesController {
 		model.addAttribute("message", "Komentarz zostanie dodany po zatwierdzeniu przez adminiastatora");
 		return getTemplateDir("serial-detail");
 	}
-	
+
 }

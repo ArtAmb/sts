@@ -1,6 +1,6 @@
 package psk.isf.sts.entity;
 
-import java.sql.Timestamp;
+import java.sql.Date;
 import java.util.Collection;
 
 import javax.persistence.Column;
@@ -60,7 +60,7 @@ public class SerialElement {
 	@JoinColumn(name = "serialElement")
 	private Collection<Comment> comments;
 
-	private Timestamp startDate;
+	private Date startDate;
 	private Long durationInSec;
 
 	private Long daysToNextEpisode;

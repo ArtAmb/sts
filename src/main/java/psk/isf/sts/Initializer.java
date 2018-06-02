@@ -36,6 +36,7 @@ import psk.isf.sts.repository.PlaylistRepository;
 import psk.isf.sts.repository.RoleRepository;
 import psk.isf.sts.repository.SerialRepository;
 import psk.isf.sts.repository.UserRepository;
+import psk.isf.sts.service.PictureService;
 
 @Component
 public class Initializer {
@@ -59,11 +60,14 @@ public class Initializer {
 	private PictureRepository pictureRepo;
 	
 	@Autowired
-	PlaylistRepository playlistRepo;
+	private PlaylistRepository playlistRepo;
 	
 	@Autowired
-	PlaylistElementRepository playlistElementRepo;
-
+	private PlaylistElementRepository playlistElementRepo;
+	
+	@Autowired
+	private PictureService pictureService;
+	
 	@Value("${sts.path.to.contract.templates}")
 	private String pathToContractTemplate;
 
@@ -103,7 +107,7 @@ public class Initializer {
 		Picture witoldPyrkosz = pictureRepo.save(Picture.builder().name("Witold_Pyrkosz.jpg").build());
 		Picture teresaLipowska = pictureRepo.save(Picture.builder().name("Teresa_Lipowska.jpg").build());
 		Picture kacperKuszewski = pictureRepo.save(Picture.builder().name("Kacper_Kuszewski.jpg").build());
-		Picture noPhoto = pictureRepo.save(Picture.builder().name("no_photo.jpg").build());
+		Picture noPhoto = pictureService.findNoPhotoPicture();
 
 		List<Actor> actorListMJakMilosc = Arrays.asList(
 				actorRepo.save(Actor.builder().name("Witold").surname("Pyrkosz").thumbnail(witoldPyrkosz).build()),

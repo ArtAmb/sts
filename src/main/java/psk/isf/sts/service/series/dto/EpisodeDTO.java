@@ -1,6 +1,6 @@
 package psk.isf.sts.service.series.dto;
 
-import java.time.LocalDateTime;
+import java.sql.Date;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,7 +18,5 @@ public class EpisodeDTO {
 	private String title;
 	private String description;
 	private MultipartFile picture;
-	//private Timestamp startDate;
-	private LocalDateTime startDate;
-	
+	private Date startDate;
 }
