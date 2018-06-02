@@ -92,16 +92,17 @@ public class SerialService {
 	public SerialElement addSerial(User user, SerialDTO dto, String login, MultipartFile thumbnail) throws Exception {
 		validate(dto);
 		Picture picture = pictureService.savePicture(login, thumbnail);	
-		//Picture picture = pictureService.saveSerialPicture(dto.getThumbnail());
+				    
 			
 		SerialElement serial =SerialElement.builder()
 				.title(dto.getTitle())
 				.description(dto.getDescription())
 				.state(dto.getState())
-				//.durationInSec(dto.getDurationInSec())
+				.durationInSec(dto.getDurationInSec())
 				.linkToWatch(dto.getLinkToWatch())
 				.active(true)
 				.elementType(SerialElementType.SERIAL)
+				.genres(dto.getGenres())
 				.thumbnail(picture)
 				.build();		
 				
@@ -113,9 +114,18 @@ public class SerialService {
 		if (StringUtils.isNullOrEmpty(dto.getTitle())) {
 			throw new Exception("Tytuł nie może być pusty!");
 		}
-		if (StringUtils.isNullOrEmpty(dto.getTitle())) {
+		if (StringUtils.isNullOrEmpty(dto.getDescription())) {
 			throw new Exception("Opis nie może być pusty!");
 		}
+		if(dto.getGenres().isEmpty() || dto.getGenres() == null)
+		{
+			throw new Exception("Wybierz jakiś gatunek!");
+		}
+		if(dto.getState()==null)
+		{
+			throw new Exception("Status nie może być pusty!");
+		}
+		
 		if (StringUtils.isNullOrEmpty(dto.getPicture().getOriginalFilename()))
 		{
 			throw new Exception("Błąd dodawania zdjęcia!");
@@ -127,5 +137,29 @@ public class SerialService {
 	public Collection<Genre> allGenres() {
 		return (Collection<Genre>) genreRepo.findAll();
 	}
+	
+	public SerialElement addSeason(User user, SerialDTO dto, String login, MultipartFile thumbnail) throws Exception {
+		validate(dto);
+		Picture picture = pictureService.savePicture(login, thumbnail);	
+				    
+			
+		SerialElement season =SerialElement.builder()
+				.title(dto.getTitle())
+				.description(dto.getDescription())
+				.state(dto.getState())
+				.durationInSec(dto.getDurationInSec())
+				.linkToWatch(dto.getLinkToWatch())
+				.active(true)
+				.elementType(SerialElementType.SEASON)
+				.genres(dto.getGenres())
+				.thumbnail(picture)
+				.build();		
+				
+
+		return serialRepo.save(season);
+	}
+
+	
+
 
 }
