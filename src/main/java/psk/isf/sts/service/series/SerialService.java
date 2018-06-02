@@ -6,7 +6,6 @@ import java.util.Collection;
 import org.h2.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
 import psk.isf.sts.entity.Comment;
@@ -22,6 +21,7 @@ import psk.isf.sts.repository.MySerialRepository;
 import psk.isf.sts.repository.SerialRepository;
 import psk.isf.sts.service.PictureService;
 import psk.isf.sts.service.series.dto.CommentDTO;
+import psk.isf.sts.service.series.dto.EpisodeDTO;
 import psk.isf.sts.service.series.dto.SeasonDTO;
 import psk.isf.sts.service.series.dto.SerialDTO;
 
@@ -106,6 +106,7 @@ public class SerialService {
 				.elementType(SerialElementType.SERIAL)
 				.genres(dto.getGenres())
 				.thumbnail(picture)
+				.producer(user)
 				.build();		
 				
 
@@ -148,11 +149,11 @@ public class SerialService {
 		SerialElement season =SerialElement.builder()
 				.title(dto.getTitle())
 				.description(dto.getDescription())
-				.state(dto.getState())
 				.active(true)
 				.elementType(SerialElementType.SEASON)
 				.parent(parentElement)
 				.thumbnail(picture)
+				.producer(user)
 				.build();		
 				
 		
@@ -167,15 +168,46 @@ public class SerialService {
 			throw new Exception("Opis nie może być pusty!");
 		}
 		
-		if(dto.getState()==null)
-		{
-			throw new Exception("Status nie może być pusty!");
-		}
 		if (StringUtils.isNullOrEmpty(dto.getPicture().getOriginalFilename()))
 		{
 			throw new Exception("Błąd dodawania zdjęcia!");
 		}
 		
+
+	}
+	public SerialElement addEpisode(User user, EpisodeDTO dto, SerialElement parentElement, String login, MultipartFile thumbnail) throws Exception {
+		validate(dto);
+		
+		Picture picture = pictureService.savePicture(login, thumbnail);	
+			
+		SerialElement episode =SerialElement.builder()
+				.title(dto.getTitle())
+				.description(dto.getDescription())
+				.active(true)
+				.elementType(SerialElementType.EPISODE)
+				.parent(parentElement)
+				.thumbnail(picture)
+				.producer(user)
+				.startDate(Timestamp.valueOf(dto.getStartDate()))
+				.build();		
+				
+		
+		return serialRepo.save(episode);
+	}
+
+	public void validate(EpisodeDTO dto) throws Exception {
+		if (StringUtils.isNullOrEmpty(dto.getTitle())) {
+			throw new Exception("Tytuł nie może być pusty!");
+		}
+		if (StringUtils.isNullOrEmpty(dto.getDescription())) {
+			throw new Exception("Opis nie może być pusty!");
+		}
+		
+		if (StringUtils.isNullOrEmpty(dto.getPicture().getOriginalFilename()))
+		{
+			throw new Exception("Błąd dodawania zdjęcia!");
+		}
+				
 
 	}
 	

@@ -26,6 +26,7 @@ import psk.isf.sts.entity.registration.User;
 import psk.isf.sts.service.authorization.UserService;
 import psk.isf.sts.service.series.SerialService;
 import psk.isf.sts.service.series.dto.CommentDTO;
+import psk.isf.sts.service.series.dto.EpisodeDTO;
 import psk.isf.sts.service.series.dto.SeasonDTO;
 import psk.isf.sts.service.series.dto.SerialDTO;
 import psk.isf.sts.service.series.mapper.ActorMapper;
@@ -77,39 +78,28 @@ public class SeriesController {
 
 	@GetMapping("/view/serial/{id}/season/{id}")
 	public String seasonView(@PathVariable Long id, Principal principal, Model model) {
-		boolean czyDodano = false;
+		
 		SerialElement serialElement = serialService.findById(id);
-		Collection<MySerial> mySerials = serialService.allMySerials();
+		
 		model.addAttribute("serial", serialElement);
 		model.addAttribute("thumbnailUrl", serialElement.getThumbnail().toURL());
 
 		Collection<Actor> actors = serialElement.getActors();
 		model.addAttribute("actors", actors.stream().map(ActorMapper::map).collect(Collectors.toList()));
-		Collection<SimpleSerialElement> seasons = serialService.allSerials().stream()
-				.filter(serialElementType -> serialElementType.getElementType().toString().equals("SEASON"))
+		
+			
+		Collection<SimpleSerialElement> episodes = serialService.allSerials().stream()
+				.filter(serialElementType -> serialElementType.getElementType().toString().equals("EPISODE"))
 				.filter(serialElement2 -> serialElement2.getParent().getId() == serialElement.getId())
 				.map(el -> el.toSimpleSerialElement()).collect(Collectors.toList());
 
-		model.addAttribute("seasons", seasons);
+		model.addAttribute("episodes", episodes);
+		
 		if (principal == null) {
 			return getTemplateDir("season-detail");
 		}
 
-		User user2;
-		SerialElement serial2;
-		for (MySerial element : mySerials) {
-			user2 = element.getUser();
-			serial2 = element.getSerial();
-			if (user2.getLogin().equals(principal.getName())) {
-				if ((serial2.getId().equals(id))) {
-					czyDodano = true;
-					model.addAttribute("mySerial", element);
-				}
-
-			}
-		}
-
-		model.addAttribute("czyDodano", czyDodano);
+		
 		return getTemplateDir("season-detail");
 	}
 
@@ -133,6 +123,7 @@ public class SeriesController {
 		}
 
 		User user = userService.findByLogin(principal.getName());
+		
 
 		Collection<Genre> genres = serialService.allGenres();
 		model.addAttribute("genres", genres.stream().map(GenreMapper::map).collect(Collectors.toList()));
@@ -149,6 +140,7 @@ public class SeriesController {
 		return getTemplateDir("add-serial");
 	}
 
+	@PreAuthorize("hasRole('" + Roles.Consts.ROLE_PRODUCER + "')")
 	@GetMapping("/view/serial/{id}/add-season")
 	public String addSeasonView(@PathVariable Long id, Model model) {
 		
@@ -188,8 +180,43 @@ public class SeriesController {
 		return getTemplateDir("add-season");
 	}
 
-	@GetMapping("/view/add-episode")
-	public String addEpisodeView(Model model) {
+	
+	@PreAuthorize("hasRole('" + Roles.Consts.ROLE_PRODUCER + "')")
+	@GetMapping("/view/serial/{id}/add-episode")
+	public String addEpisodeView(@PathVariable Long id, Model model) {
+		
+		SerialElement serialElement = serialService.findById(id);
+		model.addAttribute("serial", serialElement);
+		
+		model.addAttribute("thumbnailUrl", serialElement.getThumbnail().toURL());
+		
+		return getTemplateDir("add-episode");
+	}
+	
+	@PostMapping("/view/serial/{id}/add-episode")
+	public String addEpisode(@PathVariable Long id, @ModelAttribute EpisodeDTO dto, Principal principal, Model model) {
+
+		
+		SerialElement serialElement = serialService.findById(id);
+		model.addAttribute("serial", serialElement);
+		
+		if (principal == null) {
+			model.addAttribute("message", "Tylko producent może dodawać odcinki!");
+			return getTemplateDir("add-episode");
+		}
+
+		User user = userService.findByLogin(principal.getName());
+
+		
+		try {
+			serialService.addEpisode(user, dto, serialElement, principal.getName(), dto.getPicture());
+		} catch (Exception e) {
+			model.addAttribute("message", e.getMessage());
+			model.addAttribute(dto);
+			return getTemplateDir("add-episode");
+		}
+
+		model.addAttribute("message", "Odcinek został dodany");
 		return getTemplateDir("add-episode");
 	}
 

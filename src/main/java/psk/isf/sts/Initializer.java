@@ -132,21 +132,27 @@ public class Initializer {
 		
 		
 		SerialElement mJakMiloscSerial = serialRepository.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("M jak miłość")
-				.description("Polski serial telewizyjny. Akcja rozgrywa się i tak dalej").producer(user).active(true)
+				.description("M jak Miłość to serial opisujący zagmatwane losy trzy-pokoleniowej rodziny Mostowiaków. Lucjan i Barbara są rodzicami czworga dorosłych ludzi: Marty, Marka, Małgosi i Marysi. ").producer(user).active(true)
 				.actors(actorListMJakMilosc).genres(Arrays.asList(dramat, przygodowy)).thumbnail(mJakMilosc).build());
 		
-		serialRepository.save(SerialElement.builder().elementType(SerialElementType.SEASON).parent(mJakMiloscSerial)
+		SerialElement mJakMiloscSeason1 = serialRepository.save(SerialElement.builder().elementType(SerialElementType.SEASON).parent(mJakMiloscSerial)
 				.title("Sezon 1 M jak miłość").description("Pierwszy sezon...").producer(user).active(true).thumbnail(noPhoto).build());
 		
 		serialRepository.save(SerialElement.builder().elementType(SerialElementType.SEASON).parent(mJakMiloscSerial)
 				.title("Sezon 2 M jak miłość").description("Drugi sezon...").producer(user).active(true).thumbnail(noPhoto).build());
 		
+		serialRepository.save(SerialElement.builder().elementType(SerialElementType.EPISODE).parent(mJakMiloscSeason1)
+				.title("Odcinek 1 - Nie ma jak w domu ").description("Poznajmy rodzinę Mostowiaków! ").producer(user).active(true).thumbnail(noPhoto).build());
+		
+		serialRepository.save(SerialElement.builder().elementType(SerialElementType.EPISODE).parent(mJakMiloscSeason1)
+				.title("Odcinek 2 - Rozterki ").description("Hanka ma probem z kartonami. Czy Marek jej pomoże? ").producer(user).active(true).thumbnail(noPhoto).build());
+		
 		serialRepository.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("Pierwsza Miłość")
-				.description("Polski serial telewizyjny. Akcja rozgrywa się i tak dalej").producer(user).active(true)
+				.description("Pierwsza miłość jest serialem produkcji polskiej. Akcja skupia się na Wrocławiu gdzie zamieszkuje Marysia, świeżo upieczona studentka medycyny.").producer(user).active(true)
 				.actors(actorList).genres(Arrays.asList(dramat, przygodowy, horror)).thumbnail(pierwszaMilosc).build());
 
 		serialRepository.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("Na wspólnej")
-				.description("Polski serial telewizyjny. Akcja rozgrywa się i tak dalej").producer(user).active(true)
+				.description("Losy siedmiu byłych wychowanków domu dziecka oraz ich najbliższych. ").producer(user).active(true)
 				.actors(actorList).genres(Arrays.asList(thiller, przygodowy)).thumbnail(naWspolnej).build());
 
 		serialRepository.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("Przyjaciółki")
