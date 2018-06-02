@@ -34,6 +34,19 @@ public class PlaylistService {
 		return playlistRepo.save(playlist);
 	}
 
+	
+	public void deletePlaylist(User user, Long id) throws IllegalAccessException{
+
+	Playlist playlist = playlistRepo.findById(id).get();
+
+    if(user.getId() != playlist.getUser().getId() ){ 
+      throw new IllegalAccessException("Nie masz uprawnien do usuniece tej playlisty");
+    }
+    
+		playlistRepo.delete(playlist);
+	}
+	 
+	
 	public void validatePlaylist(PlaylistDTO dto) throws Exception {
 		if (StringUtils.isNullOrEmpty(dto.getName())) {
 			throw new Exception("Musisz podać nazwę playlisty");

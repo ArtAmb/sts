@@ -16,13 +16,25 @@
 			<tr th:if="${playlists.empty}">
 				<td colspan="4">Nie stworzyłeś żadnych playlist</td>
 			</tr>
-			<tr th:each="playlists : ${playlists}">
+			<tr th:each="playlist : ${playlists}">
 
-				<td><p th:text="${playlists.name}"></p></td>
+			<td><p th:text="${playlist.name}"></p></td>
 
-				<td><a th:id="'playlist-detail' + ${playlists.id}"
-					th:href="@{'/view/playlists/' + ${playlists.id}}" class="mybutton">Szczegóły</a></td>
-
+			<td><a th:id="'playlist-detail' + ${playlist.id}"
+				th:href="@{'/view/playlists/' + ${playlist.id}}" class="mybutton">Szczegóły</a></td>
+				
+			
+			<td>
+			
+			
+			<form th:action="@{'/view/delete/' + ${playlist.id}}" method="delete">
+			
+				<button type="submit">Usuń</button>
+			
+			</form>
+			
+			</td>
+					
 			</tr>
 
 		</table>

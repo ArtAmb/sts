@@ -212,19 +212,32 @@ public class Initializer {
 		PlaylistElement element2 = PlaylistElement.builder().serialElement(serial2).build();
 		PlaylistElement element3 = PlaylistElement.builder().serialElement(serial3).build();
 		
+		PlaylistElement element4 = PlaylistElement.builder().serialElement(serial1).build();
+		PlaylistElement element5 = PlaylistElement.builder().serialElement(serial2).build();
+		PlaylistElement element6 = PlaylistElement.builder().serialElement(serial3).build();
+		
 		
 		element1.setPrevious(null);
 		element1.setNext(element2);
-		
 		element2.setPrevious(element1);
 		element2.setNext(element3);
-		
 		element3.setPrevious(element2);
 		element3.setNext(null);
+		
+		element4.setPrevious(null);
+		element4.setNext(element5);
+		element5.setPrevious(element4);
+		element5.setNext(element6);
+		element6.setPrevious(element5);
+		element6.setNext(null);
+		
 		
 		playlistElementRepo.save(element1);
 		playlistElementRepo.save(element2);
 		playlistElementRepo.save(element3);
+		playlistElementRepo.save(element4);
+		playlistElementRepo.save(element5);
+		playlistElementRepo.save(element6);
 		
 		List<PlaylistElement> elements = new LinkedList<>();
 		List<PlaylistElement> elements2 = new LinkedList<>();
@@ -233,14 +246,17 @@ public class Initializer {
 		elements.add(element2);
 		elements.add(element3);
 		
-		elements2.add(element3);
-		elements2.add(element1);
-		elements2.add(element2);
+		elements2.add(element5);
+		elements2.add(element6);
+		elements2.add(element4);
 
 		Playlist playlist =  Playlist.builder().name("Pierwsza playlista").user(userRepo.findByLogin("viewer")).elements(elements).build();
 		Playlist playlist2 =  Playlist.builder().name("Druga playlista").user(userRepo.findByLogin("viewer")).elements(elements2).build();
+		Playlist playlist3 =  Playlist.builder().name("Trzecia playlista").user(userRepo.findByLogin("viewer")).build();
+		
 		playlistRepo.save(playlist);
 		playlistRepo.save(playlist2);
+		playlistRepo.save(playlist3);
 	}
 
 	
