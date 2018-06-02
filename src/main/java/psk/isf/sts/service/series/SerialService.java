@@ -29,6 +29,8 @@ public class SerialService {
 	@Autowired
 	private SerialRepository serialRepo;
 	
+	@Autowired
+	private PictureService pictureService;
 
 	@Autowired
 	private GenreRepository genreRepo;
@@ -85,10 +87,7 @@ public class SerialService {
 		}
 
 	}
-	
-	@Autowired
-	private PictureService pictureService;
-	
+		
 	public SerialElement addSerial(User user, SerialDTO dto, String login, MultipartFile thumbnail) throws Exception {
 		validate(dto);
 		Picture picture = pictureService.savePicture(login, thumbnail);	
