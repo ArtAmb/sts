@@ -400,4 +400,19 @@ public class SeriesController {
 		return getTemplateDir("serial-detail");
 	}
 	
+	//Obsada
+	
+	@GetMapping("/view/serial/{id}/actors")
+	public String actorsView(@PathVariable Long id, Model model) {
+		
+		SerialElement serialElement = serialService.findById(id);
+	
+		model.addAttribute("serial", serialElement);
+	
+		Collection<Actor> actors = serialElement.getActors();
+		model.addAttribute("actors", actors.stream().map(ActorMapper::map).collect(Collectors.toList()));
+		
+			
+		return getTemplateDir("actors");
+	}
 }
