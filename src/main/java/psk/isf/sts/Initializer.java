@@ -11,6 +11,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
+import org.hibernate.mapping.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -126,13 +127,20 @@ public class Initializer {
 		Genre przygodowy = genreRepository.save(Genre.builder().name("Przygodowy").build());
 		Genre sciFi = genreRepository.save(Genre.builder().name("sci-fi").build());
 
-		SerialElement season1MjakMilosc = serialRepository.save(SerialElement.builder().elementType(SerialElementType.SEASON)
-				.title("Sezon 1 M jak miłość").description("Pierwszy sezon...").producer(user).active(true).thumbnail(noPhoto).build());
-
-		serialRepository.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("M jak miłość")
+		
+		
+		
+		
+		SerialElement mJakMiloscSerial = serialRepository.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("M jak miłość")
 				.description("Polski serial telewizyjny. Akcja rozgrywa się i tak dalej").producer(user).active(true)
 				.actors(actorListMJakMilosc).genres(Arrays.asList(dramat, przygodowy)).thumbnail(mJakMilosc).build());
-
+		
+		serialRepository.save(SerialElement.builder().elementType(SerialElementType.SEASON).parent(mJakMiloscSerial)
+				.title("Sezon 1 M jak miłość").description("Pierwszy sezon...").producer(user).active(true).thumbnail(noPhoto).build());
+		
+		serialRepository.save(SerialElement.builder().elementType(SerialElementType.SEASON).parent(mJakMiloscSerial)
+				.title("Sezon 2 M jak miłość").description("Drugi sezon...").producer(user).active(true).thumbnail(noPhoto).build());
+		
 		serialRepository.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("Pierwsza Miłość")
 				.description("Polski serial telewizyjny. Akcja rozgrywa się i tak dalej").producer(user).active(true)
 				.actors(actorList).genres(Arrays.asList(dramat, przygodowy, horror)).thumbnail(pierwszaMilosc).build());
