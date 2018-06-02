@@ -2,13 +2,11 @@ package psk.isf.sts.controller.view;
 
 import java.security.Principal;
 import java.util.Collection;
-import java.util.LinkedList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -89,36 +87,23 @@ public class PlaylistController {
 		return getTemplateDir("add-playlist");
 	}
 
-	
 	@GetMapping("/view/add-playlist")
 	public String getAddPlaylistView(@ModelAttribute PlaylistDTO dto, Principal principal, Model model) {
 		return getTemplateDir("add-playlist");
 	}
-	
-	
-	@DeleteMapping("/view/delete/{id}")
-	public String deletePlaylist(@PathVariable Long id, Principal principal, Model model) throws IllegalAccessException{	
-		
+
+	@PostMapping("/view/playlist/{id}/delete")
+	public String deletePlaylist(@PathVariable Long id, Principal principal, Model model)
+			throws IllegalAccessException {
+
 		User user = userService.findByLogin(principal.getName());
-		
+
 		playlistService.deletePlaylist(user, id);
-		
+
 		Collection<Playlist> playlists = playlistRepository.findByUser(userService.findByLogin(principal.getName()));
-		
-	    if(playlists == null) 
-	    	playlists = new LinkedList<>();
-		
 		model.addAttribute("playlists", playlists);
-		
+
 		return getTemplateDir("playlists");
-		
+
 	}
-	
-	@GetMapping("/view/delete/{id}")
-	public String getDeletePlaylist(@PathVariable Long id, Principal principal, Model model){
-		/*Collection<Playlist> playlists = playlistRepository.findByUser(userService.findByLogin(principal.getName()));
-		model.addAttribute("playlists", playlists);*/
-		return getTemplateDir("playlists");
-	}
-	 
 }

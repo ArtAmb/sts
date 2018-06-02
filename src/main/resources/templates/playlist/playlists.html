@@ -20,19 +20,14 @@
 
 			<td><p th:text="${playlist.name}"></p></td>
 
-			<td><a th:id="'playlist-detail' + ${playlist.id}"
-				th:href="@{'/view/playlists/' + ${playlist.id}}" class="mybutton">Szczegóły</a></td>
-				
+			<td>
+				<a th:id="'playlist-detail' + ${playlist.id}" th:href="@{'/view/playlists/' + ${playlist.id}}" class="mybutton">Szczegóły</a>
+			</td>
 			
 			<td>
-			
-			
-			<form th:action="@{'/view/delete/' + ${playlist.id}}" method="delete">
-			
-				<button type="submit">Usuń</button>
-			
-			</form>
-			
+				<form th:action="@{'/view/playlist/' + ${playlist.id} + '/delete'}" method="POST">
+					<button type="submit">Usuń</button>
+				</form>
 			</td>
 					
 			</tr>
