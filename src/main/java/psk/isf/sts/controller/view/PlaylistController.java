@@ -83,12 +83,27 @@ public class PlaylistController {
 			return getTemplateDir("add-playlist");
 		}
 
-		model.addAttribute("message", "Playlista został dodany");
+		model.addAttribute("message", "Playlista została dodana");
 		return getTemplateDir("add-playlist");
 	}
 
 	@GetMapping("/view/add-playlist")
 	public String getAddPlaylistView(@ModelAttribute PlaylistDTO dto, Principal principal, Model model) {
 		return getTemplateDir("add-playlist");
+	}
+
+	@PostMapping("/view/playlist/{id}/delete")
+	public String deletePlaylist(@PathVariable Long id, Principal principal, Model model)
+			throws IllegalAccessException {
+
+		User user = userService.findByLogin(principal.getName());
+
+		playlistService.deletePlaylist(user, id);
+
+		Collection<Playlist> playlists = playlistRepository.findByUser(userService.findByLogin(principal.getName()));
+		model.addAttribute("playlists", playlists);
+
+		return getTemplateDir("playlists");
+
 	}
 }

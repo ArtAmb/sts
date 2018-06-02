@@ -1,5 +1,7 @@
 // package psk.isf.sts.controller.view;
 //
+// import javax.inject.Inject;
+//
 // import org.springframework.social.connect.ConnectionRepository;
 // import org.springframework.social.facebook.api.Facebook;
 // import org.springframework.social.facebook.api.PagedList;
@@ -16,6 +18,7 @@
 // private Facebook facebook;
 // private ConnectionRepository connectionRepository;
 //
+// @Inject
 // public FbController(Facebook facebook, ConnectionRepository
 // connectionRepository) {
 // this.facebook = facebook;

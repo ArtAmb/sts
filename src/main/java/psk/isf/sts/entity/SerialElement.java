@@ -1,11 +1,8 @@
 package psk.isf.sts.entity;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.sql.Timestamp;
 import java.util.Collection;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
