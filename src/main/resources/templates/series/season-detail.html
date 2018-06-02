@@ -9,25 +9,55 @@
 	<div th:replace="mainMenu :: mainMenu"></div>
 	<div class="content">
 
+		<div style="float:left;"><image th:if="${thumbnailUrl != null}" th:src="${thumbnailUrl}" width="100" height="100" /></div>
+		<span style="font-size: 32px; margin: 10px; float:left;" th:text="${serial.title}"></span>
+		<div class="season-buttons" th:if="${czyDodano == false}">
+			<a
+				th:href="@{'/view/addToMine/' + ${serial.id} +'?context=' + 'season-detail'}"
+				type="submit" class="mybutton">Dodaj do "moich" </a>
 
-		<h1>M jak miłość</h1>
-		<span style="font-size:22px; margin-top:10px">Sezon 1</span>
-		<button type="submit" sec:authorize="hasRole('ROLE_ADMIN') OR hasRole('ROLE_PRODUCER')">Dodaj odcinek</button>
+		</div>
+		<div class="season-buttons" th:if="${czyDodano == true}">
+			<a
+				th:href="@{'/view/deleteFromMine/' + ${mySerial.id}+'?context=' + 'season-detail'}"
+				type="submit" class="mybutton">Usun z "moich" </a>
+		</div>
+
+		<div id="message2" th:text="${message2}"></div>
+		<button class="season-buttons" type="submit"
+			sec:authorize="hasRole('ROLE_ADMIN') OR hasRole('ROLE_PRODUCER')">Dodaj
+			odcinek</button>
+			<div style="clear:both;"></div>
 		<div class="episode">
 			<h3>Odcinek 1 - "Dobrze w domu"</h3>
 			<h4>Data emisji: 10.12.1998</h4>
-			<p>Lorem ipsum dolor sit amet,
-				consectetur adipiscing elit. Nulla sed posuere eros. Ut ac leo
-				bibendum, fringilla nunc eu, sollicitudin magna. Etiam venenatis
-				tristique felis, vitae fermentum ante tempus vel. Donec nisi nisl,
-				euismod vitae bibendum efficitur, feugiat sit amet dui. Cras orci
-				mi, malesuada id efficitur nec, scelerisque at mauris. Integer
-				varius iaculis enim quis ultrices.</p>
-			<button type="submit" sec:authorize="hasRole('ROLE_VIEWER')">Obejrzany</button>
-			<button type="submit" sec:authorize="hasRole('ROLE_VIEWER')">Oglądaj teraz</button>
-			<button type="submit" sec:authorize="hasRole('ROLE_ADMIN') OR hasRole('ROLE_PRODUCER')">Edytuj</button>
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla
+				sed posuere eros. Ut ac leo bibendum, fringilla nunc eu,
+				sollicitudin magna. Etiam venenatis tristique felis, vitae fermentum
+				ante tempus vel. Donec nisi nisl, euismod vitae bibendum efficitur,
+				feugiat sit amet dui. Cras orci mi, malesuada id efficitur nec,
+				scelerisque at mauris. Integer varius iaculis enim quis ultrices.</p>
+			<div th:if="${czyDodano == false}">
+				<a
+					th:href="@{'/view/addToMine/' + ${serial.id} +'?context=' + 'season-detail'}"
+					type="submit" class="mybutton">Dodaj do "moich" </a>
+
+			</div>
+			<div th:if="${czyDodano == true}">
+				<a
+					th:href="@{'/view/deleteFromMine/' + ${mySerial.id}+'?context=' + 'season-detail'}"
+					type="submit" class="mybutton">Usun z "moich" </a>
+			</div>
+
+			<div id="message2" th:text="${message2}"></div>
+			<a class="mybutton">Dodaj do obejrzanych </a> <a
+				sec:authorize="hasRole('ROLE_VIEWER')" class="mybutton">Oglądaj
+				teraz </a>
+
+			<button type="submit"
+				sec:authorize="hasRole('ROLE_ADMIN') OR hasRole('ROLE_PRODUCER')">Edytuj</button>
 		</div>
-	
+
 
 
 

@@ -64,9 +64,9 @@ public class SerialElement {
 	private Collection<Comment> comments;
 
 	private Timestamp startDate;
-	private long durationInSec;
+	private Long durationInSec;
 
-	private long daysToNextEpisode;
+	private Long daysToNextEpisode;
 	@Builder.Default
 	private boolean active = true;
 	private String linkToWatch;

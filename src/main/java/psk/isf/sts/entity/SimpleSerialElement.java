@@ -26,8 +26,8 @@ public class SimpleSerialElement {
 	private Collection<Genre> genres;
 	private Collection<Comment> comments;
 	private Timestamp startDate;
-	private long durationInSec;
-	private long daysToNextEpisode;
+	private Long durationInSec;
+	private Long daysToNextEpisode;
 	private boolean active;
 	private String linkToWatch;
 	private User producer;
