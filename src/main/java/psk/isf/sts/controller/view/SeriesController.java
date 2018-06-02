@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import psk.isf.sts.entity.Actor;
 import psk.isf.sts.entity.Genre;
@@ -105,17 +106,11 @@ public class SeriesController {
 		Collection<Genre> genres = serialService.allGenres();
 		model.addAttribute("genres", genres.stream().map(GenreMapper::map).collect(Collectors.toList()));
 		
-		
+				
 		try {
 			serialService.addSerial(user, dto, principal.getName(), dto.getPicture());
 		} catch (Exception e) {
 			model.addAttribute("message", e.getMessage());
-			//model.addAttribute("content", dto.getTitle());
-			//model.addAttribute("description", dto.getDescription());
-			//model.addAttribute("durationInSec", dto.getDurationInSec());
-			//model.addAttribute("linkToWatch", dto.getLinkToWatch());
-			//model.addAttribute("state", dto.getState());
-			//model.addAttribute("thumbnail", dto.getPicture());
 			model.addAttribute(dto);
 			return getTemplateDir("add-serial");
 		}
@@ -126,6 +121,36 @@ public class SeriesController {
 
 	@GetMapping("/view/add-season")
 	public String addSeasonView(Model model) {
+		Collection<Genre> genres = serialService.allGenres();
+		model.addAttribute("genres", genres.stream().map(GenreMapper::map).collect(Collectors.toList()));
+		
+		return getTemplateDir("add-season");
+	}
+	
+	@PreAuthorize("hasRole('" + Roles.Consts.ROLE_PRODUCER + "')")
+	@PostMapping("/view/add-season")
+	public String addSeason(@ModelAttribute SerialDTO dto, Principal principal, Model model) {
+
+		if (principal == null) {
+			model.addAttribute("message", "Tylko producent może dodawać sezony!");
+			return getTemplateDir("add-season");
+		}
+
+		User user = userService.findByLogin(principal.getName());
+		
+		Collection<Genre> genres = serialService.allGenres();
+		model.addAttribute("genres", genres.stream().map(GenreMapper::map).collect(Collectors.toList()));
+		
+				
+		try {
+			serialService.addSeason(user, dto, principal.getName(), dto.getPicture());
+		} catch (Exception e) {
+			model.addAttribute("message", e.getMessage());
+			model.addAttribute(dto);
+			return getTemplateDir("add-season");
+		}
+
+		model.addAttribute("message", "Sezon został dodany");
 		return getTemplateDir("add-season");
 	}
 

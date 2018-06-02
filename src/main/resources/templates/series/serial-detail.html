@@ -13,20 +13,23 @@
 		<div class="serial">
 
 			<div class="serial-general">
-			<image th:if="${thumbnailUrl != null}" th:src="${thumbnailUrl}" width="100%"/>
-				
+				<image th:if="${thumbnailUrl != null}" th:src="${thumbnailUrl}"
+					width="100%" />
+
 				<div class="follow-checkbox">
 					<label> <input type="checkbox">Śledź
 					</label>
 				</div>
 				<div th:if="${czyDodano == false}">
-				<a th:href="@{'/serial/addToMine/' + ${serial.id}}" type="submit" class="mybutton" >Dodaj do
-					"moich" </a></div>
+					<a th:href="@{'/serial/addToMine/' + ${serial.id}}" type="submit"
+						class="mybutton">Dodaj do "moich" </a>
+				</div>
 				<div th:if="${czyDodano == true}">
-				<a th:href="@{'/serial/deleteFromMine/' + ${mySerial.id}}" type="submit" class="mybutton" >Usun z
-					"moich" </a></div>
-			
-					<div id="message2" th:text="${message2}"></div>
+					<a th:href="@{'/serial/deleteFromMine/' + ${mySerial.id}}"
+						type="submit" class="mybutton">Usun z "moich" </a>
+				</div>
+
+				<div id="message2" th:text="${message2}"></div>
 				<button type="submit" class="serial-button">Dodaj do
 					obejrzanych</button>
 				<button type="submit" class="serial-button">Strona
@@ -39,9 +42,9 @@
 				</div>
 				<div class="actors" th:each="actor : ${actors}">
 					<figure>
-						<img th:src="${actor.thumbnailUrl}" width="75" height="100"/>
+						<img th:src="${actor.thumbnailUrl}" width="75" height="100" />
 						<figcaption th:text="${actor.name} + ' '+ ${actor.surname}"></figcaption>
-												
+
 					</figure>
 				</div>
 
@@ -69,31 +72,31 @@
 
 
 				<h1>Sezony</h1>
-				<table style="margin-top:30px;">
+				<table style="margin-top: 30px;">
 					<tr th:if="${seasons.empty}">
 						<td colspan="4">Brak sezonow</td>
 					</tr>
 					<tr th:each="seasons : ${seasons}">
 						<td><image th:src="${seasons.thumbnail.url}" width="100"
-						height="100" /></td>
+								height="100" /></td>
 						<td><p th:text="${seasons.title}"></p>
 							<p th:text="${seasons.description}"></p>
 							<div class="progress">
-							<div class="progress-bar" role="progressbar" aria-valuenow="70"
-								aria-valuemin="0" aria-valuemax="100" style="width: 70%">
-								70%</div>
-						</div>
-							</td>
-							<td><a th:id="'season-detail' + ${seasons.id}"
-					th:href="@{'/view/serial/' + ${seasons.id}}" class="mybutton">Szczegoly</a></td>
-						
+								<div class="progress-bar" role="progressbar" aria-valuenow="70"
+									aria-valuemin="0" aria-valuemax="100" style="width: 70%">
+									70%</div>
+							</div></td>
+						<td><a th:id="'season-detail' + ${seasons.id}"
+							th:href="@{'/view/serial/' + ${seasons.id}}" class="mybutton">Szczegoly</a></td>
+
 					</tr>
 				</table>
-				
 
-				<button type="submit"
-					sec:authorize="hasRole('ROLE_ADMIN') OR hasRole('ROLE_PRODUCER')">Dodaj
-					sezon</button>
+				<div style="margin-top:20px">
+					<a
+						sec:authorize="hasRole('ROLE_ADMIN') OR hasRole('ROLE_PRODUCER')"
+						th:href="@{'/serial/' + ${serial.id}} + '/add-season/' " class="mybutton">Dodaj sezon</a> 						
+				</div>
 
 
 
