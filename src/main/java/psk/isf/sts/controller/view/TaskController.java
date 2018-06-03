@@ -50,7 +50,7 @@ public class TaskController {
 
 	@GetMapping("/view/task/{taskId}")
 	public String taskDetailView(@PathVariable Long taskId, Model model) {
-		Task task = taskRepository.findById(taskId).get();
+		Task task = taskRepository.findOne(taskId);
 		model.addAttribute("detailInfo", task);
 		model.addAttribute("contractPath", task.getContract() != null ? task.getContract().toURL() : null);
 		return getTemplateDir("task-detail");
@@ -58,7 +58,7 @@ public class TaskController {
 
 	@PostMapping("/view/task/{taskId}/acceptContract")
 	public String taskAcceptContract(@PathVariable Long taskId, Model model) {
-		Task task = taskRepository.findById(taskId).get();
+		Task task = taskRepository.findOne(taskId);
 		if (task.getContract() == null || !task.getContract().getState().equals(ContractState.NEW)) {
 			throw new IllegalStateException("To zadanie nie posiada umowy lub umowa został już akceptowana");
 		}
@@ -76,7 +76,7 @@ public class TaskController {
 
 	@PostMapping("/view/task/{taskId}/rejectContract")
 	public String taskRejectContract(@PathVariable Long taskId, Model model) {
-		Task task = taskRepository.findById(taskId).get();
+		Task task = taskRepository.findOne(taskId);
 		if (task.getContract() == null || !task.getContract().getState().equals(ContractState.NEW)) {
 			throw new IllegalStateException("To zadanie nie posiada umowy lub umowa został już akceptowana");
 		}

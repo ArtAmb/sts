@@ -44,7 +44,7 @@ public class CommentsController {
 
 	@GetMapping("/view/comment/{commentId}")
 	public String getDetailView(@PathVariable Long commentId, Model model) {
-		Comment comment = commentRepository.findById(commentId).get();
+		Comment comment = commentRepository.findOne(commentId);
 		model.addAttribute("detailInfo", comment);
 		return getTemplateDir("comment-detail");
 	}
@@ -53,7 +53,7 @@ public class CommentsController {
 	@PreAuthorize("hasRole('" + Roles.Consts.ROLE_ADMIN + "')")
 	public String acceptComment(@ModelAttribute Comment dto, Principal principal, @PathVariable Long commentId,
 			Model model) {
-		Comment comment = commentRepository.findById(commentId).get();
+		Comment comment = commentRepository.findOne(commentId);
 		comment.setContent(dto.getContent());
 		comment.setLastEditUser(userService.findByLogin(principal.getName()));
 		comment.setAccepted(true);
@@ -63,7 +63,7 @@ public class CommentsController {
 
 	@PostMapping("/view/comment/{commentId}/decline")
 	public String rejectComment(@ModelAttribute Comment dto, @PathVariable Long commentId, Model model) {
-		Comment comment = commentRepository.findById(commentId).get();
+		Comment comment = commentRepository.findOne(commentId);
 		comment.setAccepted(false);
 		comment.setRejectionCause(dto.getRejectionCause());
 

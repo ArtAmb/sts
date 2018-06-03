@@ -30,7 +30,7 @@ public class UserService {
 	private PictureService pictureService;
 
 	public User findById(Long id) {
-		return userRepo.findById(id).get();
+		return userRepo.findOne(id);
 	}
 
 	public User findByLogin(String login) {
@@ -52,7 +52,7 @@ public class UserService {
 	}
 
 	public void deleteUser(User user) {
-		userRepo.deleteById(user.getId());
+		userRepo.delete(user.getId());
 	}
 
 	public String activateProducerAccount(User user) {
@@ -73,7 +73,7 @@ public class UserService {
 	}
 
 	public void removeNotRegisteredProducerAccount(User user, Contract contract) {
-		contractRepository.deleteById(contract.getId());
+		contractRepository.delete(contract.getId());
 		deleteUser(user);
 	}
 

@@ -70,7 +70,7 @@ public class StsIntegrationController {
 
 	@PostMapping("/sts/facade/signContract")
 	public void contractWasRecievedAndSigned(@RequestBody SendContractByCourierResponse dto) {
-		Contract contract = contractRepo.findById(dto.getContractId()).get();
+		Contract contract = contractRepo.findOne(dto.getContractId());
 		Collection<Task> tasks = taskRepository.findByContractAndState(contract, TaskState.IN_PROGRESS);
 
 		if (tasks.size() != 1) {

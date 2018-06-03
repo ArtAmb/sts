@@ -1,7 +1,6 @@
 package psk.isf.sts.service.playlist;
 
 import java.util.Collection;
-import java.util.Optional;
 
 import org.h2.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,7 @@ public class PlaylistService {
 	}
 
 	public Playlist findById(Long id) {
-		return playlistRepo.findById(id).get();
+		return playlistRepo.findOne(id);
 	}
 
 	public Playlist addPlaylist(User user, PlaylistDTO dto) throws Exception {
@@ -37,11 +36,11 @@ public class PlaylistService {
 
 	public void deletePlaylist(User user, Long id) throws IllegalAccessException {
 
-		Optional<Playlist> playlistOptional = playlistRepo.findById(id);
-		if (!playlistOptional.isPresent())
+		Playlist playlistOptional = playlistRepo.findOne(id);
+		if (playlistOptional == null)
 			return;
 
-		Playlist playlist = playlistOptional.get();
+		Playlist playlist = playlistOptional;
 
 		if (user.getId() != playlist.getUser().getId()) {
 			throw new IllegalAccessException("Nie masz uprawnien do usuniece tej playlisty");

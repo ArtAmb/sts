@@ -3,7 +3,7 @@
 <body>
     <div th:replace="mainMenu :: mainMenu"> </div>
     <div class="content">
-        Welcome, [[${user.login}]]
+        Welcome, <span th:text="${user.login}"></span>
 
         <form th:action="@{/logout}" method="post">
             <button type="submit">Wyloguj</button>
