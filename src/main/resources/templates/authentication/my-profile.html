@@ -6,23 +6,32 @@
 <body>
     <div th:replace="mainMenu :: mainMenu"> </div>
     <div class="content">
-        Welcome, <span th:text="${userLogin}"></span>
+        Welcome,
+        <span th:text="${userLogin}"></span>
 
         <form th:action="@{/logout}" method="post">
             <button type="submit">Wyloguj</button>
         </form>
 
-        <br/><br/>
+        <br/>
+        <br/>
+        Zdjecie profilowe:
+        <br/>
+        <br/>
         <image th:if="${thumbnailUrl != null}" th:src="${thumbnailUrl}" />
-        <form th:action="@{/view/my-profile}" method="post" enctype="multipart/form-data">
-            <label>Profilowe: </label>
-            <input name="picture" type="file" />
-            <button type="submit">Ustaw profilowe</button>
-        </form>
-        <form th:action="@{/view/my-profile/delete-thumbnail}" method="post">
-            <button type="submit">Usuń</button>
-        </form>
 
+
+        <th:block th:if="${isFromOurSystem}">
+
+            <form th:action="@{/view/my-profile}" method="post" enctype="multipart/form-data">
+                <label>Profilowe: </label>
+                <input name="picture" type="file" />
+                <button type="submit">Ustaw profilowe</button>
+            </form>
+            <form th:action="@{/view/my-profile/delete-thumbnail}" method="post">
+                <button type="submit">Usuń</button>
+            </form>
+        </th:block>
 
     </div>
 

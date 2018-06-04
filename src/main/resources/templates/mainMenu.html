@@ -25,9 +25,14 @@
     $.get("/rest/user/instance", function (response) {
         if (response.thumbnail == null)
             $("#tumbnail").attr("src", "/images/default-face.png");
-        else
-            $("#tumbnail").attr("src", "/images/" + response.thumbnail.name);
-        $("#welcome-message").html("Witaj, " + response.login + "!");
+        else{
+            if(response.thumbnail.fromOurServer)
+                $("#tumbnail").attr("src", "/images/" + response.thumbnail.name);
+            else
+                $("#tumbnail").attr("src", response.thumbnail.path);
+        }
+            
+        $("#welcome-message").html("Witaj, " + response.displayLogin + "!");
 
 
         // if(location.pathname == "/view/my-profile"){

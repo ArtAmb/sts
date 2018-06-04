@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import psk.isf.sts.entity.Contract;
 import psk.isf.sts.entity.Picture;
 import psk.isf.sts.entity.registration.User;
+import psk.isf.sts.entity.registration.UserSourceSystem;
 import psk.isf.sts.repository.ContractRepository;
 import psk.isf.sts.repository.UserRepository;
 import psk.isf.sts.service.PictureService;
@@ -75,6 +76,10 @@ public class UserService {
 	public void removeNotRegisteredProducerAccount(User user, Contract contract) {
 		contractRepository.delete(contract.getId());
 		deleteUser(user);
+	}
+
+	public User findFacebookUserByFbId(String fbId) {
+		return userRepo.findByExtIdAndSourceSystem(fbId, UserSourceSystem.FACEBOOK);
 	}
 
 }

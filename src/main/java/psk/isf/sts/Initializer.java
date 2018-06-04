@@ -11,7 +11,6 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
-import org.hibernate.mapping.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -57,10 +56,10 @@ public class Initializer {
 
 	@Autowired
 	private PictureRepository pictureRepo;
-	
+
 	@Autowired
 	PlaylistRepository playlistRepo;
-	
+
 	@Autowired
 	PlaylistElementRepository playlistElementRepo;
 
@@ -80,21 +79,25 @@ public class Initializer {
 		developerRoles.add(Roles.ROLE_VIEWER.toRole());
 		developerRoles.add(Roles.ROLE_PRODUCER.toRole());
 
-		userRepo.save(User.builder().login("viewer").email("viewer@test.pl").password(encoder.encode("test"))
-				.roles(Collections.singletonList((Roles.ROLE_VIEWER.toRole()))).userType(UserType.VIEWER).build());
+		userRepo.save(User.builder().login("viewer").displayLogin("viewer").email("viewer@test.pl")
+				.password(encoder.encode("test")).roles(Collections.singletonList((Roles.ROLE_VIEWER.toRole())))
+				.userType(UserType.VIEWER).build());
 
-		userRepo.save(User.builder().login("admin").email("admin@test.pl").password(encoder.encode("test"))
-				.roles(Collections.singletonList((Roles.ROLE_ADMIN.toRole()))).userType(UserType.PRODUCER).build());
+		userRepo.save(User.builder().login("admin").displayLogin("admin").email("admin@test.pl")
+				.password(encoder.encode("test")).roles(Collections.singletonList((Roles.ROLE_ADMIN.toRole())))
+				.userType(UserType.PRODUCER).build());
 
-		userRepo.save(User.builder().login("producer").email("producer@test.pl").password(encoder.encode("test"))
-				.roles(Collections.singletonList((Roles.ROLE_PRODUCER.toRole()))).build());
+		userRepo.save(User.builder().login("producer").displayLogin("producer").email("producer@test.pl")
+				.password(encoder.encode("test")).roles(Collections.singletonList((Roles.ROLE_PRODUCER.toRole())))
+				.build());
 
-		userRepo.save(User.builder().login("newproducer").email("psk-isf-sts@wp.pl").password(encoder.encode("test"))
-				.roles(Collections.singletonList((Roles.ROLE_PRODUCER.toRole()))).companyName("TestFirmaNewProducer")
-				.address("Tajna 5/12 Kielce").phoneNumber("123456789").disabled(true).build());
+		userRepo.save(User.builder().login("newproducer").displayLogin("newproducer").email("psk-isf-sts@wp.pl")
+				.password(encoder.encode("test")).roles(Collections.singletonList((Roles.ROLE_PRODUCER.toRole())))
+				.companyName("TestFirmaNewProducer").address("Tajna 5/12 Kielce").phoneNumber("123456789")
+				.disabled(true).build());
 
-		userRepo.save(User.builder().login("developer").email("developer@test.pl").password(encoder.encode("test"))
-				.roles(developerRoles).build());
+		userRepo.save(User.builder().login("developer").displayLogin("developer").email("developer@test.pl")
+				.password(encoder.encode("test")).roles(developerRoles).build());
 	}
 
 	void addSerials() {
@@ -127,20 +130,19 @@ public class Initializer {
 		Genre przygodowy = genreRepository.save(Genre.builder().name("Przygodowy").build());
 		Genre sciFi = genreRepository.save(Genre.builder().name("sci-fi").build());
 
-		
-		
-		
-		
-		SerialElement mJakMiloscSerial = serialRepository.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("M jak miłość")
+		SerialElement mJakMiloscSerial = serialRepository.save(SerialElement.builder()
+				.elementType(SerialElementType.SERIAL).title("M jak miłość")
 				.description("Polski serial telewizyjny. Akcja rozgrywa się i tak dalej").producer(user).active(true)
 				.actors(actorListMJakMilosc).genres(Arrays.asList(dramat, przygodowy)).thumbnail(mJakMilosc).build());
-		
+
 		serialRepository.save(SerialElement.builder().elementType(SerialElementType.SEASON).parent(mJakMiloscSerial)
-				.title("Sezon 1 M jak miłość").description("Pierwszy sezon...").producer(user).active(true).thumbnail(noPhoto).build());
-		
+				.title("Sezon 1 M jak miłość").description("Pierwszy sezon...").producer(user).active(true)
+				.thumbnail(noPhoto).build());
+
 		serialRepository.save(SerialElement.builder().elementType(SerialElementType.SEASON).parent(mJakMiloscSerial)
-				.title("Sezon 2 M jak miłość").description("Drugi sezon...").producer(user).active(true).thumbnail(noPhoto).build());
-		
+				.title("Sezon 2 M jak miłość").description("Drugi sezon...").producer(user).active(true)
+				.thumbnail(noPhoto).build());
+
 		serialRepository.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("Pierwsza Miłość")
 				.description("Polski serial telewizyjny. Akcja rozgrywa się i tak dalej").producer(user).active(true)
 				.actors(actorList).genres(Arrays.asList(dramat, przygodowy, horror)).thumbnail(pierwszaMilosc).build());
@@ -159,7 +161,6 @@ public class Initializer {
 				.producer(user).active(true).actors(actorList).genres(Arrays.asList(dramat, sciFi)).thumbnail(noPhoto)
 				.build());
 
-		
 	}
 
 	void setContractTemplate() throws IOException {
@@ -173,93 +174,88 @@ public class Initializer {
 		Files.copy(source.toPath(), file.toPath());
 	}
 
-	
-
-
-
 	void addPlaylist() {
-		
+
 		User user = userRepo.findByLogin("producer");
-		
+
 		Genre komedia = genreRepository.save(Genre.builder().name("komedia").build());
 		Genre historyczny = genreRepository.save(Genre.builder().name("historyczny").build());
 		Genre kulinarny = genreRepository.save(Genre.builder().name("kulinarny").build());
-		
+
 		Picture noPhoto = pictureRepo.save(Picture.builder().name("no_photo.jpg").build());
-		
+
 		List<Actor> actorList = Arrays.asList(
 				actorRepo.save(Actor.builder().name("Aktor1").surname("A").thumbnail(noPhoto).build()),
 				actorRepo.save(Actor.builder().name("Aktor2").surname("B").thumbnail(noPhoto).build()),
 				actorRepo.save(Actor.builder().name("Aktor3").surname("C").thumbnail(noPhoto).build()),
 				actorRepo.save(Actor.builder().name("Aktor4").surname("D").thumbnail(noPhoto).build()));
-		
-		SerialElement serial1 = serialRepository.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("Ewa gotuje")
-				.description("Polski serial telewizyjny. Akcja rozgrywa się i tak dalej").producer(user).active(true)
-				.actors(actorList).genres(Arrays.asList(kulinarny)).thumbnail(noPhoto).build());
-		
-		SerialElement serial2 = serialRepository.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("Jak poznałem Waszą matkę")
-				.description("Polski serial telewizyjny. Akcja rozgrywa się i tak dalej").producer(user).active(true)
-				.actors(actorList).genres(Arrays.asList(komedia)).thumbnail(noPhoto).build());
-			
-		SerialElement serial3 = serialRepository.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("Gra o tron")
-				.description("Polski serial telewizyjny. Akcja rozgrywa się i tak dalej").producer(user).active(true)
-				.actors(actorList).genres(Arrays.asList(historyczny)).thumbnail(noPhoto).build());
-				
-		
-	
+
+		SerialElement serial1 = serialRepository
+				.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("Ewa gotuje")
+						.description("Polski serial telewizyjny. Akcja rozgrywa się i tak dalej").producer(user)
+						.active(true).actors(actorList).genres(Arrays.asList(kulinarny)).thumbnail(noPhoto).build());
+
+		SerialElement serial2 = serialRepository
+				.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("Jak poznałem Waszą matkę")
+						.description("Polski serial telewizyjny. Akcja rozgrywa się i tak dalej").producer(user)
+						.active(true).actors(actorList).genres(Arrays.asList(komedia)).thumbnail(noPhoto).build());
+
+		SerialElement serial3 = serialRepository
+				.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("Gra o tron")
+						.description("Polski serial telewizyjny. Akcja rozgrywa się i tak dalej").producer(user)
+						.active(true).actors(actorList).genres(Arrays.asList(historyczny)).thumbnail(noPhoto).build());
 
 		PlaylistElement element1 = PlaylistElement.builder().serialElement(serial1).build();
 		PlaylistElement element2 = PlaylistElement.builder().serialElement(serial2).build();
 		PlaylistElement element3 = PlaylistElement.builder().serialElement(serial3).build();
-		
+
 		PlaylistElement element4 = PlaylistElement.builder().serialElement(serial1).build();
 		PlaylistElement element5 = PlaylistElement.builder().serialElement(serial2).build();
 		PlaylistElement element6 = PlaylistElement.builder().serialElement(serial3).build();
-		
-		
+
 		element1.setPrevious(null);
 		element1.setNext(element2);
 		element2.setPrevious(element1);
 		element2.setNext(element3);
 		element3.setPrevious(element2);
 		element3.setNext(null);
-		
+
 		element4.setPrevious(null);
 		element4.setNext(element5);
 		element5.setPrevious(element4);
 		element5.setNext(element6);
 		element6.setPrevious(element5);
 		element6.setNext(null);
-		
-		
+
 		playlistElementRepo.save(element1);
 		playlistElementRepo.save(element2);
 		playlistElementRepo.save(element3);
 		playlistElementRepo.save(element4);
 		playlistElementRepo.save(element5);
 		playlistElementRepo.save(element6);
-		
+
 		List<PlaylistElement> elements = new LinkedList<>();
 		List<PlaylistElement> elements2 = new LinkedList<>();
-		
+
 		elements.add(element1);
 		elements.add(element2);
 		elements.add(element3);
-		
+
 		elements2.add(element5);
 		elements2.add(element6);
 		elements2.add(element4);
 
-		Playlist playlist =  Playlist.builder().name("Pierwsza playlista").user(userRepo.findByLogin("viewer")).elements(elements).build();
-		Playlist playlist2 =  Playlist.builder().name("Druga playlista").user(userRepo.findByLogin("viewer")).elements(elements2).build();
-		Playlist playlist3 =  Playlist.builder().name("Trzecia playlista").user(userRepo.findByLogin("viewer")).build();
-		
+		Playlist playlist = Playlist.builder().name("Pierwsza playlista").user(userRepo.findByLogin("viewer"))
+				.elements(elements).build();
+		Playlist playlist2 = Playlist.builder().name("Druga playlista").user(userRepo.findByLogin("viewer"))
+				.elements(elements2).build();
+		Playlist playlist3 = Playlist.builder().name("Trzecia playlista").user(userRepo.findByLogin("viewer")).build();
+
 		playlistRepo.save(playlist);
 		playlistRepo.save(playlist2);
 		playlistRepo.save(playlist3);
 	}
 
-	
 	@PostConstruct
 	void initApplication() throws IOException {
 		addSystemUsers();
