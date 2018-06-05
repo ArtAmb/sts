@@ -1,0 +1,42 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:replace="head :: head"></div>
+
+<body>
+
+
+	<div th:replace="mainMenu :: mainMenu"></div>
+	<div class="content">
+
+
+		 <h1 th:text="${serial.title}"></h1>
+		<h3>Obsada serialu:</h3>
+		
+		<table style="margin-top: 30px;">
+			<tr th:if="${actors.empty}">
+				<td colspan="4">Brak seriali</td>
+			</tr>
+			<tr th:each="actor : ${actors}">
+				<td><image th:if="${actor?.thumbnailUrl == null}"
+						th:src="@{/images/no_photo.jpg}" width="75" height="100" /> <image
+						th:if="${actor?.thumbnailUrl != null}"
+						th:src="${actor.thumbnailUrl}" width="75" height="100" /></td>
+				<td><p th:text="${actor.name} + ' '+ ${actor.surname}"></p></td>
+				<td><a  class="mybutton">Usuñ</a></td>
+			</tr>
+
+		</table>
+
+
+
+
+
+
+
+	</div>
+
+	<div th:replace="footer :: footer"></div>
+</body>
+
+</html>

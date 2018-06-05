@@ -1,6 +1,6 @@
 package psk.isf.sts.entity;
 
-import java.sql.Timestamp;
+import java.sql.Date;
 import java.util.Collection;
 
 import lombok.AllArgsConstructor;
@@ -25,9 +25,9 @@ public class SimpleSerialElement {
 	private SerialElement parent;
 	private Collection<Genre> genres;
 	private Collection<Comment> comments;
-	private Timestamp startDate;
-	private long durationInSec;
-	private long daysToNextEpisode;
+	private Date startDate;
+	private Long durationInSec;
+	private Long daysToNextEpisode;
 	private boolean active;
 	private String linkToWatch;
 	private User producer;

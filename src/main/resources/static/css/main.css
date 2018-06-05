@@ -385,3 +385,15 @@ figcaption
 		float: none;
 	}
 }
+.season-title
+{
+	font-size:32px; 
+	margin:10px;
+	float: left;
+}
+.season-buttons
+{
+	float:left;
+	margin: 10px;
+	
+}

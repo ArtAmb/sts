@@ -9,25 +9,47 @@
 	<div th:replace="mainMenu :: mainMenu"></div>
 	<div class="content">
 
-
-		<h1>M jak miłość</h1>
-		<span style="font-size:22px; margin-top:10px">Sezon 1</span>
-		<button type="submit" sec:authorize="hasRole('ROLE_ADMIN') OR hasRole('ROLE_PRODUCER')">Dodaj odcinek</button>
-		<div class="episode">
-			<h3>Odcinek 1 - "Dobrze w domu"</h3>
-			<h4>Data emisji: 10.12.1998</h4>
-			<p>Lorem ipsum dolor sit amet,
-				consectetur adipiscing elit. Nulla sed posuere eros. Ut ac leo
-				bibendum, fringilla nunc eu, sollicitudin magna. Etiam venenatis
-				tristique felis, vitae fermentum ante tempus vel. Donec nisi nisl,
-				euismod vitae bibendum efficitur, feugiat sit amet dui. Cras orci
-				mi, malesuada id efficitur nec, scelerisque at mauris. Integer
-				varius iaculis enim quis ultrices.</p>
-			<button type="submit" sec:authorize="hasRole('ROLE_VIEWER')">Obejrzany</button>
-			<button type="submit" sec:authorize="hasRole('ROLE_VIEWER')">Oglądaj teraz</button>
-			<button type="submit" sec:authorize="hasRole('ROLE_ADMIN') OR hasRole('ROLE_PRODUCER')">Edytuj</button>
+		<div style="float: left;">
+			<image th:if="${thumbnailUrl != null}" th:src="${thumbnailUrl}"
+				width="100" height="100" />
 		</div>
-	
+		<span style="font-size: 32px; margin: 10px; float: left;"
+			th:text="${serial.title}"></span> <a
+			sec:authorize="hasRole('ROLE_VIEWER')" class="mybutton">Dodaj do
+			obejrzanych </a> <a
+			th:href="@{'/view/serial/' + ${serial.id} + '/add-episode' }"
+			sec:authorize="hasRole('ROLE_PRODUCER')" class="mybutton">Dodaj
+			odcinek </a>
+		<div style="clear: both;"></div>
+		<div class="episode">
+			<h1>Odcinki:</h1>
+			<table style="margin-top: 30px;">
+				<tr th:if="${episodes.empty}">
+					<td colspan="5">Brak odcinków</td>
+				</tr>
+				<tr th:each="episode: ${episodes}">
+					<td><image th:if="${episode?.thumbnail?.url == null}"
+							th:src="@{/images/no_photo.jpg}" width="100" height="100" /> <image
+							th:if="${episode?.thumbnail?.url != null}"
+							th:src="${episode.thumbnail.url}" width="100" height="100" /></td>
+					<td><p th:text="${episode.title}"></p> Data emisji: <span
+						th:text="${episode.startDate}"></span>
+						<p th:text="${episode.description}"></p></td>
+					<td><a sec:authorize="hasRole('ROLE_VIEWER')" class="mybutton">Dodaj
+							do obejrzanych </a></td>
+					<td><a sec:authorize="hasRole('ROLE_VIEWER')" class="mybutton">Oglądaj
+							teraz </a></td>
+					<td><a
+						sec:authorize="hasRole('ROLE_VIEWER')"
+						class="mybutton">Dodaj do obejrzanych </a>
+						<a sec:authorize="hasRole('ROLE_ADMIN') OR hasRole('ROLE_PRODUCER')" class="mybutton">Edytuj
+					</a></td>
+
+				</tr>
+			</table>
+
+		</div>
+
 
 
 

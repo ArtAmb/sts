@@ -21,11 +21,14 @@
 					</label>
 				</div>
 				<div th:if="${czyDodano == false}">
-					<a th:href="@{'/serial/addToMine/' + ${serial.id}}" type="submit"
-						class="mybutton">Dodaj do "moich" </a>
+					<a
+						th:href="@{'/view/addToMine/' + ${serial.id} +'?context=' + 'serial-detail'}"
+						type="submit" class="mybutton">Dodaj do "moich" </a>
+
 				</div>
 				<div th:if="${czyDodano == true}">
-					<a th:href="@{'/serial/deleteFromMine/' + ${mySerial.id}}"
+					<a
+						th:href="@{'/view/deleteFromMine/' + ${mySerial.id}+'?context=' + 'serial-detail'}"
 						type="submit" class="mybutton">Usun z "moich" </a>
 				</div>
 
@@ -35,10 +38,10 @@
 				<button type="submit" class="serial-button">Strona
 					producenta</button>
 				<div style="margin-top: 30px;">
-					<span style="font-size: 22px; margin-top: 10px">Obsada</span>
-					<button type="submit"
-						sec:authorize="hasRole('ROLE_ADMIN') OR hasRole('ROLE_PRODUCER')">Konfiguruj</button>
-
+					<span style="font-size: 22px; ">Obsada:</span> <a style="margin-top:10px"
+						sec:authorize="hasRole('ROLE_ADMIN') OR hasRole('ROLE_PRODUCER')"
+						th:href="@{'/view/serial/' + ${serial.id}+'/actors'}" type="submit"
+						class="mybutton">Konfiguruj obsade</a>
 				</div>
 				<div class="actors" th:each="actor : ${actors}">
 					<figure>
@@ -77,8 +80,10 @@
 						<td colspan="4">Brak sezonow</td>
 					</tr>
 					<tr th:each="seasons : ${seasons}">
-						<td><image th:src="${seasons.thumbnail.url}" width="100"
-								height="100" /></td>
+						<td><image th:if="${seasons?.thumbnail?.url == null}"
+								th:src="@{/images/no_photo.jpg}" width="100" height="100" /> <image
+								th:if="${seasons?.thumbnail?.url != null}"
+								th:src="${seasons.thumbnail.url}" width="100" height="100" /></td>
 						<td><p th:text="${seasons.title}"></p>
 							<p th:text="${seasons.description}"></p>
 							<div class="progress">
@@ -87,15 +92,17 @@
 									70%</div>
 							</div></td>
 						<td><a th:id="'season-detail' + ${seasons.id}"
-							th:href="@{'/view/serial/' + ${seasons.id}}" class="mybutton">Szczegoly</a></td>
+							th:href="@{'/view/serial/' + ${serial.id}+'/season/' + ${seasons.id}}"
+							class="mybutton">Szczegoly</a></td>
 
 					</tr>
 				</table>
 
-				<div style="margin-top:20px">
+				<div style="margin-top: 20px">
 					<a
 						sec:authorize="hasRole('ROLE_ADMIN') OR hasRole('ROLE_PRODUCER')"
-						th:href="@{'/serial/' + ${serial.id}} + '/add-season/' " class="mybutton">Dodaj sezon</a> 						
+						th:href="@{'/view/serial/' + ${serial.id} + '/add-season' }"
+						class="mybutton">Dodaj sezon</a>
 				</div>
 
 
