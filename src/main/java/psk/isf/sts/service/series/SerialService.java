@@ -64,15 +64,11 @@ public class SerialService {
 	}
 
 	public SerialElement findById(Long id) {
-		return serialRepo.findById(id).get();
-	}
-
-	public SerialElement findBy(Long id) {
-		return serialRepo.findById(id).get();
+		return serialRepo.findOne(id);
 	}
 
 	public MySerial findMySerialById(Long id) {
-		return mySerialRepo.findById(id).get();
+		return mySerialRepo.findOne(id);
 	}
 
 	@Autowired
@@ -96,9 +92,9 @@ public class SerialService {
 	}
 
 	public void deleteFromMine(Long id) {
-		mySerialRepo.deleteById(id);
+		mySerialRepo.delete(id);
 	}
-
+	
 	public void validate(CommentDTO dto) throws Exception {
 		if (StringUtils.isNullOrEmpty(dto.getContent())) {
 			throw new Exception("Komentarz nie może być pusty!");

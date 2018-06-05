@@ -6,8 +6,6 @@ import java.security.Principal;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.social.connect.ConnectionRepository;
-import org.springframework.social.facebook.api.Facebook;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +17,7 @@ import psk.isf.sts.entity.Contract;
 import psk.isf.sts.entity.UserType;
 import psk.isf.sts.entity.registration.Roles;
 import psk.isf.sts.entity.registration.User;
+import psk.isf.sts.entity.registration.UserSourceSystem;
 import psk.isf.sts.service.TaskService;
 import psk.isf.sts.service.authorization.AuthorizationService;
 import psk.isf.sts.service.authorization.UserService;
@@ -55,9 +54,6 @@ public class AuthenticationController {
 	@Autowired
 	private TaskService taskService;
 
-	private Facebook facebook;
-	private ConnectionRepository connectionRepository;
-
 	@GetMapping("/view/sign-in")
 	public String singIn() {
 		return getTemplateDir("logIn");
@@ -74,7 +70,8 @@ public class AuthenticationController {
 			@RequestParam(name = activateUserControlParam, required = false) String requestParamControlParam,
 			HttpSession session, Model model, Principal principal) {
 		User user = userService.findByLogin(principal.getName());
-		model.addAttribute("userLogin", principal.getName());
+		model.addAttribute("userLogin", user.getDisplayLogin());
+		model.addAttribute("isFromOurSystem", user.getSourceSystem().equals(UserSourceSystem.STS));
 
 		if (user.getThumbnail() != null)
 			model.addAttribute("thumbnailUrl", user.getThumbnail().toURL());
@@ -92,8 +89,8 @@ public class AuthenticationController {
 	public String saveProfileSettings(@ModelAttribute MyProfileDTO dto, Model model, Principal principal)
 			throws IllegalStateException, IOException {
 		User user = userService.setThumbnailForUserByLogin(principal.getName(), dto.getPicture());
-
-		model.addAttribute("userLogin", principal.getName());
+		model.addAttribute("isFromOurSystem", user.getSourceSystem().equals(UserSourceSystem.STS));
+		model.addAttribute("userLogin", user.getDisplayLogin());
 		if (user.getThumbnail() != null)
 			model.addAttribute("thumbnailUrl", user.getThumbnail().toURL());
 
@@ -102,8 +99,9 @@ public class AuthenticationController {
 
 	@PostMapping("/view/my-profile/delete-thumbnail")
 	public String deleteThumbnail(Model model, Principal principal) throws IllegalStateException, IOException {
-		model.addAttribute("userLogin", principal.getName());
 		User user = userService.findByLogin(principal.getName());
+		model.addAttribute("isFromOurSystem", user.getSourceSystem().equals(UserSourceSystem.STS));
+		model.addAttribute("userLogin", user.getDisplayLogin());
 		user.setThumbnail(null);
 		userService.saveUser(user);
 		return getTemplateDir("my-profile");

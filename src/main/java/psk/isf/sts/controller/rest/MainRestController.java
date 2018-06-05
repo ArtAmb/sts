@@ -25,7 +25,7 @@ public class MainRestController {
 
 	@GetMapping("rest/")
 	public MultipartFile getFileByPictureId(@PathVariable Long id) {
-		Picture picture = pictureRepo.findById(id).get();
+		Picture picture = pictureRepo.findOne(id);
 		File file = new File(picture.getPath());
 
 		return null;

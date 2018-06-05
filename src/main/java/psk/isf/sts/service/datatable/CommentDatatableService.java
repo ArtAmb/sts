@@ -22,7 +22,7 @@ public class CommentDatatableService extends AbstractDatatableService<Comment> {
 	
 	@Override
 	protected Page<Comment> findElements(PageDTO page, PagingAndSortingRepository<Comment, Long> repository) {
-		return commentRepository.findAllByAcceptedIsFalse(PageRequest.of(page.getStart(), page.getHowMany()));
+		return commentRepository.findAllByAcceptedIsFalse(new PageRequest(page.getStart(), page.getHowMany()));
 	}
 	
 	@Override

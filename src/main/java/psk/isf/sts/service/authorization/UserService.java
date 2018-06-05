@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import psk.isf.sts.entity.Contract;
 import psk.isf.sts.entity.Picture;
 import psk.isf.sts.entity.registration.User;
+import psk.isf.sts.entity.registration.UserSourceSystem;
 import psk.isf.sts.repository.ContractRepository;
 import psk.isf.sts.repository.UserRepository;
 import psk.isf.sts.service.PictureService;
@@ -30,7 +31,7 @@ public class UserService {
 	private PictureService pictureService;
 
 	public User findById(Long id) {
-		return userRepo.findById(id).get();
+		return userRepo.findOne(id);
 	}
 
 	public User findByLogin(String login) {
@@ -52,7 +53,7 @@ public class UserService {
 	}
 
 	public void deleteUser(User user) {
-		userRepo.deleteById(user.getId());
+		userRepo.delete(user.getId());
 	}
 
 	public String activateProducerAccount(User user) {
@@ -73,8 +74,12 @@ public class UserService {
 	}
 
 	public void removeNotRegisteredProducerAccount(User user, Contract contract) {
-		contractRepository.deleteById(contract.getId());
+		contractRepository.delete(contract.getId());
 		deleteUser(user);
+	}
+
+	public User findFacebookUserByFbId(String fbId) {
+		return userRepo.findByExtIdAndSourceSystem(fbId, UserSourceSystem.FACEBOOK);
 	}
 
 }

@@ -38,7 +38,7 @@ public class TaskDatatableService extends AbstractDatatableService<Task> {
 
 	@Override
 	protected Page<Task> findElements(PageDTO page, PagingAndSortingRepository<Task, Long> repository) {
-		return taskRepository.findByStateIn(Arrays.asList(TaskState.NEW, TaskState.IN_PROGRESS), PageRequest.of(page.getStart(), page.getHowMany()));
+		return taskRepository.findByStateIn(Arrays.asList(TaskState.NEW, TaskState.IN_PROGRESS), new PageRequest(page.getStart(), page.getHowMany()));
 	}
 	
 	@Override

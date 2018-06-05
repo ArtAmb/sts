@@ -3,6 +3,7 @@ package psk.isf.sts.entity.registration;
 import java.util.Collection;
 import java.util.LinkedList;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -37,6 +38,8 @@ public class User {
 	@Column(unique = true, nullable = false)
 	private String login;
 
+	private String displayLogin;
+
 	@Column(nullable = false)
 	private String password;
 
@@ -60,7 +63,8 @@ public class User {
 
 	@ManyToMany
 	private Collection<Gallery> galleries;
-	@ManyToOne
+
+	@ManyToOne(cascade = { CascadeType.ALL })
 	private Picture thumbnail;
 
 	private String companyName;
@@ -82,9 +86,15 @@ public class User {
 
 	public boolean hasRole(String roleName) {
 		for (Role role : roles) {
-			if (role.equals(roleName))
+			if (role.getName().equals(roleName))
 				return true;
 		}
 		return false;
 	}
+
+	@Enumerated(EnumType.STRING)
+	@Builder.Default
+	private UserSourceSystem sourceSystem = UserSourceSystem.STS;
+
+	private String extId;
 }

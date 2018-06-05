@@ -1,0 +1,15 @@
+<div th:replace="head :: head"> </div>
+<script th:inline='javascript'>
+    
+    $.ajax({
+        url: [[${ fbSignInUrl }]],
+       
+        type: 'POST',
+        success: function (data) {
+            location.replace("/view/my-profile");
+        },
+        error: function () {
+            location.replace("/error");
+        },
+    });
+</script>

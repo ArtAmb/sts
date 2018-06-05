@@ -19,17 +19,37 @@
             <button type="submit">Zaloguj</button>
         </form>
 
-        <div id="message"> [[${message}]] </div>
+        <div id="message" th:text="${message}"></div>
         <br/>
         <br/>
         <div>
             <a th:href="@{/view/sign-up}">Nie masz konta?</a>
         </div>
+        
+        <form action="/connect/facebook" method="POST">
+			<input type="hidden" name="scope" value="user_posts" />
+			<p><button type="submit">Zaloguj się przez Facebook'a</button></p>
+		</form>
+
         <div>
             <a th:href="@{/view/sign-up/producer}">Jestes producentem i chcesz wypromować swój serial?</a>
         </div>
     </div>
 
+    <div id="testUsersButton" style="color: white; cursor: pointer;">Pokaz test userow</div>
+    <div id="testUsers">
+        email: tpxnvnrzdu_1528024143@tfbnw.net
+        <br/> email: sqkbubsbsb_1528024140@tfbnw.net
+        <br/> haslo dla wszystkich: test123456
+        <br/> user admin: email i haslo takie jak dla maila (jest w propertisach)
+    </div>
+    <script th:inline='javascript'>
+        $('#testUsers').hide();
+        $('#testUsersButton').click(function(){
+            $('#testUsers').show();
+        });
+
+    </script>
     <div th:replace="footer :: footer"> </div>
 </body>
 

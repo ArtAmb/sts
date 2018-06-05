@@ -23,9 +23,14 @@ public class Picture {
 
 	private String name;
 	private String path;
+	@Builder.Default
+	private boolean fromOurServer = true;
 
 	public String toURL() {
-		return "/images/" + name;
+		if(fromOurServer)
+			return "/images/" + name;
+		else 
+			return path;
 	}
 	
 	public ViewPicture toViewPicture() {

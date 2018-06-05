@@ -1,35 +1,52 @@
 package psk.isf.sts.service.authorization;
 
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.h2.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-import psk.isf.sts.entity.Contract;
+import psk.isf.sts.entity.Picture;
 import psk.isf.sts.entity.UserType;
+import psk.isf.sts.entity.registration.Role;
 import psk.isf.sts.entity.registration.Roles;
 import psk.isf.sts.entity.registration.User;
+import psk.isf.sts.entity.registration.UserSourceSystem;
 import psk.isf.sts.repository.UserRepository;
 import psk.isf.sts.service.authorization.dto.AuthorizationDTO;
-import psk.isf.sts.service.authorization.dto.ProducerDTO;
 import psk.isf.sts.service.authorization.dto.UserDTO;
 
 @Service
 public class AuthorizationService {
 
 	private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+	private RestTemplate restTemplate = new RestTemplate();
 
+	@Value("${sts.self.url}")
+	private String selfUrl;
 	@Autowired
 	private UserRepository userRepo;
+
+	@Autowired
+	private UserService userService;
 
 	public boolean createNewUser(AuthorizationDTO dto, UserDTO userDTO) throws Exception {
 		validate(dto);
 
-		User user = User.builder().login(dto.getLogin()).password(encoder.encode(dto.getPassword()))
-				.email(dto.getEmail()).roles(Arrays.asList(userDTO.getRole())).userType(userDTO.getUserType())
-				.real(userDTO.isReal()).build();
+		User user = User.builder()
+				.login(dto.getLogin())
+				.displayLogin(dto.getLogin())
+				.password(encoder.encode(dto.getPassword()))
+				.email(dto.getEmail())
+				.roles(Arrays.asList(userDTO.getRole()))
+				.userType(userDTO.getUserType())
+				.real(userDTO.isReal())
+				.build();
 
 		userRepo.save(user);
 		return true;
@@ -100,6 +117,7 @@ public class AuthorizationService {
 
 		User user = User.builder()
 				.login(dto.getLogin())
+				.displayLogin(dto.getLogin())
 				.password(encoder.encode(password))
 				.email(dto.getEmail())
 				.roles(Arrays.asList(Roles.ROLE_PRODUCER.toRole()))
@@ -113,7 +131,54 @@ public class AuthorizationService {
 				.build();
 
 		return userRepo.save(user);
+	}
 
+	public String getFbUserLogin(org.springframework.social.facebook.api.User fbProfile) {
+		return "fbUser_" + fbProfile.getId();
+	}
+
+	public User createFacebookUser(org.springframework.social.facebook.api.User fbProfile) {
+		String fbuserLogin = getFbUserLogin(fbProfile);
+		Picture thumbnail = Picture.builder().fromOurServer(false).name("fbPicture_" + fbProfile.getId())
+				.path("http://graph.facebook.com/" + fbProfile.getId() + "/picture?type=square").build();
+
+		List<Role> roleList = new LinkedList<>();
+		roleList.add(Roles.ROLE_VIEWER.toRole());
+
+		User user = User.builder().login(fbuserLogin)
+				.displayLogin(fbProfile.getFirstName() + " " + fbProfile.getLastName())
+				.password(encoder.encode(new RandomStringGenerator(8).rand()))
+				.email(fbProfile.getEmail())
+				.roles(roleList)
+				.userType(UserType.VIEWER)
+				.sourceSystem(UserSourceSystem.FACEBOOK)
+				.active(true)
+				.real(true)
+				.thumbnail(thumbnail)
+				.extId(fbProfile.getId())
+				.build();
+
+		return userRepo.save(user);
+	}
+
+	public String createSingInFbUserUrl(org.springframework.social.facebook.api.User fbProfile) {
+		User user = userService.findFacebookUserByFbId(fbProfile.getId());
+		String rawPassword = new RandomStringGenerator(8).rand();
+
+		user.setPassword(encoder.encode(rawPassword));
+		userRepo.save(user);
+
+		return String.format("/login?login=%s&password=%s", user.getLogin(), rawPassword);
+	}
+
+	public void singInFbUser(User user) {
+		String rawPassword = new RandomStringGenerator(8).rand();
+
+		user.setPassword(encoder.encode(rawPassword));
+		userRepo.save(user);
+
+		restTemplate.postForObject(selfUrl + String.format("/login?login=%s&password=%s", user.getLogin(), rawPassword),
+				null, Void.class);
 	}
 
 }

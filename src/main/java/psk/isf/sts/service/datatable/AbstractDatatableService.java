@@ -23,7 +23,7 @@ public abstract class AbstractDatatableService<Element> {
 	}
 
 	protected Page<Element> findElements(PageDTO page, PagingAndSortingRepository<Element, Long> repository) {
-		return repository.findAll(PageRequest.of(page.getStart(), page.getHowMany()));
+		return repository.findAll(new PageRequest(page.getStart(), page.getHowMany()));
 	}
 
 	abstract public Row prepareOneRow(Element element);

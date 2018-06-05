@@ -34,7 +34,7 @@
             </div>
             <button type="submit">Zarejestruj</button>
         </form>
-        <div id="message"> [[${message}]] </div>
+        <div id="message" th:text="${message}"> </div>
     </div>
 
     <div th:replace="footer :: footer"> </div>
