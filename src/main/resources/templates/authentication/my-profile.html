@@ -15,9 +15,11 @@
 
         <br/>
         <br/>
-        Zdjecie profilowe:
-        <br/>
-        <br/>
+        <th:block th:if="!${isFromOurSystem}">
+            Zdjecie profilowe:
+            <br/>
+            <br/>
+        </th:block>
         <image th:if="${thumbnailUrl != null}" th:src="${thumbnailUrl}" />
 
 
