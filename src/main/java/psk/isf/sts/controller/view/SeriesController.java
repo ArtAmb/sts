@@ -1,10 +1,14 @@
 package psk.isf.sts.controller.view;
 
+import java.io.IOException;
 import java.security.Principal;
-import java.text.SimpleDateFormat;
+import java.text.ParseException;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,6 +19,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.xml.sax.SAXException;
 
 import psk.isf.sts.entity.Actor;
 import psk.isf.sts.entity.Genre;
@@ -23,8 +29,10 @@ import psk.isf.sts.entity.SerialElement;
 import psk.isf.sts.entity.SimpleSerialElement;
 import psk.isf.sts.entity.registration.Roles;
 import psk.isf.sts.entity.registration.User;
+import psk.isf.sts.repository.SerialRepository;
 import psk.isf.sts.service.authorization.UserService;
 import psk.isf.sts.service.series.SerialService;
+import psk.isf.sts.service.series.SerialsXmlParserService;
 import psk.isf.sts.service.series.dto.CommentDTO;
 import psk.isf.sts.service.series.dto.EpisodeDTO;
 import psk.isf.sts.service.series.dto.SeasonDTO;
@@ -36,9 +44,16 @@ import psk.isf.sts.service.series.mapper.GenreMapper;
 public class SeriesController {
 	@Autowired
 	private SerialService serialService;
+
 	@Autowired
 	private UserService userService;
-
+	
+	@Autowired
+	private SerialsXmlParserService serialsXmlParserService;
+	
+	@Autowired
+	private SerialRepository serialRepo;
+	
 	public static String templateDirRoot = "series/";
 
 	private String getTemplateDir(String templateName) {
@@ -394,4 +409,16 @@ public class SeriesController {
 			
 		return getTemplateDir("actors");
 	}
+	
+	@PostMapping("/view/add-serial/by/xml")
+	public String addSerial(@ModelAttribute MultipartFile xmlFile, Principal principal) throws ParserConfigurationException, SAXException, IOException, ParseException {
+		User user = userService.findByLogin(principal.getName());
+		
+		List<SerialElement> serials = serialsXmlParserService.parseXmlToGetSerials(xmlFile, user);
+		
+		serialRepo.save(serials);
+		
+		return "redirect:/view/serials";
+	}
+	
 }

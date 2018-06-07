@@ -3,6 +3,7 @@ package psk.isf.sts.entity;
 import java.sql.Date;
 import java.util.Collection;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -43,7 +44,7 @@ public class SerialElement {
 
 	private float rating;
 
-	@OneToMany//(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "serial")
 	private Collection<SerialElement> elements;
 
@@ -76,29 +77,12 @@ public class SerialElement {
 
 	@ManyToOne
 	private Picture thumbnail;
-	
+
 	public SimpleSerialElement toSimpleSerialElement() {
-		return SimpleSerialElement
-				.builder()
-				.id(id)
-				.title(title)
-				.description(description)
-				.state(state)
-				.elementType(elementType)
-				.rating(rating)
-				.elementType(elementType)
-				.actors(actors)
-				.parent(parent)
-				.genres(genres)
-				.comments(comments)
-				.startDate(startDate)
-				.durationInSec(durationInSec)
-				.daysToNextEpisode(daysToNextEpisode)
-				.active(active)
-				.linkToWatch(linkToWatch)
-				.producer(producer)
-				.gallery(gallery)
-				.thumbnail(thumbnail != null ? thumbnail.toViewPicture() : null)
-				.build();
+		return SimpleSerialElement.builder().id(id).title(title).description(description).state(state)
+				.elementType(elementType).rating(rating).elementType(elementType).actors(actors).parent(parent)
+				.genres(genres).comments(comments).startDate(startDate).durationInSec(durationInSec)
+				.daysToNextEpisode(daysToNextEpisode).active(active).linkToWatch(linkToWatch).producer(producer)
+				.gallery(gallery).thumbnail(thumbnail != null ? thumbnail.toViewPicture() : null).build();
 	}
 }

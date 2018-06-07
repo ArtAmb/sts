@@ -50,7 +50,7 @@ public class SerialsXmlParserService {
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-	public void addSerial(MultipartFile file, User user)
+	public List<SerialElement> parseXmlToGetSerials(MultipartFile file, User user)
 			throws ParserConfigurationException, SAXException, IOException, ParseException {
 
 		List<SerialElement> serials = new LinkedList<>();
@@ -72,7 +72,7 @@ public class SerialsXmlParserService {
 				NodeList episodes = seasonXml.getElementsByTagName("episode");
 
 				for (int k = 0; k < episodes.getLength(); ++k) {
-					Element episodeXml = (Element) seasons.item(k);
+					Element episodeXml = (Element) episodes.item(k);
 					SerialElement episode = createEpisode(episodeXml, season, user);
 
 					season.getElements().add(episode);
@@ -85,6 +85,7 @@ public class SerialsXmlParserService {
 			serials.add(serial);
 		}
 
+		return serials;
 	}
 
 	private SerialElement createSeason(Element xmlSerialElement, SerialElement parentElement, User user) {
@@ -111,11 +112,14 @@ public class SerialsXmlParserService {
 
 		SerialElement season = SerialElement.builder().title(title).description(description)
 				.active(active != null ? Boolean.parseBoolean(active) : true).elementType(SerialElementType.SERIAL)
-				.parent(null).thumbnail(pictureService.findNoPhotoPicture()).linkToWatch(linkToWatch).producer(user)
-				.state(State.valueOf(state))
-				.genres(Arrays.stream(genres.split(" "))
-						.map(g -> genreDAO.findByName(g).stream().findFirst().orElse(null)).filter(g -> g != null)
-						.collect(Collectors.toList()))
+				.parent(null).thumbnail(pictureService.findNoPhotoPicture()).linkToWatch(
+						linkToWatch)
+				.producer(user).state(state != null ? State.valueOf(state) : State.RUNNING)
+				.genres(genres != null
+						? Arrays.stream(genres.split(" "))
+								.map(g -> genreDAO.findByName(g).stream().findFirst().orElse(null))
+								.filter(g -> g != null).collect(Collectors.toList())
+						: null)
 				.elements(new LinkedList<>()).build();
 
 		return season;
@@ -133,7 +137,7 @@ public class SerialsXmlParserService {
 				.active(StringUtils.isNullOrEmpty(active) ? Boolean.parseBoolean(active) : true)
 				.elementType(SerialElementType.EPISODE).parent(parentElement)
 				.thumbnail(pictureService.findNoPhotoPicture()).producer(user)
-				.startDate(StringUtils.isNullOrEmpty(startDate) ? new Date(sdf.parse(startDate).getTime()) : null)
+				.startDate(!StringUtils.isNullOrEmpty(startDate) ? new Date(sdf.parse(startDate).getTime()) : null)
 				.durationInSec(durationInSec != null ? Long.parseLong(durationInSec) : null).build();
 
 		return season;
