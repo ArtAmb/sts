@@ -153,11 +153,25 @@ public class SerialService {
 			MultipartFile thumbnail) throws Exception {
 		validate(dto);
 
-		Picture picture = pictureService.savePicture(login, thumbnail);
+		Picture picture = null;
+		if(StringUtils.isNullOrEmpty(thumbnail.getOriginalFilename())) {
+			picture = pictureService.findNoPhotoPicture();
 
-		SerialElement season = SerialElement.builder().title(dto.getTitle()).description(dto.getDescription())
-				.active(true).elementType(SerialElementType.SEASON).parent(parentElement).thumbnail(picture)
-				.producer(user).build();
+		} else {
+			picture = pictureService.savePicture(login, thumbnail);
+		}
+
+
+		SerialElement season = SerialElement
+				.builder()
+				.title(dto.getTitle())
+				.description(dto.getDescription())
+				.active(true)
+				.elementType(SerialElementType.SEASON)
+				.parent(parentElement)
+				.thumbnail(picture)
+				.producer(user)
+				.build();
 
 		return serialRepo.save(season);
 	}
@@ -169,11 +183,6 @@ public class SerialService {
 		if (StringUtils.isNullOrEmpty(dto.getDescription())) {
 			throw new Exception("Opis nie może być pusty!");
 		}
-
-		if (StringUtils.isNullOrEmpty(dto.getPicture().getOriginalFilename())) {
-			throw new Exception("Błąd dodawania zdjęcia!");
-		}
-
 	}
 
 	public SerialElement addEpisode(User user, EpisodeDTO dto, SerialElement parentElement, String login,
@@ -210,11 +219,6 @@ public class SerialService {
 		if (StringUtils.isNullOrEmpty(dto.getDescription())) {
 			throw new Exception("Opis nie może być pusty!");
 		}
-
-//		if (StringUtils.isNullOrEmpty(dto.getPicture().getOriginalFilename())) {
-//			throw new Exception("Błąd dodawania zdjęcia!");
-//		}
-
 	}
 
 }
