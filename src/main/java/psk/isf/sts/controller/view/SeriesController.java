@@ -33,6 +33,7 @@ import psk.isf.sts.repository.SerialRepository;
 import psk.isf.sts.service.authorization.UserService;
 import psk.isf.sts.service.series.SerialService;
 import psk.isf.sts.service.series.SerialsXmlParserService;
+import psk.isf.sts.service.series.dto.ActorDTO;
 import psk.isf.sts.service.series.dto.CommentDTO;
 import psk.isf.sts.service.series.dto.EpisodeDTO;
 import psk.isf.sts.service.series.dto.SeasonDTO;
@@ -395,7 +396,7 @@ public class SeriesController {
 		model.addAttribute("message", "Komentarz zostanie dodany po zatwierdzeniu przez adminiastatora");
 		return getTemplateDir("serial-detail");
 	}
-
+	@PreAuthorize("hasRole('" + Roles.Consts.ROLE_PRODUCER + "')")
 	@GetMapping("/view/serial/{id}/actors")
 	public String actorsView(@PathVariable Long id, Model model) {
 		
@@ -421,4 +422,48 @@ public class SeriesController {
 		return "redirect:/view/serials";
 	}
 	
+	@PreAuthorize("hasRole('" + Roles.Consts.ROLE_PRODUCER + "')")
+	@GetMapping("/view/serial/{id}/actors/add-actor")
+	public String addActorView(@PathVariable Long id, Model model) {
+		
+		SerialElement serialElement = serialService.findById(id);
+	
+		model.addAttribute("serial", serialElement);
+	
+		Collection<Actor> actors = serialElement.getActors();
+		model.addAttribute("actors", actors.stream().map(ActorMapper::map).collect(Collectors.toList()));
+		
+			
+		return getTemplateDir("add-actor");
+	}
+	@PreAuthorize("hasRole('" + Roles.Consts.ROLE_PRODUCER + "')")
+	@PostMapping("/view/serial/{id}/actors/add-actor")
+	public String addActorView(@PathVariable Long id, @ModelAttribute ActorDTO dto, Principal principal, Model model) {
+		
+		if (principal == null) {
+			model.addAttribute("message", "Tylko producent może dodawać odcinki!");
+			return getTemplateDir("add-episode");
+		}
+		User user = userService.findByLogin(principal.getName());
+		
+		SerialElement serialElement = serialService.findById(id);	
+		model.addAttribute("serial", serialElement);
+	
+		Collection<Actor> actors = serialElement.getActors();
+		model.addAttribute("actors", actors.stream().map(ActorMapper::map).collect(Collectors.toList()));
+					
+		
+
+		try {
+			serialService.addActor(user, dto, serialElement, principal.getName(), dto.getPicture(), actors);
+		} catch (Exception e) {
+			model.addAttribute("message", e.getMessage());
+			model.addAttribute(dto);
+			return getTemplateDir("add-actor");
+		}
+
+		model.addAttribute("message", "Aktor został dodany");
+				
+		return getTemplateDir("add-actor");
+	}
 }

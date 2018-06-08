@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import psk.isf.sts.entity.Actor;
 import psk.isf.sts.entity.Comment;
 import psk.isf.sts.entity.Genre;
 import psk.isf.sts.entity.MySerial;
@@ -15,11 +16,13 @@ import psk.isf.sts.entity.Picture;
 import psk.isf.sts.entity.SerialElement;
 import psk.isf.sts.entity.SerialElementType;
 import psk.isf.sts.entity.registration.User;
+import psk.isf.sts.repository.ActorRepository;
 import psk.isf.sts.repository.CommentRepository;
 import psk.isf.sts.repository.GenreRepository;
 import psk.isf.sts.repository.MySerialRepository;
 import psk.isf.sts.repository.SerialRepository;
 import psk.isf.sts.service.PictureService;
+import psk.isf.sts.service.series.dto.ActorDTO;
 import psk.isf.sts.service.series.dto.CommentDTO;
 import psk.isf.sts.service.series.dto.EpisodeDTO;
 import psk.isf.sts.service.series.dto.SeasonDTO;
@@ -37,6 +40,9 @@ public class SerialService {
 	@Autowired
 	private MySerialRepository mySerialRepo;
 
+	@Autowired
+	private ActorRepository actorRepo;
+
 	public Collection<SerialElement> allSerialsElements() {
 		return (Collection<SerialElement>) serialRepo.findAll();
 	}
@@ -44,22 +50,22 @@ public class SerialService {
 	public Collection<SerialElement> allSerials() {
 		return serialRepo.findByParentAndElementType(null, SerialElementType.SERIAL);
 	}
-	
+
 	public Collection<MySerial> allMySerials() {
 		return (Collection<MySerial>) mySerialRepo.findAll();
 	}
 
 	public Collection<SerialElement> findAllEpisodesOfSeason(SerialElement season) {
-		if(!season.getElementType().equals(SerialElementType.SEASON))
+		if (!season.getElementType().equals(SerialElementType.SEASON))
 			throw new IllegalStateException("Przekazany element nie jest sezonem");
-		
+
 		return serialRepo.findByParentAndElementType(season, SerialElementType.EPISODE);
 	}
-	
+
 	public Collection<SerialElement> findAllSeasonsOfSerial(SerialElement serial) {
-		if(!serial.getElementType().equals(SerialElementType.SERIAL))
+		if (!serial.getElementType().equals(SerialElementType.SERIAL))
 			throw new IllegalStateException("Przekazany element nie jest serialem");
-		
+
 		return serialRepo.findByParentAndElementType(serial, SerialElementType.SEASON);
 	}
 
@@ -94,7 +100,7 @@ public class SerialService {
 	public void deleteFromMine(Long id) {
 		mySerialRepo.delete(id);
 	}
-	
+
 	public void validate(CommentDTO dto) throws Exception {
 		if (StringUtils.isNullOrEmpty(dto.getContent())) {
 			throw new Exception("Komentarz nie może być pusty!");
@@ -109,17 +115,9 @@ public class SerialService {
 		validate(dto);
 		Picture picture = pictureService.savePicture(login, thumbnail);
 
-		SerialElement serial = SerialElement
-				.builder()
-				.title(dto.getTitle())
-				.description(dto.getDescription())
-				.state(dto.getState())
-				.durationInSec(dto.getDurationInSec())
-				.linkToWatch(dto.getLinkToWatch())
-				.active(true)
-				.elementType(SerialElementType.SERIAL)
-				.genres(dto.getGenres())
-				.thumbnail(picture)
+		SerialElement serial = SerialElement.builder().title(dto.getTitle()).description(dto.getDescription())
+				.state(dto.getState()).durationInSec(dto.getDurationInSec()).linkToWatch(dto.getLinkToWatch())
+				.active(true).elementType(SerialElementType.SERIAL).genres(dto.getGenres()).thumbnail(picture)
 				.producer(user).build();
 
 		return serialRepo.save(serial);
@@ -187,27 +185,20 @@ public class SerialService {
 
 	public SerialElement addEpisode(User user, EpisodeDTO dto, SerialElement parentElement, String login,
 			MultipartFile thumbnail) throws Exception {
-		
+
 		validate(dto);
 
 		Picture picture = null;
-		if(StringUtils.isNullOrEmpty(thumbnail.getOriginalFilename())) {
+		if (StringUtils.isNullOrEmpty(thumbnail.getOriginalFilename())) {
 			picture = pictureService.findNoPhotoPicture();
 
 		} else {
 			picture = pictureService.savePicture(login, thumbnail);
 		}
 
-		SerialElement episode = SerialElement.builder()
-				.title(dto.getTitle())
-				.description(dto.getDescription())
-				.active(true)
-				.elementType(SerialElementType.EPISODE)
-				.parent(parentElement)
-				.thumbnail(picture)
-				.producer(user)
-				.startDate(dto.getStartDate())
-				.build();
+		SerialElement episode = SerialElement.builder().title(dto.getTitle()).description(dto.getDescription())
+				.active(true).elementType(SerialElementType.EPISODE).parent(parentElement).thumbnail(picture)
+				.producer(user).startDate(dto.getStartDate()).build();
 
 		return serialRepo.save(episode);
 	}
@@ -218,6 +209,34 @@ public class SerialService {
 		}
 		if (StringUtils.isNullOrEmpty(dto.getDescription())) {
 			throw new Exception("Opis nie może być pusty!");
+		}
+	}
+
+	public Actor addActor(User user, ActorDTO dto, SerialElement parentElement, String login, MultipartFile thumbnail, Collection<Actor> actors)
+			throws Exception {
+
+		validate(dto);
+
+		Picture picture = null;
+		if (StringUtils.isNullOrEmpty(thumbnail.getOriginalFilename())) {
+			picture = pictureService.findNoPhotoPicture();
+
+		} else {
+			picture = pictureService.savePicture(login, thumbnail);
+		}
+
+		Actor actor = Actor.builder().name(dto.getName()).surname(dto.getSurname()).thumbnail(picture).build();
+		
+		actors.add(actor);
+		return actorRepo.save(actor);
+	}
+
+	public void validate(ActorDTO dto) throws Exception {
+		if (StringUtils.isNullOrEmpty(dto.getName())) {
+			throw new Exception("Imie nie może być puste!");
+		}
+		if (StringUtils.isNullOrEmpty(dto.getSurname())) {
+			throw new Exception("Nazwisko nie może być puste!");
 		}
 	}
 
