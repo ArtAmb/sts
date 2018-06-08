@@ -10,9 +10,14 @@
 	<div class="content">
 
 
-		 <h1 th:text="${serial.title}"></h1>
+		<h1 th:text="${serial.title}"></h1>
 		<h3>Obsada serialu:</h3>
-		
+		<form
+			th:action="@{'/view/serial/' + ${serial.id} + '/actors/add-actor' }"
+			method="get">
+
+			<button type="submit">Dodaj do obsady</button>
+		</form>
 		<table style="margin-top: 30px;">
 			<tr th:if="${actors.empty}">
 				<td colspan="4">Brak seriali</td>
@@ -23,7 +28,8 @@
 						th:if="${actor?.thumbnailUrl != null}"
 						th:src="${actor.thumbnailUrl}" width="75" height="100" /></td>
 				<td><p th:text="${actor.name} + ' '+ ${actor.surname}"></p></td>
-				<td><a  class="mybutton">Usuñ</a></td>
+				<td><a class="mybutton">Edytuj</a></td>
+				<td><a class="mybutton">Usuñ</a></td>
 			</tr>
 
 		</table>

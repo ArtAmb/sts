@@ -9,7 +9,7 @@
 	<div th:replace="mainMenu :: mainMenu"></div>
 
 	<div class="content">
-	Dodaj odcinek do <span th:text="${serial.title}"></span>:
+	<h2> Dodaj odcinek do <span th:text="${serial.title}"></span>:</h2>
 		<form th:action="@{'/view/serial/' + ${serial.id} + '/add-episode' }"
 			method="post" enctype="multipart/form-data">
 			<div>
@@ -37,6 +37,7 @@
 		</form>
 		<div id="message" th:text="${message}"> </div>
 	</div>
+	
 	<div th:replace="footer :: footer"></div>
 </body>
 

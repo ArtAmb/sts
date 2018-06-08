@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:replace="head :: head"></div>
+
+<body>
+
+
+	<div th:replace="mainMenu :: mainMenu"></div>
+	<div class="content">
+
+
+		 <h1 th:text="${serial.title}"></h1>
+		<h3>Obsada serialu:</h3>
+		<h2>Dodaj:</h2>
+<form th:action="@{'/view/serial/' + ${serial.id} + '/actors/add-actor' }"
+			method="post" enctype="multipart/form-data">
+			<div>
+				<label>Imiê: </label> <input type="text" name="name"
+					th:value="${name}" />
+			</div>
+			<div>
+				<label>Nazwisko: </label> <input type="text" name="surname"
+					th:value="${surname}" />
+			</div>
+
+		
+			<div style="margin: 10px 0">
+				<label style="margin-top: 5px;">ZdjÄ™cie aktora: </label>
+				<input name="picture" type="file" />
+			</div>
+
+
+
+			<button type="submit">Dodaj aktora</button>
+		</form>		
+		
+		<form
+			th:action="@{'/view/serial/' + ${serial.id} + '/actors' }"
+			method="get">
+
+			<button type="submit">Wroæ do obsady</button>
+		</form>
+		
+
+
+	</div>
+
+	<div th:replace="footer :: footer"></div>
+</body>
+
+</html>
