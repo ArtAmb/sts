@@ -2,6 +2,8 @@ package psk.isf.sts.service.series;
 
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.h2.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import psk.isf.sts.entity.MySerial;
 import psk.isf.sts.entity.Picture;
 import psk.isf.sts.entity.SerialElement;
 import psk.isf.sts.entity.SerialElementType;
+import psk.isf.sts.entity.State;
 import psk.isf.sts.entity.registration.User;
 import psk.isf.sts.repository.ActorRepository;
 import psk.isf.sts.repository.CommentRepository;
@@ -115,9 +118,16 @@ public class SerialService {
 		validate(dto);
 		Picture picture = pictureService.savePicture(login, thumbnail);
 
-		SerialElement serial = SerialElement.builder().title(dto.getTitle()).description(dto.getDescription())
-				.state(dto.getState()).durationInSec(dto.getDurationInSec()).linkToWatch(dto.getLinkToWatch())
-				.active(true).elementType(SerialElementType.SERIAL).genres(dto.getGenres()).thumbnail(picture)
+		SerialElement serial = SerialElement.builder()
+				.title(dto.getTitle())
+				.description(dto.getDescription())
+				.state(dto.getState())
+				.durationInSec(dto.getDurationInSec())
+				.linkToWatch(dto.getLinkToWatch())
+				.active(true)
+				.elementType(SerialElementType.SERIAL)
+				.genres(dto.getGenres())
+				.thumbnail(picture)
 				.producer(user).build();
 
 		return serialRepo.save(serial);
@@ -152,24 +162,16 @@ public class SerialService {
 		validate(dto);
 
 		Picture picture = null;
-		if(StringUtils.isNullOrEmpty(thumbnail.getOriginalFilename())) {
+		if (StringUtils.isNullOrEmpty(thumbnail.getOriginalFilename())) {
 			picture = pictureService.findNoPhotoPicture();
 
 		} else {
 			picture = pictureService.savePicture(login, thumbnail);
 		}
 
-
-		SerialElement season = SerialElement
-				.builder()
-				.title(dto.getTitle())
-				.description(dto.getDescription())
-				.active(true)
-				.elementType(SerialElementType.SEASON)
-				.parent(parentElement)
-				.thumbnail(picture)
-				.producer(user)
-				.build();
+		SerialElement season = SerialElement.builder().title(dto.getTitle()).description(dto.getDescription())
+				.active(true).elementType(SerialElementType.SEASON).parent(parentElement).thumbnail(picture)
+				.producer(user).build();
 
 		return serialRepo.save(season);
 	}
@@ -196,9 +198,16 @@ public class SerialService {
 			picture = pictureService.savePicture(login, thumbnail);
 		}
 
-		SerialElement episode = SerialElement.builder().title(dto.getTitle()).description(dto.getDescription())
-				.active(true).elementType(SerialElementType.EPISODE).parent(parentElement).thumbnail(picture)
-				.producer(user).startDate(dto.getStartDate()).build();
+		SerialElement episode = SerialElement.builder()
+				.title(dto.getTitle())
+				.description(dto.getDescription())
+				.active(true)
+				.elementType(SerialElementType.EPISODE)
+				.parent(parentElement)
+				.thumbnail(picture)
+				.producer(user)
+				.startDate(dto.getStartDate())
+				.build();
 
 		return serialRepo.save(episode);
 	}
@@ -212,8 +221,8 @@ public class SerialService {
 		}
 	}
 
-	public Actor addActor(User user, ActorDTO dto, SerialElement parentElement, String login, MultipartFile thumbnail, Collection<Actor> actors)
-			throws Exception {
+	public Actor addActor(User user, ActorDTO dto, SerialElement parentElement, String login, MultipartFile thumbnail,
+			Collection<Actor> actors) throws Exception {
 
 		validate(dto);
 
@@ -226,7 +235,7 @@ public class SerialService {
 		}
 
 		Actor actor = Actor.builder().name(dto.getName()).surname(dto.getSurname()).thumbnail(picture).build();
-		
+
 		actors.add(actor);
 		return actorRepo.save(actor);
 	}
@@ -238,6 +247,30 @@ public class SerialService {
 		if (StringUtils.isNullOrEmpty(dto.getSurname())) {
 			throw new Exception("Nazwisko nie może być puste!");
 		}
+	}
+
+	public SerialElement findNextEpisodeDate(SerialElement serial) {
+
+		if(serial.getState() == State.FINISHED )
+			return null;
+		
+		List<SerialElement> seasons = serial.getElements().stream()
+				.sorted((s1, s2) -> Long.compare(s1.getId(), s2.getId())).collect(Collectors.toList());
+
+		if (seasons.isEmpty())
+			return null;
+
+		SerialElement lastSeason = seasons.get(seasons.size() - 1);
+
+		List<SerialElement> episodes = lastSeason.getElements().stream()
+				.sorted((s1, s2) -> Long.compare(s1.getId(), s2.getId())).collect(Collectors.toList());
+
+		if (episodes.isEmpty())
+			return null;
+
+		SerialElement lastEpisode = episodes.get(episodes.size() - 1);
+
+		return lastEpisode;
 	}
 
 }

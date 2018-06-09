@@ -1,9 +1,7 @@
 package psk.isf.sts.entity;
 
-import java.sql.Timestamp;
-import java.util.Collection;
-
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,7 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import psk.isf.sts.entity.SerialElement.SerialElementBuilder;
 import psk.isf.sts.entity.registration.User;
 
 @Entity
@@ -30,7 +27,7 @@ public class MySerial {
 	@ManyToOne
 	private User user;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	private SerialElement serial;
 
 	private boolean trace;

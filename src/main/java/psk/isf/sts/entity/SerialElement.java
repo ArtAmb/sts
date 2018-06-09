@@ -34,6 +34,7 @@ public class SerialElement {
 	@Column(nullable = false)
 	private String title;
 	private String description;
+	private Long ordinalNumber;
 
 	@Enumerated(EnumType.STRING)
 	private State state;

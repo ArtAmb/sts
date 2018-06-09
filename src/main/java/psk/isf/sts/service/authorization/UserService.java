@@ -1,6 +1,7 @@
 package psk.isf.sts.service.authorization;
 
 import java.io.IOException;
+import java.util.Collection;
 
 import org.h2.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,6 +81,10 @@ public class UserService {
 
 	public User findFacebookUserByFbId(String fbId) {
 		return userRepo.findByExtIdAndSourceSystem(fbId, UserSourceSystem.FACEBOOK);
+	}
+
+	public Collection<User> findAll() {
+		return userRepo.findAll();
 	}
 
 }
