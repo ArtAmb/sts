@@ -11,7 +11,12 @@
 		<span style="font-size: 22px;">Wszystkie seriale</span> <a
 			sec:authorize="hasRole('ROLE_ADMIN') OR hasRole('ROLE_PRODUCER')"
 			th:href="@{add-serial}" class="mybutton">Dodaj serial</a>
+		
 
+			<form sec:authorize="hasRole('ROLE_PRODUCER')" th:action="@{/view/add-serial/by/xml}" method="post" enctype="multipart/form-data">
+                <input name="xmlFile" type="file" />
+                <button type="submit">Dodaj serial przez XML</button>
+            </form>
 
 		<table style="margin-top: 30px;">
 			<tr th:if="${serials.empty}">

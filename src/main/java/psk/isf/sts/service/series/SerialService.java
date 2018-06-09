@@ -13,7 +13,6 @@ import psk.isf.sts.entity.Comment;
 import psk.isf.sts.entity.Genre;
 import psk.isf.sts.entity.MySerial;
 import psk.isf.sts.entity.Picture;
-import psk.isf.sts.entity.Playlist;
 import psk.isf.sts.entity.SerialElement;
 import psk.isf.sts.entity.SerialElementType;
 import psk.isf.sts.entity.registration.User;
