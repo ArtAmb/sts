@@ -38,10 +38,11 @@
 				<button type="submit" class="serial-button">Strona
 					producenta</button>
 				<div style="margin-top: 30px;">
-					<span style="font-size: 22px; ">Obsada:</span> <a style="margin-top:10px"
+					<span style="font-size: 22px;">Obsada:</span> <a
+						style="margin-top: 10px"
 						sec:authorize="hasRole('ROLE_ADMIN') OR hasRole('ROLE_PRODUCER')"
-						th:href="@{'/view/serial/' + ${serial.id}+'/actors'}" type="submit"
-						class="mybutton">Konfiguruj obsade</a>
+						th:href="@{'/view/serial/' + ${serial.id}+'/actors'}"
+						type="submit" class="mybutton">Konfiguruj obsade</a>
 				</div>
 				<div class="actors" th:each="actor : ${actors}">
 					<figure>
@@ -69,8 +70,12 @@
 					<b>Gatunek:</b> <span class="genres"
 						th:each="genre : ${serial.genres}" th:text="${genre.name}"></span>
 				</p>
-				<button type="submit"
-					sec:authorize="hasRole('ROLE_ADMIN') OR hasRole('ROLE_PRODUCER')">Edytuj</button>
+
+				<form
+					sec:authorize="hasRole('ROLE_ADMIN') OR hasRole('ROLE_PRODUCER')"
+					th:action="@{'/view/serial/' + ${serial.id} +'/edit'}" method="GET" >
+					<button type="submit">Edytuj</button>
+				</form>
 
 
 

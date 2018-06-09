@@ -29,7 +29,9 @@
 						th:src="${actor.thumbnailUrl}" width="75" height="100" /></td>
 				<td><p th:text="${actor.name} + ' '+ ${actor.surname}"></p></td>
 				<td><a class="mybutton">Edytuj</a></td>
-				<td><a class="mybutton">Usuñ</a></td>
+				<td><form th:action="@{'/view/serial/' + ${serial.id} + '/actors/'+ ${actor.id}+'/delete'}" method="POST">
+					<button type="submit">UsuÅ„</button>
+				</form></td>
 			</tr>
 
 		</table>

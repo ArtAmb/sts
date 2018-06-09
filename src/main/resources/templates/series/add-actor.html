@@ -34,7 +34,7 @@
 
 			<button type="submit">Dodaj aktora</button>
 		</form>		
-		
+		<div id="message" th:text="${message}"> </div>
 		<form
 			th:action="@{'/view/serial/' + ${serial.id} + '/actors' }"
 			method="get">

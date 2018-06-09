@@ -36,14 +36,17 @@
 						th:text="${episode.startDate}"></span>
 						<p th:text="${episode.description}"></p></td>
 					<td><a sec:authorize="hasRole('ROLE_VIEWER')" class="mybutton">Dodaj
-							do obejrzanych </a></td>
-					<td><a sec:authorize="hasRole('ROLE_VIEWER')" class="mybutton">Oglądaj
-							teraz </a></td>
-					<td><a
-						sec:authorize="hasRole('ROLE_VIEWER')"
-						class="mybutton">Dodaj do obejrzanych </a>
-						<a sec:authorize="hasRole('ROLE_ADMIN') OR hasRole('ROLE_PRODUCER')" class="mybutton">Edytuj
-					</a></td>
+							do obejrzanych </a> <a sec:authorize="hasRole('ROLE_VIEWER')"
+						class="mybutton">Oglądaj teraz </a> <a
+						sec:authorize="hasRole('ROLE_ADMIN') OR hasRole('ROLE_PRODUCER')"
+						class="mybutton">Edytuj </a>
+
+						<form
+							sec:authorize="hasRole('ROLE_ADMIN') OR hasRole('ROLE_PRODUCER')"
+							th:action="@{'/view/serial/' + ${serial.id} + '/delete'}"
+							method="POST">
+							<button type="submit">Usuń</button>
+						</form></td>
 
 				</tr>
 			</table>

@@ -13,6 +13,7 @@ import psk.isf.sts.entity.Comment;
 import psk.isf.sts.entity.Genre;
 import psk.isf.sts.entity.MySerial;
 import psk.isf.sts.entity.Picture;
+import psk.isf.sts.entity.Playlist;
 import psk.isf.sts.entity.SerialElement;
 import psk.isf.sts.entity.SerialElementType;
 import psk.isf.sts.entity.registration.User;
@@ -113,7 +114,13 @@ public class SerialService {
 
 	public SerialElement addSerial(User user, SerialDTO dto, String login, MultipartFile thumbnail) throws Exception {
 		validate(dto);
-		Picture picture = pictureService.savePicture(login, thumbnail);
+		Picture picture = null;
+		if (StringUtils.isNullOrEmpty(thumbnail.getOriginalFilename())) {
+			picture = pictureService.findNoPhotoPicture();
+
+		} else {
+			picture = pictureService.savePicture(login, thumbnail);
+		}
 
 		SerialElement serial = SerialElement.builder().title(dto.getTitle()).description(dto.getDescription())
 				.state(dto.getState()).durationInSec(dto.getDurationInSec()).linkToWatch(dto.getLinkToWatch())
@@ -137,10 +144,7 @@ public class SerialService {
 			throw new Exception("Status nie może być pusty!");
 		}
 
-		if (StringUtils.isNullOrEmpty(dto.getPicture().getOriginalFilename())) {
-			throw new Exception("Błąd dodawania zdjęcia!");
-		}
-
+	
 	}
 
 	public Collection<Genre> allGenres() {
@@ -151,11 +155,20 @@ public class SerialService {
 			MultipartFile thumbnail) throws Exception {
 		validate(dto);
 
-		Picture picture = pictureService.savePicture(login, thumbnail);
+		
+		Picture picture = null;
+		if (StringUtils.isNullOrEmpty(thumbnail.getOriginalFilename())) {
+			picture = pictureService.findNoPhotoPicture();
+
+		} else {
+			picture = pictureService.savePicture(login, thumbnail);
+		}
 
 		SerialElement season = SerialElement.builder().title(dto.getTitle()).description(dto.getDescription())
 				.active(true).elementType(SerialElementType.SEASON).parent(parentElement).thumbnail(picture)
 				.producer(user).build();
+		
+		
 
 		return serialRepo.save(season);
 	}
@@ -168,9 +181,7 @@ public class SerialService {
 			throw new Exception("Opis nie może być pusty!");
 		}
 
-		if (StringUtils.isNullOrEmpty(dto.getPicture().getOriginalFilename())) {
-			throw new Exception("Błąd dodawania zdjęcia!");
-		}
+		
 
 	}
 
@@ -208,8 +219,8 @@ public class SerialService {
 
 	}
 
-	public Actor addActor(User user, ActorDTO dto, SerialElement parentElement, String login, MultipartFile thumbnail, Collection<Actor> actors)
-			throws Exception {
+	public Actor addActor(User user, ActorDTO dto, SerialElement parentElement, String login, MultipartFile thumbnail,
+			Collection<Actor> actors) throws Exception {
 
 		validate(dto);
 
@@ -222,7 +233,7 @@ public class SerialService {
 		}
 
 		Actor actor = Actor.builder().name(dto.getName()).surname(dto.getSurname()).thumbnail(picture).build();
-		
+
 		actors.add(actor);
 		return actorRepo.save(actor);
 	}
@@ -233,6 +244,32 @@ public class SerialService {
 		}
 		if (StringUtils.isNullOrEmpty(dto.getSurname())) {
 			throw new Exception("Nazwisko nie może być puste!");
+		}
+	}
+
+	public void deleteActor(User user, Long id) throws IllegalAccessException {
+
+		Actor actor = actorRepo.findOne(id);
+		if (actor == null)
+			return;
+		
+		actorRepo.delete(actor);
+	}
+
+	public void deleteSerialElement(User user, Long id) throws IllegalAccessException {
+
+		SerialElement element = serialRepo.findOne(id);
+		
+		if (element == null)
+			return;
+		
+		serialRepo.delete(element);
+	}
+	
+	public void checkIfMine(SerialElement serialElement, User user) throws IllegalAccessException
+	{
+		if (user.getId() != serialElement.getProducer().getId()) {
+			throw new IllegalAccessException("Nie masz uprawnień do zarządzania tym serialem!");
 		}
 	}
 

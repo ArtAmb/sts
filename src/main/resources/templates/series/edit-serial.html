@@ -1,0 +1,59 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:replace="head :: head"></div>
+
+<body>
+
+
+	<div th:replace="mainMenu :: mainMenu"></div>
+
+	<div class="content">
+
+		<form th:action="@{/view/}" method="post"
+			enctype="multipart/form-data">
+			<div>
+				<label>Tytul: </label> <input type="text" name="title"
+					th:value="${title}" />
+			</div>
+
+			<div>
+				<label>Status:</label> <br /> <select th:name="state">
+					<option th:each="state : ${T(psk.isf.sts.entity.State).values()}"
+						th:value="${state}"  th:text="${state.displayName}" ></option>
+				</select>
+			</div>
+			<div>
+				<label>Opis:</label> <br />
+				<textarea style="width: 40%; height: 200px;" name="description"
+					th:value="${description}"></textarea>
+			</div>
+			<div>
+				<label>Czas trwania: </label> <input type="text"
+					name="durationInSec" th:value="${durationInSec}" />
+			</div>
+			<div>
+				<label>Link do oglądania: </label> <input type="text"
+					name="linkToWatch" th:value="${linkToWatch}" />
+			</div>
+
+			<b>Gatunek:</b>
+			<div style="margin-left: 15px;" th:each="genre : ${genres}">
+
+				<input type="checkbox" th:name="genres" th:value="${genre.id}" /> <label
+					th:text="${genre.name}"></label>
+			</div>
+
+			<div style="margin: 10px 0">
+				<label style="margin-top: 5px;">Zdjęcie główne serialu: </label>
+				<input name="picture" type="file" />
+			</div>
+
+			<button type="submit">Edytuj serial</button>
+		</form>
+		<div id="message" th:text="${message}"></div>
+	</div>
+	<div th:replace="footer :: footer"></div>
+</body>
+
+</html>

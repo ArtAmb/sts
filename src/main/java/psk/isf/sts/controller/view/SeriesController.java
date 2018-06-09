@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import psk.isf.sts.entity.Actor;
 import psk.isf.sts.entity.Genre;
 import psk.isf.sts.entity.MySerial;
+import psk.isf.sts.entity.Playlist;
 import psk.isf.sts.entity.SerialElement;
 import psk.isf.sts.entity.SimpleSerialElement;
 import psk.isf.sts.entity.registration.Roles;
@@ -158,8 +159,10 @@ public class SeriesController {
 		}
 
 		User user = userService.findByLogin(principal.getName());
-
+		
+		
 		try {
+			serialService.checkIfMine(serialElement, user);
 			serialService.addSeason(user, dto, serialElement, principal.getName(), dto.getPicture());
 		} catch (Exception e) {
 			model.addAttribute("message", e.getMessage());
@@ -197,6 +200,7 @@ public class SeriesController {
 		User user = userService.findByLogin(principal.getName());
 
 		try {
+			serialService.checkIfMine(serialElement, user);
 			serialService.addEpisode(user, dto, serialElement, principal.getName(), dto.getPicture());
 		} catch (Exception e) {
 			model.addAttribute("message", e.getMessage());
@@ -381,53 +385,53 @@ public class SeriesController {
 		model.addAttribute("message", "Komentarz zostanie dodany po zatwierdzeniu przez adminiastatora");
 		return getTemplateDir("serial-detail");
 	}
+
 	@PreAuthorize("hasRole('" + Roles.Consts.ROLE_PRODUCER + "')")
 	@GetMapping("/view/serial/{id}/actors")
 	public String actorsView(@PathVariable Long id, Model model) {
-		
+
 		SerialElement serialElement = serialService.findById(id);
-	
+
 		model.addAttribute("serial", serialElement);
-	
+
 		Collection<Actor> actors = serialElement.getActors();
 		model.addAttribute("actors", actors.stream().map(ActorMapper::map).collect(Collectors.toList()));
-		
-			
+
 		return getTemplateDir("actors");
 	}
+
 	@PreAuthorize("hasRole('" + Roles.Consts.ROLE_PRODUCER + "')")
 	@GetMapping("/view/serial/{id}/actors/add-actor")
 	public String addActorView(@PathVariable Long id, Model model) {
-		
+
 		SerialElement serialElement = serialService.findById(id);
-	
+
 		model.addAttribute("serial", serialElement);
-	
+
 		Collection<Actor> actors = serialElement.getActors();
 		model.addAttribute("actors", actors.stream().map(ActorMapper::map).collect(Collectors.toList()));
-		
-			
+
 		return getTemplateDir("add-actor");
 	}
+
 	@PreAuthorize("hasRole('" + Roles.Consts.ROLE_PRODUCER + "')")
 	@PostMapping("/view/serial/{id}/actors/add-actor")
 	public String addActorView(@PathVariable Long id, @ModelAttribute ActorDTO dto, Principal principal, Model model) {
-		
+
 		if (principal == null) {
 			model.addAttribute("message", "Tylko producent może dodawać odcinki!");
 			return getTemplateDir("add-episode");
 		}
 		User user = userService.findByLogin(principal.getName());
-		
-		SerialElement serialElement = serialService.findById(id);	
+
+		SerialElement serialElement = serialService.findById(id);
 		model.addAttribute("serial", serialElement);
-	
+
 		Collection<Actor> actors = serialElement.getActors();
 		model.addAttribute("actors", actors.stream().map(ActorMapper::map).collect(Collectors.toList()));
-					
-		
 
 		try {
+			serialService.checkIfMine(serialElement, user);
 			serialService.addActor(user, dto, serialElement, principal.getName(), dto.getPicture(), actors);
 		} catch (Exception e) {
 			model.addAttribute("message", e.getMessage());
@@ -436,7 +440,81 @@ public class SeriesController {
 		}
 
 		model.addAttribute("message", "Aktor został dodany");
-				
+
 		return getTemplateDir("add-actor");
+	}
+
+	// Usuwanie
+	@PreAuthorize("hasRole('" + Roles.Consts.ROLE_PRODUCER + "')")
+	@PostMapping("/view/serial/{id}/delete")
+	public String deleteEpisode(@PathVariable Long id, Principal principal, Model model) throws IllegalAccessException {
+
+		User user = userService.findByLogin(principal.getName());
+		SerialElement serialElement = serialService.findById(id);
+
+		model.addAttribute("serial", serialElement);
+		model.addAttribute("thumbnailUrl", serialElement.getThumbnail().toURL());
+
+		serialService.checkIfMine(serialElement, user);
+		serialService.deleteSerialElement(user, id);
+
+		Collection<Actor> actors = serialElement.getActors();
+		model.addAttribute("actors", actors.stream().map(ActorMapper::map).collect(Collectors.toList()));
+
+		Collection<SimpleSerialElement> episodes = serialService.findAllEpisodesOfSeason(serialElement).stream()
+				.map(el -> el.toSimpleSerialElement()).collect(Collectors.toList());
+
+		model.addAttribute("episodes", episodes);
+
+		return getTemplateDir("season-detail");
+
+	}
+
+	@PreAuthorize("hasRole('" + Roles.Consts.ROLE_PRODUCER + "')")
+	@PostMapping("/view/serial/{id}/actors/{id}/delete")
+	public String deleteActor(@PathVariable Long id, Principal principal, Model model) throws IllegalAccessException {
+
+		User user = userService.findByLogin(principal.getName());
+		SerialElement serialElement = serialService.findById(id);
+
+		model.addAttribute("serial", serialElement);
+
+		Collection<Actor> actors = serialElement.getActors();
+		model.addAttribute("actors", actors.stream().map(ActorMapper::map).collect(Collectors.toList()));
+
+		serialService.deleteActor(user, id);
+
+		return getTemplateDir("actors");
+
+	}
+	@PreAuthorize("hasRole('" + Roles.Consts.ROLE_PRODUCER + "')")
+	@GetMapping("/view/serial/{id}/edit")
+	public String editSerial(@PathVariable Long id, @ModelAttribute SerialDTO dto, Principal principal, Model model) {
+
+		if (principal == null) {
+			model.addAttribute("message", "Tylko producent może edytować seriale!");
+			return getTemplateDir("add-serial");
+		}
+
+		User user = userService.findByLogin(principal.getName());
+		
+		SerialElement serialElement = serialService.findById(id);
+		model.addAttribute("serial", serialElement);
+
+		Collection<Genre> genres = serialService.allGenres();
+		model.addAttribute("genres", genres.stream().map(GenreMapper::map).collect(Collectors.toList()));
+
+		try {
+			serialService.checkIfMine(serialElement, user);
+			//serialService.addSerial(user, dto, principal.getName(), dto.getPicture());
+		} catch (Exception e) {
+			model.addAttribute("message", e.getMessage());
+			model.addAttribute("title", serialElement.getTitle());
+			model.addAttribute(dto);
+			return getTemplateDir("edit-serial");
+		}
+
+		model.addAttribute("message", "Serial został dodany");
+		return getTemplateDir("edit-serial");
 	}
 }

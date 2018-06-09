@@ -3,6 +3,7 @@ package psk.isf.sts.entity;
 import java.sql.Date;
 import java.util.Collection;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -47,10 +48,10 @@ public class SerialElement {
 	@JoinColumn(name = "serial")
 	private Collection<SerialElement> elements;
 
-	@ManyToMany
+	@ManyToMany //(cascade=CascadeType.ALL)
 	private Collection<Actor> actors;
 
-	@ManyToOne
+	@ManyToOne //(cascade=CascadeType.ALL)
 	private SerialElement parent;
 
 	@ManyToMany
