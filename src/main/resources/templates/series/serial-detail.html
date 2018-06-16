@@ -36,13 +36,13 @@
 				<br/>
 				<div th:if="${czyObejrzano == false}">
 					<a
-						th:href="@{'/view/addToWatched/' + ${serial.id} +'?context=' + 'serial-detail'}"
+						th:href="@{'/view/addSerialToWatched/' + ${serial.id} +'?context=' + 'serial-detail'}"
 						type="submit" class="mybutton">Dodaj do obejrzanych </a>
 
 				</div>
 				<div th:if="${czyObejrzano == true}">
 					<a
-						th:href="@{'/view/deleteFromWatched/' + ${mySerial.id}+'?context=' + 'serial-detail'}"
+						th:href="@{'/view/deleteSerialFromWatched/' + ${mySerial.id}+'?context=' + 'serial-detail'}"
 						type="submit" class="mybutton">Usun z obejrzanych </a>
 				</div>
 

@@ -14,10 +14,23 @@
 				width="100" height="100" />
 		</div>
 		<span style="font-size: 32px; margin: 10px; float: left;"
-			th:text="${serial.title}"></span> <a
-			sec:authorize="hasRole('ROLE_VIEWER')" class="mybutton">Dodaj do
-			obejrzanych </a> <a
-			th:href="@{'/view/serial/' + ${serial.id} + '/add-episode' }"
+			th:text="${serial.title}"></span> 
+			
+			<div th:if="${czyObejrzano == false}">
+					<a sec:authorize="hasRole('ROLE_VIEWER')"
+						th:href="@{'/view/addSeasonToWatched/' + ${serial.id} +'?context=' + 'season-detail'}"
+						type="submit" class="mybutton">Dodaj do obejrzanych </a>
+
+				</div>
+				<div th:if="${czyObejrzano == true}">
+					<a sec:authorize="hasRole('ROLE_VIEWER')"
+						th:href="@{'/view/deleteSeasonFromWatched/' + ${serial.id}+'?context=' + 'season-detail'}"
+						type="submit" class="mybutton">Usun z obejrzanych </a>
+				</div>
+
+				<div id="message" th:text="${message}"></div>
+			
+			<a th:href="@{'/view/serial/' + ${serial.id} + '/add-episode' }"
 			sec:authorize="hasRole('ROLE_PRODUCER')" class="mybutton">Dodaj
 			odcinek </a>
 		<div style="clear: both;"></div>
