@@ -32,6 +32,7 @@ import psk.isf.sts.service.series.SerialsXmlParserService;
 import psk.isf.sts.service.series.dto.ActorDTO;
 import psk.isf.sts.service.series.dto.CommentDTO;
 import psk.isf.sts.service.series.dto.EpisodeDTO;
+import psk.isf.sts.service.series.dto.MyEpisodeDTO;
 import psk.isf.sts.service.series.dto.SeasonDTO;
 import psk.isf.sts.service.series.dto.SerialDTO;
 import psk.isf.sts.service.series.mapper.ActorMapper;
@@ -117,14 +118,44 @@ public class SeriesController {
 		Collection<Actor> actors = serialElement.getActors();
 		model.addAttribute("actors", actors.stream().map(ActorMapper::map).collect(Collectors.toList()));
 
-		Collection<SimpleSerialElement> episodes = serialService.findAllEpisodesOfSeason(serialElement).stream()
-				.map(el -> el.toSimpleSerialElement()).collect(Collectors.toList());
-
-		model.addAttribute("episodes", episodes);
-
+		
+		
+		Collection<MyEpisodeDTO> mojeOdcinki = new LinkedList<>();
+		User user;
 		if (principal == null) {
-			return getTemplateDir("season-detail");
+			for (MySerial element : mySerials) {
+				user = element.getUser();
+				if (element.getSerial().getElementType().equals(SerialElementType.EPISODE) && element.getSerial().getParent().getId()==id ) {
+					
+					MyEpisodeDTO myEpisodeDTO = MyEpisodeDTO.builder().watched(element.isWatched()).ep(element.getSerial().toSimpleSerialElement()).build();
+					mojeOdcinki.add(myEpisodeDTO);
+				}
+			}
 		}
+		else
+		{
+			for (MySerial element : mySerials) {
+				user = element.getUser();
+				if ((user.getLogin().equals(principal.getName())) && element.getSerial().getElementType().equals(SerialElementType.EPISODE) && element.getSerial().getParent().getId()==id ) {
+					
+					MyEpisodeDTO myEpisodeDTO = MyEpisodeDTO.builder().watched(element.isWatched()).ep(element.getSerial().toSimpleSerialElement()).build();
+					mojeOdcinki.add(myEpisodeDTO);
+				}
+			}
+		}
+		
+		if(mojeOdcinki.isEmpty())
+		{
+			Collection<SimpleSerialElement> episodes = serialService.findAllEpisodesOfSeason(serialElement).stream()
+					.map(el -> el.toSimpleSerialElement()).collect(Collectors.toList());
+			for (SimpleSerialElement element : episodes) {
+				MyEpisodeDTO myEpisodeDTO = MyEpisodeDTO.builder().watched(false).ep(element).build();
+				mojeOdcinki.add(myEpisodeDTO);
+			}
+		}
+		model.addAttribute("episodes", mojeOdcinki);
+
+		
 
 		return getTemplateDir("season-detail");
 	}
@@ -437,11 +468,165 @@ public class SeriesController {
 
 		Collection<Actor> actors = serialElement.getActors();
 		model.addAttribute("actors", actors.stream().map(ActorMapper::map).collect(Collectors.toList()));
+//pop
+		Collection<MyEpisodeDTO> mojeOdcinki = new LinkedList<>();
+		User userSerial;
+		if (principal == null) {
+			for (MySerial element : mySerials) {
+				userSerial = element.getUser();
+				if (element.getSerial().getElementType().equals(SerialElementType.EPISODE) && element.getSerial().getParent().getId()==id ) {
+					
+					MyEpisodeDTO myEpisodeDTO = MyEpisodeDTO.builder().watched(element.isWatched()).ep(element.getSerial().toSimpleSerialElement()).build();
+					mojeOdcinki.add(myEpisodeDTO);
+				}
+			}
+		}
+		else
+		{
+			for (MySerial element : mySerials) {
+				userSerial = element.getUser();
+				if ((userSerial.getLogin().equals(principal.getName())) && element.getSerial().getElementType().equals(SerialElementType.EPISODE) && element.getSerial().getParent().getId()==id ) {
+					
+					MyEpisodeDTO myEpisodeDTO = MyEpisodeDTO.builder().watched(element.isWatched()).ep(element.getSerial().toSimpleSerialElement()).build();
+					mojeOdcinki.add(myEpisodeDTO);
+				}
+			}
+		}
+		
+		if(mojeOdcinki.isEmpty())
+		{
+			Collection<SimpleSerialElement> episodes = serialService.findAllEpisodesOfSeason(serialElement).stream()
+					.map(el -> el.toSimpleSerialElement()).collect(Collectors.toList());
+			for (SimpleSerialElement element : episodes) {
+				MyEpisodeDTO myEpisodeDTO = MyEpisodeDTO.builder().watched(false).ep(element).build();
+				mojeOdcinki.add(myEpisodeDTO);
+			}
+		}
+		model.addAttribute("episodes", mojeOdcinki);
 
-		Collection<SimpleSerialElement> episodes = serialService.findAllEpisodesOfSeason(serialElement).stream()
-				.map(el -> el.toSimpleSerialElement()).collect(Collectors.toList());
+		if (principal == null) {
+			model.addAttribute("czyDodano", czyDodano);
+			model.addAttribute("czyObejrzano", czyObejrzano);
+			model.addAttribute("message3", "Musisz sie zalogować!");
+			return getTemplateDir(contextTemplate);
+		}
 
-		model.addAttribute("episodes", episodes);
+		User user = userService.findByLogin(principal.getName());
+		User user2;
+		SerialElement serial2;
+		for (MySerial element : mySerials) {
+			user2 = element.getUser();
+			serial2 = element.getSerial();
+			if (user2.getLogin().equals(principal.getName())) {
+				if ((serial2.getId().equals(id))) {
+					czyDodano = true;
+					model.addAttribute("czyDodano", czyDodano);
+					model.addAttribute("mySerial", element);
+					if(element.isWatched())
+					{
+						czyObejrzano = true;
+						model.addAttribute("message3", "Ten serial został już dodany do obejrzanych!");
+						model.addAttribute("czyObejrzano", czyObejrzano);
+					}
+					
+					else
+					{
+						try {
+							element.setWatched(true);
+							serialService.addToWatched(element, user);
+							czyObejrzano = true;
+						} catch (Exception e) {
+							model.addAttribute("message3", e.getMessage());
+							model.addAttribute("serial", serialElement);
+							model.addAttribute("czyObejrzano", czyObejrzano);
+							return getTemplateDir(contextTemplate);
+						}
+					}
+					model.addAttribute("czyObejrzano",czyObejrzano);
+					if(czyObejrzano == false)
+						model.addAttribute("message3", "Musisz najpierw dodać serial do Moich!");
+					return getTemplateDir(contextTemplate);
+				}
+
+			}
+		}
+
+		
+		mySerials = serialService.allMySerials();
+		for (MySerial element : mySerials) {
+			user2 = element.getUser();
+			serial2 = element.getSerial();
+			if (user2.getLogin().equals(principal.getName()))
+			{
+				if ((serial2.getId().equals(id))) {
+					czyDodano = true;
+					model.addAttribute("czyDodano", czyDodano);
+					
+					model.addAttribute("mySerial", element);
+					if(element.isWatched())
+					{
+						czyObejrzano = true;
+					}
+					model.addAttribute("czyObejrzano", czyObejrzano);
+				}
+
+			}
+		}
+		model.addAttribute("czyDodano", czyDodano);
+		model.addAttribute("czyObejrzano", czyObejrzano);
+		if(czyObejrzano == false)
+			model.addAttribute("message3", "Musisz najpierw dodać serial do Moich!");
+		return getTemplateDir(contextTemplate);
+	}
+	
+	@GetMapping("/view/addEpisodeToWatched/{id}")
+	public String addEpisodeToWatched(@PathVariable Long id, Principal principal, Model model,
+			@RequestParam("context") String contextTemplate) {
+		boolean czyDodano = false;
+		boolean czyObejrzano = false;
+		SerialElement serialElement = serialService.findById(id);
+		Collection<MySerial> mySerials = serialService.allMySerials();
+		model.addAttribute("serial", serialElement);
+
+		model.addAttribute("thumbnailUrl", serialElement.getThumbnail().toURL());
+
+		Collection<Actor> actors = serialElement.getActors();
+		model.addAttribute("actors", actors.stream().map(ActorMapper::map).collect(Collectors.toList()));
+//pop2
+		Collection<MyEpisodeDTO> mojeOdcinki = new LinkedList<>();
+		User userSerial;
+		if (principal == null) {
+			for (MySerial element : mySerials) {
+				userSerial = element.getUser();
+				if (element.getSerial().getElementType().equals(SerialElementType.EPISODE) && element.getSerial().getParent().getId()==id ) {
+					
+					MyEpisodeDTO myEpisodeDTO = MyEpisodeDTO.builder().watched(element.isWatched()).ep(element.getSerial().toSimpleSerialElement()).build();
+					mojeOdcinki.add(myEpisodeDTO);
+				}
+			}
+		}
+		else
+		{
+			for (MySerial element : mySerials) {
+				userSerial = element.getUser();
+				if ((userSerial.getLogin().equals(principal.getName())) && element.getSerial().getElementType().equals(SerialElementType.EPISODE) && element.getSerial().getParent().getId()==id ) {
+					
+					MyEpisodeDTO myEpisodeDTO = MyEpisodeDTO.builder().watched(element.isWatched()).ep(element.getSerial().toSimpleSerialElement()).build();
+					mojeOdcinki.add(myEpisodeDTO);
+				}
+			}
+		}
+		
+		if(mojeOdcinki.isEmpty())
+		{
+			Collection<SimpleSerialElement> episodes = serialService.findAllEpisodesOfSeason(serialElement.getParent()).stream()
+					.map(el -> el.toSimpleSerialElement()).collect(Collectors.toList());
+			for (SimpleSerialElement element : episodes) {
+				MyEpisodeDTO myEpisodeDTO = MyEpisodeDTO.builder().watched(false).ep(element).build();
+				mojeOdcinki.add(myEpisodeDTO);
+			}
+		}
+		model.addAttribute("episodes", mojeOdcinki);
 
 		if (principal == null) {
 			model.addAttribute("czyDodano", czyDodano);
