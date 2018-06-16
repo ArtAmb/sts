@@ -35,4 +35,7 @@ public class PlaylistElement {
 	@ManyToOne(cascade = { CascadeType.ALL })
 	private Playlist playlist;
 
+	public SimplePlaylistElement toSimplePlaylistElement() {
+		return SimplePlaylistElement.builder().id(id).serialElement(serialElement).playlist(playlist).build();
+	}
 }
