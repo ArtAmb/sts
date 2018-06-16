@@ -23,6 +23,7 @@ import psk.isf.sts.entity.MySerial;
 import psk.isf.sts.entity.SerialElement;
 import psk.isf.sts.entity.SimpleSerialElement;
 import psk.isf.sts.entity.registration.Roles;
+import psk.isf.sts.entity.registration.User;
 import psk.isf.sts.repository.SerialRepository;
 import psk.isf.sts.service.authorization.UserService;
 import psk.isf.sts.service.series.SerialService;
