@@ -30,7 +30,13 @@
 				
 				<td><a href="" class="mybutton">W góre</a></td>
 				<td><a href="" class="mybutton">W dół</a></td>
-				<td><a href="" class="mybutton">Usuń</a></td>
+				
+				<td>
+				<form th:action="@{'/view/playlists/' + ${playlist.id} + '/delete/' + ${playlistElements.id}}" method="POST">
+					<button type="submit">Usuń</button>
+				</form>
+				</td>
+				
 		</tr>
 		</table>
 	</div>

@@ -79,7 +79,6 @@ public class PlaylistController {
 			playlistElement = playlistElement.getNext();
 		}
 				
-		
 		Collection<SimplePlaylistElement> simplePlaylistElements = sortedPlaylistElements.stream().map(el -> el.toSimplePlaylistElement())
 				.collect(Collectors.toList());
 		
@@ -177,7 +176,33 @@ public class PlaylistController {
 		model.addAttribute("playlists", playlists);
 
 		return getTemplateDir("playlists");
+	}
+	
+	@PostMapping("/view/playlists/{idPlaylist}/delete/{idPlaylistElement}")
+	public String deletePlaylistElement(@PathVariable Long idPlaylist, @PathVariable Long idPlaylistElement, Model model)
+			throws IllegalAccessException {
 
+		playlistService.deletePlaylistElement(idPlaylistElement, idPlaylist);
+
+		Playlist playlist = playlistService.findById(idPlaylist);
+		model.addAttribute("playlist", playlist);
+
+		Collection<PlaylistElement> noSortedPlaylistElement = playlist.getElements();
+		
+		//posortowanie listy  
+		PlaylistElement playlistElement = noSortedPlaylistElement.stream().filter(e->e.getPrevious() == null).findFirst().orElse(null);
+		List<PlaylistElement> sortedPlaylistElements = new LinkedList<>();
+		while(playlistElement != null) { 
+			sortedPlaylistElements.add(playlistElement);
+			playlistElement = playlistElement.getNext();
+		}
+					
+		Collection<SimplePlaylistElement> simplePlaylistElements = sortedPlaylistElements.stream().map(el -> el.toSimplePlaylistElement())
+				.collect(Collectors.toList());
+			
+		model.addAttribute("playlistElements", simplePlaylistElements);
+		
+		return getTemplateDir("playlist-detail");
 	}
 	
 }
