@@ -1,6 +1,7 @@
 package psk.isf.sts;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -21,9 +22,15 @@ public class StsApplication {
 
 	// 0 0 0 * * ? -> everyDay at midnight
 	// * * * ? * * -> everysec
-	@Scheduled(cron = "* * * ? * *")
+
+	@Value("${reminder.enabled}")
+	private Boolean isReminderEnabled;
+
+	@Scheduled(cron = "${reminder.cron.expression}")
 	public void startCheckAndCreateRemindersThenSendNotifications() {
-		// reminderService.startCheckAndCreateRemindersThenSendNotifications();
-		System.out.println("DZIALM i minela 1 sekunda");
+		if (isReminderEnabled) {
+			System.out.println("Zamiarzm wyslac przypomienia");
+			reminderService.startCheckAndCreateRemindersThenSendNotifications();
+		}
 	}
 }

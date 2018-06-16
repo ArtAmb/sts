@@ -14,6 +14,7 @@ import psk.isf.sts.entity.Actor;
 import psk.isf.sts.entity.Comment;
 import psk.isf.sts.entity.Genre;
 import psk.isf.sts.entity.MySerial;
+import psk.isf.sts.entity.MySerialConfig;
 import psk.isf.sts.entity.Picture;
 import psk.isf.sts.entity.SerialElement;
 import psk.isf.sts.entity.SerialElementType;
@@ -22,6 +23,7 @@ import psk.isf.sts.entity.registration.User;
 import psk.isf.sts.repository.ActorRepository;
 import psk.isf.sts.repository.CommentRepository;
 import psk.isf.sts.repository.GenreRepository;
+import psk.isf.sts.repository.MySerialConfigRepository;
 import psk.isf.sts.repository.MySerialRepository;
 import psk.isf.sts.repository.SerialRepository;
 import psk.isf.sts.service.PictureService;
@@ -44,6 +46,9 @@ public class SerialService {
 	private MySerialRepository mySerialRepo;
 
 	@Autowired
+	private MySerialConfigRepository mySerialConfigRepo;
+
+	@Autowired
 	private ActorRepository actorRepo;
 
 	public Collection<SerialElement> allSerialsElements() {
@@ -56,6 +61,10 @@ public class SerialService {
 
 	public Collection<MySerial> allMySerials() {
 		return (Collection<MySerial>) mySerialRepo.findAll();
+	}
+
+	public Collection<MySerialConfig> findMySerialsConfigByUser(User user) {
+		return mySerialConfigRepo.findByUser(user);
 	}
 
 	public Collection<SerialElement> findAllEpisodesOfSeason(SerialElement season) {
@@ -97,7 +106,12 @@ public class SerialService {
 	}
 
 	public void addToMine(SerialElement serialElement, User user) {
-		mySerialRepo.save(MySerial.builder().user(user).serial(serialElement).build());
+		MySerial serial = MySerial.builder().user(user).serial(serialElement).build();
+
+		MySerialConfig mySerialConfig = MySerialConfig.builder().user(user).serial(serial).sendNotifications(true)
+				.trace(true).showDescriptions(true).build();
+
+		mySerialConfigRepo.save(mySerialConfig);
 	}
 
 	public void deleteFromMine(Long id) {
@@ -118,16 +132,9 @@ public class SerialService {
 		validate(dto);
 		Picture picture = pictureService.savePicture(login, thumbnail);
 
-		SerialElement serial = SerialElement.builder()
-				.title(dto.getTitle())
-				.description(dto.getDescription())
-				.state(dto.getState())
-				.durationInSec(dto.getDurationInSec())
-				.linkToWatch(dto.getLinkToWatch())
-				.active(true)
-				.elementType(SerialElementType.SERIAL)
-				.genres(dto.getGenres())
-				.thumbnail(picture)
+		SerialElement serial = SerialElement.builder().title(dto.getTitle()).description(dto.getDescription())
+				.state(dto.getState()).durationInSec(dto.getDurationInSec()).linkToWatch(dto.getLinkToWatch())
+				.active(true).elementType(SerialElementType.SERIAL).genres(dto.getGenres()).thumbnail(picture)
 				.producer(user).build();
 
 		return serialRepo.save(serial);
@@ -169,8 +176,15 @@ public class SerialService {
 			picture = pictureService.savePicture(login, thumbnail);
 		}
 
-		SerialElement season = SerialElement.builder().title(dto.getTitle()).description(dto.getDescription())
-				.active(true).elementType(SerialElementType.SEASON).parent(parentElement).thumbnail(picture)
+		Long ordinalNumber = (long) parentElement.getElements().size();
+		
+		SerialElement season = SerialElement.builder()
+				.title(dto.getTitle())
+				.description(dto.getDescription())
+				.active(true).elementType(SerialElementType.SEASON)
+				.parent(parentElement)
+				.thumbnail(picture)
+				.ordinalNumber(ordinalNumber)
 				.producer(user).build();
 
 		return serialRepo.save(season);
@@ -198,6 +212,8 @@ public class SerialService {
 			picture = pictureService.savePicture(login, thumbnail);
 		}
 
+		Long ordinalNumber = (long) parentElement.getElements().size();
+		
 		SerialElement episode = SerialElement.builder()
 				.title(dto.getTitle())
 				.description(dto.getDescription())
@@ -207,6 +223,7 @@ public class SerialService {
 				.thumbnail(picture)
 				.producer(user)
 				.startDate(dto.getStartDate())
+				.ordinalNumber(ordinalNumber)
 				.build();
 
 		return serialRepo.save(episode);
@@ -251,9 +268,9 @@ public class SerialService {
 
 	public SerialElement findNextEpisodeDate(SerialElement serial) {
 
-		if(serial.getState() == State.FINISHED )
+		if (serial.getState() == State.FINISHED)
 			return null;
-		
+
 		List<SerialElement> seasons = serial.getElements().stream()
 				.sorted((s1, s2) -> Long.compare(s1.getId(), s2.getId())).collect(Collectors.toList());
 

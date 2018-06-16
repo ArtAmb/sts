@@ -25,10 +25,12 @@ import org.xml.sax.SAXException;
 import psk.isf.sts.entity.Actor;
 import psk.isf.sts.entity.Genre;
 import psk.isf.sts.entity.MySerial;
+import psk.isf.sts.entity.MySerialConfig;
 import psk.isf.sts.entity.SerialElement;
 import psk.isf.sts.entity.SimpleSerialElement;
 import psk.isf.sts.entity.registration.Roles;
 import psk.isf.sts.entity.registration.User;
+import psk.isf.sts.repository.MySerialConfigRepository;
 import psk.isf.sts.repository.SerialRepository;
 import psk.isf.sts.service.authorization.UserService;
 import psk.isf.sts.service.series.SerialService;
@@ -48,13 +50,13 @@ public class SeriesController {
 
 	@Autowired
 	private UserService userService;
-	
+
 	@Autowired
 	private SerialsXmlParserService serialsXmlParserService;
-	
+
 	@Autowired
 	private SerialRepository serialRepo;
-	
+
 	public static String templateDirRoot = "series/";
 
 	private String getTemplateDir(String templateName) {
@@ -228,7 +230,6 @@ public class SeriesController {
 			@RequestParam("context") String contextTemplate) {
 		boolean czyDodano = false;
 		SerialElement serialElement = serialService.findById(id);
-		Collection<MySerial> mySerials = serialService.allMySerials();
 		model.addAttribute("serial", serialElement);
 		model.addAttribute("thumbnailUrl", serialElement.getThumbnail().toURL());
 
@@ -247,20 +248,16 @@ public class SeriesController {
 		}
 
 		User user = userService.findByLogin(principal.getName());
-		User user2;
-		SerialElement serial2;
-		for (MySerial element : mySerials) {
-			user2 = element.getUser();
-			serial2 = element.getSerial();
-			if (user2.getLogin().equals(principal.getName())) {
-				if ((serial2.getId().equals(id))) {
-					czyDodano = true;
-					model.addAttribute("czyDodano", czyDodano);
-					model.addAttribute("message2", "Ten serial już został dodany wczesniej!");
-					model.addAttribute("mySerial", element);
-					return getTemplateDir(contextTemplate);
-				}
+		Collection<MySerial> mySerials = serialService.findMySerialsConfigByUser(user).stream()
+				.map(MySerialConfig::getSerial).collect(Collectors.toList());
 
+		for (MySerial element : mySerials) {
+			if ((element.getSerial().getId().equals(id))) {
+				czyDodano = true;
+				model.addAttribute("czyDodano", czyDodano);
+				model.addAttribute("message2", "Ten serial już został dodany wczesniej!");
+				model.addAttribute("mySerial", element);
+				return getTemplateDir(contextTemplate);
 			}
 		}
 
@@ -271,19 +268,13 @@ public class SeriesController {
 			model.addAttribute("serial", serialElement);
 			return getTemplateDir(contextTemplate);
 		}
-		mySerials = serialService.allMySerials();
+		mySerials = serialService.findMySerialsConfigByUser(user).stream()
+				.map(MySerialConfig::getSerial).collect(Collectors.toList());
 		for (MySerial element : mySerials) {
-			user2 = element.getUser();
-			serial2 = element.getSerial();
-			if (user2.getLogin().equals(principal.getName()))
-				;
-			{
-				if ((serial2.getId().equals(id))) {
-					czyDodano = true;
-					model.addAttribute("czyDodano", czyDodano);
-					model.addAttribute("mySerial", element);
-				}
-
+			if ((element.getId().equals(id))) {
+				czyDodano = true;
+				model.addAttribute("czyDodano", czyDodano);
+				model.addAttribute("mySerial", element);
 			}
 		}
 		model.addAttribute("czyDodano", czyDodano);
@@ -313,7 +304,6 @@ public class SeriesController {
 	public String serialsDetailView(@PathVariable Long id, Principal principal, Model model) {
 		boolean czyDodano = false;
 		SerialElement serialElement = serialService.findById(id);
-		Collection<MySerial> mySerials = serialService.allMySerials();
 		model.addAttribute("serial", serialElement);
 		model.addAttribute("thumbnailUrl", serialElement.getThumbnail().toURL());
 
@@ -327,17 +317,17 @@ public class SeriesController {
 			return getTemplateDir("serial-detail");
 		}
 
-		User user2;
+		User user = userService.findByLogin(principal.getName());
+		Collection<MySerial> mySerials = serialService.findMySerialsConfigByUser(user).stream()
+				.map(m->m.getSerial())
+				.collect(Collectors.toList());
+		
 		SerialElement serial2;
 		for (MySerial element : mySerials) {
-			user2 = element.getUser();
 			serial2 = element.getSerial();
-			if (user2.getLogin().equals(principal.getName())) {
-				if ((serial2.getId().equals(id))) {
-					czyDodano = true;
-					model.addAttribute("mySerial", element);
-				}
-
+			if ((serial2.getId().equals(id))) {
+				czyDodano = true;
+				model.addAttribute("mySerial", element);
 			}
 		}
 
@@ -396,63 +386,62 @@ public class SeriesController {
 		model.addAttribute("message", "Komentarz zostanie dodany po zatwierdzeniu przez adminiastatora");
 		return getTemplateDir("serial-detail");
 	}
+
 	@PreAuthorize("hasRole('" + Roles.Consts.ROLE_PRODUCER + "')")
 	@GetMapping("/view/serial/{id}/actors")
 	public String actorsView(@PathVariable Long id, Model model) {
-		
+
 		SerialElement serialElement = serialService.findById(id);
-	
+
 		model.addAttribute("serial", serialElement);
-	
+
 		Collection<Actor> actors = serialElement.getActors();
 		model.addAttribute("actors", actors.stream().map(ActorMapper::map).collect(Collectors.toList()));
-		
-			
+
 		return getTemplateDir("actors");
 	}
-	
+
 	@PostMapping("/view/add-serial/by/xml")
-	public String addSerial(@ModelAttribute MultipartFile xmlFile, Principal principal) throws ParserConfigurationException, SAXException, IOException, ParseException {
+	public String addSerial(@ModelAttribute MultipartFile xmlFile, Principal principal)
+			throws ParserConfigurationException, SAXException, IOException, ParseException {
 		User user = userService.findByLogin(principal.getName());
-		
+
 		List<SerialElement> serials = serialsXmlParserService.parseXmlToGetSerials(xmlFile, user);
-		
+
 		serialRepo.save(serials);
-		
+
 		return "redirect:/view/serials";
 	}
-	
+
 	@PreAuthorize("hasRole('" + Roles.Consts.ROLE_PRODUCER + "')")
 	@GetMapping("/view/serial/{id}/actors/add-actor")
 	public String addActorView(@PathVariable Long id, Model model) {
-		
+
 		SerialElement serialElement = serialService.findById(id);
-	
+
 		model.addAttribute("serial", serialElement);
-	
+
 		Collection<Actor> actors = serialElement.getActors();
 		model.addAttribute("actors", actors.stream().map(ActorMapper::map).collect(Collectors.toList()));
-		
-			
+
 		return getTemplateDir("add-actor");
 	}
+
 	@PreAuthorize("hasRole('" + Roles.Consts.ROLE_PRODUCER + "')")
 	@PostMapping("/view/serial/{id}/actors/add-actor")
 	public String addActorView(@PathVariable Long id, @ModelAttribute ActorDTO dto, Principal principal, Model model) {
-		
+
 		if (principal == null) {
 			model.addAttribute("message", "Tylko producent może dodawać odcinki!");
 			return getTemplateDir("add-episode");
 		}
 		User user = userService.findByLogin(principal.getName());
-		
-		SerialElement serialElement = serialService.findById(id);	
+
+		SerialElement serialElement = serialService.findById(id);
 		model.addAttribute("serial", serialElement);
-	
+
 		Collection<Actor> actors = serialElement.getActors();
 		model.addAttribute("actors", actors.stream().map(ActorMapper::map).collect(Collectors.toList()));
-					
-		
 
 		try {
 			serialService.addActor(user, dto, serialElement, principal.getName(), dto.getPicture(), actors);
@@ -463,7 +452,7 @@ public class SeriesController {
 		}
 
 		model.addAttribute("message", "Aktor został dodany");
-				
+
 		return getTemplateDir("add-actor");
 	}
 }

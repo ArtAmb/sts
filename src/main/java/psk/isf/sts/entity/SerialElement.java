@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -45,8 +46,8 @@ public class SerialElement {
 
 	private float rating;
 
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "serial")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "parent_id")
 	private Collection<SerialElement> elements;
 
 	@ManyToMany
@@ -80,10 +81,27 @@ public class SerialElement {
 	private Picture thumbnail;
 
 	public SimpleSerialElement toSimpleSerialElement() {
-		return SimpleSerialElement.builder().id(id).title(title).description(description).state(state)
-				.elementType(elementType).rating(rating).elementType(elementType).actors(actors).parent(parent)
-				.genres(genres).comments(comments).startDate(startDate).durationInSec(durationInSec)
-				.daysToNextEpisode(daysToNextEpisode).active(active).linkToWatch(linkToWatch).producer(producer)
-				.gallery(gallery).thumbnail(thumbnail != null ? thumbnail.toViewPicture() : null).build();
+		return SimpleSerialElement.builder()
+				.id(id)
+				.title(title)
+				.description(description)
+				.state(state)
+				.elementType(elementType)
+				.rating(rating)
+				.elementType(elementType)
+				.actors(actors)
+				.parent(parent)
+				.genres(genres)
+				.comments(comments)
+				.startDate(startDate)
+				.durationInSec(durationInSec)
+				.daysToNextEpisode(daysToNextEpisode)
+				.active(active)
+				.linkToWatch(linkToWatch)
+				.producer(producer)
+				.gallery(gallery)
+				.thumbnail(thumbnail != null ? thumbnail.toViewPicture() : null)
+				.ordinalNumber(ordinalNumber)
+				.build();
 	}
 }

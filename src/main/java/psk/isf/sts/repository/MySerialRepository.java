@@ -10,8 +10,5 @@ import psk.isf.sts.entity.registration.User;
 
 @Repository
 public interface MySerialRepository extends CrudRepository<MySerial, Long> {
-
 	Collection<MySerial> findByUser(User user);
-
-	Collection<MySerial> findByUserAndSendNotificationsTrue(User user);
 }
