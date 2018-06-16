@@ -1,14 +1,10 @@
 package psk.isf.sts.controller.view;
 
-import java.io.IOException;
 import java.security.Principal;
-import java.text.ParseException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import jdk.internal.org.xml.sax.SAXException;
 import psk.isf.sts.entity.Actor;
 import psk.isf.sts.entity.Genre;
 import psk.isf.sts.entity.MySerial;
@@ -29,7 +24,6 @@ import psk.isf.sts.entity.SerialElement;
 import psk.isf.sts.entity.SimpleSerialElement;
 import psk.isf.sts.entity.State;
 import psk.isf.sts.entity.registration.Roles;
-import psk.isf.sts.entity.registration.User;
 import psk.isf.sts.repository.SerialRepository;
 import psk.isf.sts.service.authorization.UserService;
 import psk.isf.sts.service.series.SerialService;
@@ -49,13 +43,13 @@ public class SeriesController {
 
 	@Autowired
 	private UserService userService;
-	
+
 	@Autowired
 	private SerialsXmlParserService serialsXmlParserService;
-	
+
 	@Autowired
 	private SerialRepository serialRepo;
-	
+
 	public static String templateDirRoot = "series/";
 
 	private String getTemplateDir(String templateName) {
@@ -539,11 +533,10 @@ public class SeriesController {
 		return getTemplateDir("actors");
 	}
 
-	
 	@PostMapping("/view/add-serial/by/xml")
-	public String addSerial(@ModelAttribute MultipartFile xmlFile, Principal principal) throws ParserConfigurationException, SAXException, IOException, ParseException {
+	public String addSerial(@ModelAttribute MultipartFile xmlFile, Principal principal) throws Exception {
 		User user = userService.findByLogin(principal.getName());
-		
+
 		List<SerialElement> serials = null;
 		try {
 			serials = serialsXmlParserService.parseXmlToGetSerials(xmlFile, user);
@@ -551,12 +544,12 @@ public class SeriesController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		serialRepo.save(serials);
-		
+
 		return "redirect:/view/serials";
 	}
-	
+
 	@PreAuthorize("hasRole('" + Roles.Consts.ROLE_PRODUCER + "')")
 	@GetMapping("/view/serial/{id}/actors/add-actor")
 	public String addActorView(@PathVariable Long id, Model model) {
@@ -644,6 +637,7 @@ public class SeriesController {
 		return getTemplateDir("actors");
 
 	}
+
 	@PreAuthorize("hasRole('" + Roles.Consts.ROLE_PRODUCER + "')")
 	@GetMapping("/view/serial/{id}/edit")
 	public String editSerial(@PathVariable Long id, @ModelAttribute SerialDTO dto, Principal principal, Model model) {
@@ -654,7 +648,7 @@ public class SeriesController {
 		}
 
 		User user = userService.findByLogin(principal.getName());
-		
+
 		SerialElement serialElement = serialService.findById(id);
 		model.addAttribute("serial", serialElement);
 
@@ -663,7 +657,7 @@ public class SeriesController {
 
 		try {
 			serialService.checkIfMine(serialElement, user);
-			//serialService.addSerial(user, dto, principal.getName(), dto.getPicture());
+			// serialService.addSerial(user, dto, principal.getName(), dto.getPicture());
 		} catch (Exception e) {
 			model.addAttribute("message", e.getMessage());
 			model.addAttribute("title", serialElement.getTitle());
