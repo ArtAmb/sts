@@ -272,4 +272,8 @@ public class SerialService {
 		}
 	}
 
+	public void addToWatched(MySerial mySerial, User user) {
+		mySerialRepo.save(mySerial);
+	}
+
 }

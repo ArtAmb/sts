@@ -32,9 +32,22 @@
 						type="submit" class="mybutton">Usun z "moich" </a>
 				</div>
 
-				<div id="message2" th:text="${message2}"></div>
-				<button type="submit" class="serial-button">Dodaj do
-					obejrzanych</button>
+				<div id="message" th:text="${message2}"></div>
+				<br/>
+				<div th:if="${czyObejrzano == false}">
+					<a
+						th:href="@{'/view/addSerialToWatched/' + ${serial.id} +'?context=' + 'serial-detail'}"
+						type="submit" class="mybutton">Dodaj do obejrzanych </a>
+
+				</div>
+				<div th:if="${czyObejrzano == true}">
+					<a
+						th:href="@{'/view/deleteSerialFromWatched/' + ${mySerial.id}+'?context=' + 'serial-detail'}"
+						type="submit" class="mybutton">Usun z obejrzanych </a>
+				</div>
+
+				<div id="message" th:text="${message3}"></div>
+
 				<button type="submit" class="serial-button">Strona
 					producenta</button>
 				<div style="margin-top: 30px;">
