@@ -27,6 +27,7 @@ import psk.isf.sts.entity.Genre;
 import psk.isf.sts.entity.MySerial;
 import psk.isf.sts.entity.SerialElement;
 import psk.isf.sts.entity.SimpleSerialElement;
+import psk.isf.sts.entity.State;
 import psk.isf.sts.entity.registration.Roles;
 import psk.isf.sts.entity.registration.User;
 import psk.isf.sts.repository.SerialRepository;
@@ -229,6 +230,7 @@ public class SeriesController {
 	public String addToMine(@PathVariable Long id, Principal principal, Model model,
 			@RequestParam("context") String contextTemplate) {
 		boolean czyDodano = false;
+		boolean czyObejrzano = false;
 		SerialElement serialElement = serialService.findById(id);
 		Collection<MySerial> mySerials = serialService.allMySerials();
 		model.addAttribute("serial", serialElement);
@@ -257,6 +259,11 @@ public class SeriesController {
 			if (user2.getLogin().equals(principal.getName())) {
 				if ((serial2.getId().equals(id))) {
 					czyDodano = true;
+					if(element.isWatched())
+					{
+						czyObejrzano = true;
+					}
+					model.addAttribute("czyObejrzano", czyObejrzano);
 					model.addAttribute("czyDodano", czyDodano);
 					model.addAttribute("message2", "Ten serial już został dodany wczesniej!");
 					model.addAttribute("mySerial", element);
@@ -282,6 +289,11 @@ public class SeriesController {
 			{
 				if ((serial2.getId().equals(id))) {
 					czyDodano = true;
+					if(element.isWatched())
+					{
+						czyObejrzano = true;
+					}
+					model.addAttribute("czyObejrzano", czyObejrzano);
 					model.addAttribute("czyDodano", czyDodano);
 					model.addAttribute("mySerial", element);
 				}
@@ -289,6 +301,100 @@ public class SeriesController {
 			}
 		}
 		model.addAttribute("czyDodano", czyDodano);
+		model.addAttribute("czyObejrzano", czyObejrzano);
+		return getTemplateDir(contextTemplate);
+	}
+	
+	@GetMapping("/view/addToWatched/{id}")
+	public String addToWatched(@PathVariable Long id, Principal principal, Model model,
+			@RequestParam("context") String contextTemplate) {
+		boolean czyDodano = false;
+		boolean czyObejrzano = false;
+		SerialElement serialElement = serialService.findById(id);
+		Collection<MySerial> mySerials = serialService.allMySerials();
+		model.addAttribute("serial", serialElement);
+		model.addAttribute("thumbnailUrl", serialElement.getThumbnail().toURL());
+
+		Collection<Actor> actors = serialElement.getActors();
+		model.addAttribute("actors", actors.stream().map(ActorMapper::map).collect(Collectors.toList()));
+
+		Collection<SimpleSerialElement> seasons = serialService.findAllSeasonsOfSerial(serialElement).stream()
+				.map(el -> el.toSimpleSerialElement()).collect(Collectors.toList());
+
+		model.addAttribute("seasons", seasons);
+
+		if (principal == null) {
+			model.addAttribute("czyDodano", czyDodano);
+			model.addAttribute("czyObejrzano", czyObejrzano);
+			model.addAttribute("message3", "Musisz sie zalogować!");
+			return getTemplateDir(contextTemplate);
+		}
+
+		User user = userService.findByLogin(principal.getName());
+		User user2;
+		SerialElement serial2;
+		for (MySerial element : mySerials) {
+			user2 = element.getUser();
+			serial2 = element.getSerial();
+			if (user2.getLogin().equals(principal.getName())) {
+				if ((serial2.getId().equals(id))) {
+					czyDodano = true;
+					model.addAttribute("czyDodano", czyDodano);
+					model.addAttribute("mySerial", element);
+					if(element.isWatched())
+					{
+						czyObejrzano = true;
+						model.addAttribute("message3", "Ten serial został już dodany do obejrzanych!");
+						model.addAttribute("czyObejrzano", czyObejrzano);
+					}
+					
+					else
+					{
+						try {
+							element.setWatched(true);
+							serialService.addToWatched(element, user);
+							czyObejrzano = true;
+						} catch (Exception e) {
+							model.addAttribute("message3", e.getMessage());
+							model.addAttribute("serial", serialElement);
+							model.addAttribute("czyObejrzano", czyObejrzano);
+							return getTemplateDir(contextTemplate);
+						}
+					}
+					model.addAttribute("czyObejrzano",czyObejrzano);
+					if(czyObejrzano == false)
+						model.addAttribute("message3", "Musisz najpierw dodać serial do Moich!");
+					return getTemplateDir(contextTemplate);
+				}
+
+			}
+		}
+
+		
+		mySerials = serialService.allMySerials();
+		for (MySerial element : mySerials) {
+			user2 = element.getUser();
+			serial2 = element.getSerial();
+			if (user2.getLogin().equals(principal.getName()))
+			{
+				if ((serial2.getId().equals(id))) {
+					czyDodano = true;
+					model.addAttribute("czyDodano", czyDodano);
+					
+					model.addAttribute("mySerial", element);
+					if(element.isWatched())
+					{
+						czyObejrzano = true;
+					}
+					model.addAttribute("czyObejrzano", czyObejrzano);
+				}
+
+			}
+		}
+		model.addAttribute("czyDodano", czyDodano);
+		model.addAttribute("czyObejrzano", czyObejrzano);
+		if(czyObejrzano == false)
+			model.addAttribute("message3", "Musisz najpierw dodać serial do Moich!");
 		return getTemplateDir(contextTemplate);
 	}
 
@@ -296,13 +402,20 @@ public class SeriesController {
 	public String deleteFromMine(@PathVariable Long id, Principal principal, Model model,
 			@RequestParam("context") String contextTemplate) {
 		boolean czyDodano = true;
+		boolean czyObejrzano = false;
 		MySerial mySerial = serialService.findMySerialById(id);
+		if(mySerial.isWatched())
+		{
+			czyObejrzano = true;
+		}
 		SerialElement serialElement = mySerial.getSerial();
 		model.addAttribute("serial", serialElement);
 		model.addAttribute("thumbnailUrl", serialElement.getThumbnail().toURL());
 		serialService.deleteFromMine(id);
 		czyDodano = false;
+		czyObejrzano = false;
 		model.addAttribute("czyDodano", czyDodano);
+		model.addAttribute("czyObejrzano", czyObejrzano);
 		model.addAttribute("mySerial", mySerial);
 		Collection<SimpleSerialElement> seasons = serialService.findAllSeasonsOfSerial(serialElement).stream()
 				.map(el -> el.toSimpleSerialElement()).collect(Collectors.toList());
@@ -314,6 +427,7 @@ public class SeriesController {
 	@GetMapping("/view/serial/{id}")
 	public String serialsDetailView(@PathVariable Long id, Principal principal, Model model) {
 		boolean czyDodano = false;
+		boolean czyObejrzano = false;
 		SerialElement serialElement = serialService.findById(id);
 		Collection<MySerial> mySerials = serialService.allMySerials();
 		model.addAttribute("serial", serialElement);
@@ -338,12 +452,18 @@ public class SeriesController {
 				if ((serial2.getId().equals(id))) {
 					czyDodano = true;
 					model.addAttribute("mySerial", element);
+					if(element.isWatched())
+					{
+						czyObejrzano = true;
+					}
+					model.addAttribute("czyObejrzano", czyObejrzano);
 				}
 
 			}
 		}
 
 		model.addAttribute("czyDodano", czyDodano);
+		model.addAttribute("czyObejrzano", czyObejrzano);
 		return getTemplateDir("serial-detail");
 	}
 
@@ -379,7 +499,7 @@ public class SeriesController {
 			return getTemplateDir("serial-detail");
 		}
 		boolean czyDodano = false;
-
+		boolean czyObejrzano = false;
 		Collection<MySerial> mySerials = serialService.allMySerials();
 		User user2;
 		SerialElement serial2;
@@ -390,11 +510,17 @@ public class SeriesController {
 				if ((serial2.getId().equals(id))) {
 					czyDodano = true;
 					model.addAttribute("mySerial", element);
+					if(element.isWatched())
+					{
+						czyObejrzano = true;
+					}
+					model.addAttribute("czyObejrzano", czyObejrzano);
 				}
 
 			}
 		}
 		model.addAttribute("czyDodano", czyDodano);
+		model.addAttribute("czyObejrzano", czyObejrzano);
 		model.addAttribute("message", "Komentarz zostanie dodany po zatwierdzeniu przez adminiastatora");
 		return getTemplateDir("serial-detail");
 	}
