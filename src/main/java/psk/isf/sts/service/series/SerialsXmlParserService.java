@@ -1,6 +1,5 @@
 package psk.isf.sts.service.series;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Date;
 import java.text.ParseException;
@@ -12,8 +11,8 @@ import java.util.stream.Collectors;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
+import org.h2.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,9 +20,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
-import com.mysql.jdbc.StringUtils;
 
 import psk.isf.sts.entity.SerialElement;
 import psk.isf.sts.entity.SerialElementType;
@@ -50,8 +46,7 @@ public class SerialsXmlParserService {
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-	public List<SerialElement> parseXmlToGetSerials(MultipartFile file, User user)
-			throws ParserConfigurationException, SAXException, IOException, ParseException {
+	public List<SerialElement> parseXmlToGetSerials(MultipartFile file, User user) throws Exception {
 
 		List<SerialElement> serials = new LinkedList<>();
 
