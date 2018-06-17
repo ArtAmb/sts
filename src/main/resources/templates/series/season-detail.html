@@ -51,7 +51,7 @@
 					<td>
 					<div th:if="${episode.watched == false}">
 					<a sec:authorize="hasRole('ROLE_VIEWER')"
-						th:href="@{'/view/addEpisodeToWatched/' + ${episode.ep.id} +'?context=' + 'season-detail' +${serial.id}}"
+						th:href="@{'/view/addEpisodeToWatched/' + ${episode.ep.id} +'?context=' + 'season-detail'}"
 						type="submit" class="mybutton">Dodaj do obejrzanych </a>
 
 				</div>
