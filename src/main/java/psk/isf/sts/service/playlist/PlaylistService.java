@@ -52,8 +52,7 @@ public class PlaylistService {
 		if (!elements.isEmpty())
 			lastElement = elements.get(elements.size() - 1);
 
-		PlaylistElement newElement = PlaylistElement.builder().next(null).previous(lastElement).serialElement(serialEl)
-				.build();
+		PlaylistElement newElement = PlaylistElement.builder().next(null).previous(lastElement).serialElement(serialEl).build();
 		newElement = playlistElementRepo.save(newElement);
 
 		if (lastElement != null)

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import psk.isf.sts.entity.MySerial;
 import psk.isf.sts.entity.Playlist;
 import psk.isf.sts.entity.PlaylistElement;
 import psk.isf.sts.entity.SerialElement;
@@ -119,8 +120,8 @@ public class PlaylistController {
 	
 	
 
-	@GetMapping("/view/playlists/{id}/add-playlist-element")
-	public String addPlaylistElementView(@PathVariable Long id, Model model) {
+	@GetMapping("/view/playlists/{id}/add-playlist-element-serial")
+	public String addPlaylistElementSerialView(@PathVariable Long id, Model model) {
 
 		Playlist playlist = playlistService.findById(id);
 		model.addAttribute("playlist", playlist);
@@ -133,7 +134,7 @@ public class PlaylistController {
 		while(playlistElement != null) {
 			sortedPlaylistElements.add(playlistElement);
 			playlistElement = playlistElement.getNext();
-		}			
+		}			 
 		
 		Collection<SimplePlaylistElement> simplePlaylistElements = sortedPlaylistElements.stream().map(el -> el.toSimplePlaylistElement())
 				.collect(Collectors.toList());
@@ -145,8 +146,79 @@ public class PlaylistController {
 
 		model.addAttribute("serials", serials);
 
-		return getTemplateDir("add-playlist-element");
+		return getTemplateDir("add-playlist-element-serial");
 	}
+	
+	
+	@GetMapping("/view/playlists/{id}/add-playlist-element-season/{id2}")
+	public String addPlaylistElementSeasonView(@PathVariable Long id, @PathVariable Long id2, Model model) {
+
+		Playlist playlist = playlistService.findById(id);
+		model.addAttribute("playlist", playlist);
+
+		Collection<PlaylistElement> noSortedPlaylistElement = playlist.getElements();
+		
+		//posortowanie listy  
+		PlaylistElement playlistElement = noSortedPlaylistElement.stream().filter(e->e.getPrevious() == null).findFirst().orElse(null);
+		List<PlaylistElement> sortedPlaylistElements = new LinkedList<>();
+		while(playlistElement != null) {
+			sortedPlaylistElements.add(playlistElement);
+			playlistElement = playlistElement.getNext();
+		}			 
+		
+
+		
+		Collection<SimplePlaylistElement> simplePlaylistElements = sortedPlaylistElements.stream().map(el -> el.toSimplePlaylistElement())
+				.collect(Collectors.toList());
+				
+		model.addAttribute("playlistElements", simplePlaylistElements);
+		
+		SerialElement serialElement = serialService.findById(id2);
+		model.addAttribute("serial", serialElement);
+		Collection<SimpleSerialElement> seasons = serialService.findAllSeasonsOfSerial(serialElement).stream()
+				.map(el -> el.toSimpleSerialElement()).collect(Collectors.toList());
+		model.addAttribute("seasons", seasons);
+
+		return getTemplateDir("add-playlist-element-season");
+	}
+	
+	
+	
+	
+	@GetMapping("/view/playlists/{id}/add-playlist-element-episode/{id2}")
+	public String addPlaylistElementEpisodeView(@PathVariable Long id, @PathVariable Long id2, Model model) {
+
+		Playlist playlist = playlistService.findById(id);
+		model.addAttribute("playlist", playlist);
+
+		Collection<PlaylistElement> noSortedPlaylistElement = playlist.getElements();
+		
+		//posortowanie listy  
+		PlaylistElement playlistElement = noSortedPlaylistElement.stream().filter(e->e.getPrevious() == null).findFirst().orElse(null);
+		List<PlaylistElement> sortedPlaylistElements = new LinkedList<>();
+		while(playlistElement != null) {
+			sortedPlaylistElements.add(playlistElement);
+			playlistElement = playlistElement.getNext();
+		}			 
+		
+
+		
+		Collection<SimplePlaylistElement> simplePlaylistElements = sortedPlaylistElements.stream().map(el -> el.toSimplePlaylistElement())
+				.collect(Collectors.toList());
+				
+		model.addAttribute("playlistElements", simplePlaylistElements);
+		
+		SerialElement serialElement = serialService.findById(id2);
+		model.addAttribute("serial", serialElement);
+		Collection<SimpleSerialElement> episodes = serialService.findAllEpisodesOfSeason(serialElement).stream()
+				.map(el -> el.toSimpleSerialElement()).collect(Collectors.toList());
+		model.addAttribute("episodes", episodes);
+
+		return getTemplateDir("add-playlist-element-episode");
+	}
+	
+	
+	
 	
 	@PostMapping("/view/playlists/{id}/add-playlist-element/{serialElementId}")
 	public String addPlaylistElement(@PathVariable Long id, @PathVariable Long serialElementId, @ModelAttribute PlaylistElementDTO dto, Principal principal, Model model) {
