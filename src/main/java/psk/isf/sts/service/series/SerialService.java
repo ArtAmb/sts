@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.h2.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,6 +28,7 @@ import psk.isf.sts.repository.MySerialConfigRepository;
 import psk.isf.sts.repository.MySerialRepository;
 import psk.isf.sts.repository.SerialRepository;
 import psk.isf.sts.service.PictureService;
+import psk.isf.sts.service.cache.serial.SerialCacheService;
 import psk.isf.sts.service.series.dto.ActorDTO;
 import psk.isf.sts.service.series.dto.CommentDTO;
 import psk.isf.sts.service.series.dto.EpisodeDTO;
@@ -50,6 +52,18 @@ public class SerialService {
 
 	@Autowired
 	private ActorRepository actorRepo;
+	
+	@Autowired
+	private CommentRepository commentRepo;
+
+	@Autowired
+	private PictureService pictureService;
+	
+	@Autowired
+	private SerialCacheService serialCacheService;
+	
+	@Value("${serial.cache.enabled}")
+	private Boolean isCacheEnabled;
 
 	public Collection<SerialElement> allSerialsElements() {
 		return (Collection<SerialElement>) serialRepo.findAll();
@@ -82,16 +96,17 @@ public class SerialService {
 	}
 
 	public SerialElement findById(Long id) {
+		if(isCacheEnabled) {
+			return serialCacheService.get(id);
+		}
+		
 		return serialRepo.findOne(id);
 	}
 
 	public MySerial findMySerialById(Long id) {
 		return mySerialRepo.findOne(id);
 	}
-
-	@Autowired
-	private CommentRepository commentRepo;
-
+	
 	public Comment addComment(SerialElement serialElement, User user, CommentDTO dto) throws Exception {
 		validate(dto);
 
@@ -124,9 +139,6 @@ public class SerialService {
 		}
 
 	}
-
-	@Autowired
-	private PictureService pictureService;
 
 	public SerialElement addSerial(User user, SerialDTO dto, String login, MultipartFile thumbnail) throws Exception {
 		validate(dto);
@@ -272,7 +284,8 @@ public class SerialService {
 			return null;
 
 		List<SerialElement> seasons = serial.getElements().stream()
-				.sorted((s1, s2) -> Long.compare(s1.getId(), s2.getId())).collect(Collectors.toList());
+				.sorted((s1, s2) -> Long.compare(s1.getId(), s2.getId()))
+				.collect(Collectors.toList());
 
 		if (seasons.isEmpty())
 			return null;

@@ -1,5 +1,7 @@
 package psk.isf.sts;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -7,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import psk.isf.sts.service.cache.CacheManager;
 import psk.isf.sts.service.reminder.ReminderService;
 
 @SpringBootApplication
@@ -16,12 +19,12 @@ public class StsApplication {
 	@Autowired
 	private ReminderService reminderService;
 
+	@Autowired
+	private CacheManager cacheManager;
+
 	public static void main(String[] args) {
 		SpringApplication.run(StsApplication.class, args);
 	}
-
-	// 0 0 0 * * ? -> everyDay at midnight
-	// * * * ? * * -> everysec
 
 	@Value("${reminder.enabled}")
 	private Boolean isReminderEnabled;
@@ -32,5 +35,10 @@ public class StsApplication {
 			System.out.println("Zamiarzm wyslac przypomienia");
 			reminderService.startCheckAndCreateRemindersThenSendNotifications();
 		}
+	}
+
+	@PostConstruct
+	public void initCacheManager() {
+		cacheManager.startCacheControlling();
 	}
 }

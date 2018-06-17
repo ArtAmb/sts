@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import org.h2.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,14 +17,21 @@ import psk.isf.sts.entity.registration.UserSourceSystem;
 import psk.isf.sts.repository.ContractRepository;
 import psk.isf.sts.repository.UserRepository;
 import psk.isf.sts.service.PictureService;
+import psk.isf.sts.service.cache.user.UserCacheFacade;
 
 @Service
 public class UserService {
 
 	private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
+	@Value("${serial.cache.enabled}")
+	private Boolean isCacheEnabled;
+
 	@Autowired
 	private UserRepository userRepo;
+
+	@Autowired
+	private UserCacheFacade userCacheFacade;
 
 	@Autowired
 	private ContractRepository contractRepository;
@@ -32,14 +40,25 @@ public class UserService {
 	private PictureService pictureService;
 
 	public User findById(Long id) {
+		if (isCacheEnabled) {
+			return userCacheFacade.getById(id);
+		}
+
 		return userRepo.findOne(id);
 	}
 
 	public User findByLogin(String login) {
+		if (isCacheEnabled) {
+			return userCacheFacade.getByLogin(login);
+		}
+
 		return userRepo.findByLogin(login);
 	}
 
 	public User saveUser(User user) {
+		if (isCacheEnabled) {
+			userCacheFacade.synchronize(user);
+		}
 		return userRepo.save(user);
 	}
 
@@ -48,6 +67,7 @@ public class UserService {
 		User user = findByLogin(login);
 		if (StringUtils.isNullOrEmpty(thumbnail.getOriginalFilename()))
 			return user;
+
 		Picture picture = pictureService.savePicture(login, thumbnail);
 		user.setThumbnail(picture);
 		return saveUser(user);
@@ -80,6 +100,9 @@ public class UserService {
 	}
 
 	public User findFacebookUserByFbId(String fbId) {
+		if (isCacheEnabled) {
+			userCacheFacade.getByFbId(fbId);
+		}
 		return userRepo.findByExtIdAndSourceSystem(fbId, UserSourceSystem.FACEBOOK);
 	}
 
