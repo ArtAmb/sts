@@ -16,11 +16,8 @@ public class FbToUserCacheService extends AbstractCache<String, User> {
 	@Autowired
 	private UserRepository userRepository;
 
-	@Value("${user.cache.duration:-1}")
-	private Long duration;
-
 	@Autowired
-	public FbToUserCacheService(CacheManager cacheManager) {
+	public FbToUserCacheService(CacheManager cacheManager, @Value("${serial.cache.duration}") Long duration) {
 		super(cacheManager);
 		if (duration == -1)
 			duration = null;

@@ -15,11 +15,8 @@ public class SerialCacheService extends AbstractCache<Long, SerialElement> {
 	@Autowired
 	private SerialRepository serialRepository;
 
-	@Value("${serial.cache.duration:-1}")
-	private Long duration;
-
 	@Autowired
-	public SerialCacheService(CacheManager cacheManager) {
+	public SerialCacheService(CacheManager cacheManager, @Value("${serial.cache.duration}") Long duration) {
 		super(cacheManager);
 		if (duration == -1)
 			duration = null;

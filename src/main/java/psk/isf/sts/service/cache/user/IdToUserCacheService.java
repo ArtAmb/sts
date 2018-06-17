@@ -15,11 +15,8 @@ public class IdToUserCacheService extends AbstractCache<Long, User> {
 	@Autowired
 	private UserRepository userRepository;
 
-	@Value("${user.cache.duration:-1}")
-	private Long duration;
-
 	@Autowired
-	public IdToUserCacheService(CacheManager cacheManager) {
+	public IdToUserCacheService(CacheManager cacheManager, @Value("${serial.cache.duration}") Long duration) {
 		super(cacheManager);
 		if (duration == -1)
 			duration = null;
