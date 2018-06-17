@@ -187,4 +187,20 @@ public class PlaylistController {
 		return "redirect:/view/playlists/" + idPlaylist;
 	}
 	
+	@PostMapping("/view/playlists/{idPlaylist}/up/{idPlaylistElement}")
+	public String upPlaylistElement(@PathVariable Long idPlaylist, @PathVariable Long idPlaylistElement, Model model)
+			throws IllegalAccessException {
+
+		playlistService.upPlaylistElement(idPlaylistElement);
+		return "redirect:/view/playlists/" + idPlaylist;
+	}
+	
+	@PostMapping("/view/playlists/{idPlaylist}/down/{idPlaylistElement}")
+	public String downPlaylistElement(@PathVariable Long idPlaylist, @PathVariable Long idPlaylistElement, Model model)
+			throws IllegalAccessException {
+
+		playlistService.downPlaylistElement(idPlaylistElement);
+		return "redirect:/view/playlists/" + idPlaylist;
+	}
+	
 }

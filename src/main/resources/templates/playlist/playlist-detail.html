@@ -28,8 +28,17 @@
 				<td><a th:id="'serial-detail' + ${playlistElements.serialElement.id}"
 				th:href="@{'/view/serial/' + ${playlistElements.serialElement.id}}" class="mybutton">Szczegóły</a></td>
 				
-				<td><a href="" class="mybutton">W góre</a></td>
-				<td><a href="" class="mybutton">W dół</a></td>
+				
+				<td>
+				<form th:action="@{'/view/playlists/' + ${playlist.id} + '/up/' + ${playlistElements.id}}" method="POST">
+					<button type="submit">W góre</button>
+				</form>
+				</td>
+				<td>
+				<form th:action="@{'/view/playlists/' + ${playlist.id} + '/down/' + ${playlistElements.id}}" method="POST">
+					<button type="submit">W dół</button>
+				</form>
+				</td>
 				
 				<td>
 				<form th:action="@{'/view/playlists/' + ${playlist.id} + '/delete/' + ${playlistElements.id}}" method="POST">

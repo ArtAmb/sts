@@ -96,9 +96,11 @@ public class PlaylistService {
 
 		if (deletedPrev == null && deletedNext != null) {
 			deletedNext.setPrevious(null);
+			playlistElementRepo.save(deletedNext);
 		}
 		if (deletedPrev != null && deletedNext == null) {
 			deletedPrev.setNext(null);
+			playlistElementRepo.save(deletedPrev);
 		}
 		if (deletedPrev != null && deletedNext != null) {
 			deletedPrev.setNext(deletedNext);
@@ -117,4 +119,149 @@ public class PlaylistService {
 		playlistElementRepo.delete(deletedPlaylistelement);
 	}
 
+	
+	@Transactional
+	public void upPlaylistElement(Long playlistElId) throws IllegalAccessException {
+
+		PlaylistElement clicked = playlistElementRepo.findOne(playlistElId); //element który kliknieto
+		if (clicked == null)
+			return;
+
+		PlaylistElement clickedPrev = clicked.getPrevious(); //poprzedni kliknietego
+		PlaylistElement clickedNext = clicked.getNext(); //nastepny kliknietego
+		
+		PlaylistElement clickedPrevPrev = null;
+		if(clickedPrev != null)
+			clickedPrevPrev = clickedPrev.getPrevious(); //poprzedni 2 wyzej , zmienia mu sie element next
+
+			
+		if (clickedPrev != null && clickedNext != null && clickedPrevPrev == null) { //kliknieto drugi element
+			clicked.setPrevious(null);
+			clicked.setNext(clickedPrev);
+			
+			clickedPrev.setPrevious(clicked);
+			clickedPrev.setNext(clickedNext);
+			
+			clickedNext.setPrevious(clickedPrev);
+			
+			playlistElementRepo.save(clicked);
+			playlistElementRepo.save(clickedPrev);
+			playlistElementRepo.save(clickedNext);
+		}
+		
+		if (clickedPrev != null && clickedNext != null && clickedPrevPrev != null) { //kliknieto element co ma 2 przed sobą
+			clicked.setPrevious(clickedPrevPrev);
+			clicked.setNext(clickedPrev);
+			
+			clickedPrev.setPrevious(clicked);
+			clickedPrev.setNext(clickedNext);
+			
+			clickedNext.setPrevious(clickedPrev);
+			
+			clickedPrevPrev.setNext(clicked);
+			
+			playlistElementRepo.save(clicked);
+			playlistElementRepo.save(clickedPrev);
+			playlistElementRepo.save(clickedNext);
+			playlistElementRepo.save(clickedPrevPrev);		
+		}
+		
+		if (clickedPrev != null && clickedNext == null && clickedPrevPrev != null) { //kliknieto ostatni, który ma 2 miejsca przd soba
+			clicked.setPrevious(clickedPrevPrev);
+			clicked.setNext(clickedPrev);
+			
+			clickedPrev.setPrevious(clicked);
+			clickedPrev.setNext(null);
+			
+			clickedPrevPrev.setNext(clicked);
+			
+			playlistElementRepo.save(clicked);
+			playlistElementRepo.save(clickedPrev);
+			playlistElementRepo.save(clickedPrevPrev);
+		}
+		
+		if (clickedPrev != null && clickedNext == null && clickedPrevPrev == null) { //kliknieto ostatni, który ma 1 miejsce przd soba
+			clicked.setPrevious(null);
+			clicked.setNext(clickedPrev);
+			
+			clickedPrev.setPrevious(clicked);
+			clickedPrev.setNext(null);
+			
+			playlistElementRepo.save(clicked);
+			playlistElementRepo.save(clickedPrev);	
+		}		
+	}		
+	
+	
+	@Transactional
+	public void downPlaylistElement(Long playlistElId) throws IllegalAccessException {
+
+		PlaylistElement clicked = playlistElementRepo.findOne(playlistElId); //element który kliknieto
+		if (clicked == null)
+			return;
+
+		PlaylistElement clickedPrev = clicked.getPrevious(); //poprzedni kliknietego
+		PlaylistElement clickedNext = clicked.getNext(); //nastepny kliknietego
+		
+		PlaylistElement clickedNextNext = null;
+		if(clickedNext != null)
+			clickedNextNext = clickedNext.getNext(); //poprzedni 2 wyzej , zmienia mu sie element next
+
+			
+		if (clickedPrev != null && clickedNext != null && clickedNextNext == null) { //kliknieto drugi element od dołu
+			clicked.setNext(null);
+			clicked.setPrevious(clickedNext);
+			
+			clickedNext.setNext(clicked);
+			clickedNext.setPrevious(clickedPrev);
+			
+			clickedPrev.setNext(clickedNext);
+			
+			playlistElementRepo.save(clicked);
+			playlistElementRepo.save(clickedNext);
+			playlistElementRepo.save(clickedPrev);
+		}
+		
+		if (clickedPrev != null && clickedNext != null && clickedNextNext != null) { //kliknieto element co ma 2 x next i prev
+			clicked.setNext(clickedNextNext);
+			clicked.setPrevious(clickedNext);
+			
+			clickedNext.setNext(clicked);
+			clickedNext.setPrevious(clickedPrev);
+			
+			clickedPrev.setNext(clickedNext);
+			
+			clickedNextNext.setPrevious(clicked);
+			
+			playlistElementRepo.save(clicked);
+			playlistElementRepo.save(clickedNext);
+			playlistElementRepo.save(clickedPrev);
+			playlistElementRepo.save(clickedNextNext);
+		}
+		
+		if (clickedPrev == null && clickedNext != null && clickedNextNext != null) { //kliknieto pierwszy co ma 2 x next
+			clicked.setNext(clickedNextNext);
+			clicked.setPrevious(clickedNext);
+			
+			clickedNext.setNext(clicked);
+			clickedNext.setPrevious(null);
+			
+			clickedNextNext.setPrevious(clicked);
+			
+			playlistElementRepo.save(clicked);
+			playlistElementRepo.save(clickedNext);
+			playlistElementRepo.save(clickedNextNext);
+		}
+		
+		if (clickedPrev == null && clickedNext != null && clickedNextNext == null) { //kliknieto pierwszy co ma 1 x next
+			clicked.setNext(null);
+			clicked.setPrevious(clickedNext);
+			
+			clickedNext.setNext(clicked);
+			clickedNext.setPrevious(null);
+			
+			playlistElementRepo.save(clicked);
+			playlistElementRepo.save(clickedNext);
+		}		
+	}		
 }
