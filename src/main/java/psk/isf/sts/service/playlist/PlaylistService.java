@@ -1,6 +1,9 @@
 package psk.isf.sts.service.playlist;
 
 import java.util.Collection;
+import java.util.List;
+
+import javax.transaction.Transactional;
 
 import org.h2.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import psk.isf.sts.entity.Playlist;
 import psk.isf.sts.entity.PlaylistElement;
+import psk.isf.sts.entity.SerialElement;
 import psk.isf.sts.entity.registration.User;
 import psk.isf.sts.repository.PlaylistElementRepository;
 import psk.isf.sts.repository.PlaylistRepository;
@@ -21,7 +25,7 @@ public class PlaylistService {
 
 	@Autowired
 	private PlaylistElementRepository playlistElementRepo;
-	
+
 	public Collection<Playlist> allMyPlaylist() {
 		return playlistRepo.findAll();
 	}
@@ -39,13 +43,31 @@ public class PlaylistService {
 		return playlistRepo.save(playlist);
 	}
 
+	@Transactional
+	public void addNewPlaylistElement(Playlist playlist, SerialElement serialEl) {
+
+		List<PlaylistElement> elements = playlist.getElements();
+
+		PlaylistElement lastElement = null;
+		if (!elements.isEmpty())
+			lastElement = elements.get(elements.size() - 1);
+
+		PlaylistElement newElement = PlaylistElement.builder().next(null).previous(lastElement).serialElement(serialEl)
+				.build();
+		newElement = playlistElementRepo.save(newElement);
+
+		if (lastElement != null)
+			lastElement.setNext(newElement);
+
+		elements.add(newElement);
+		playlistRepo.save(playlist);
+	}
+
 	public void deletePlaylist(User user, Long id) throws IllegalAccessException {
 
-		Playlist playlistOptional = playlistRepo.findOne(id);
-		if (playlistOptional == null)
+		Playlist playlist = playlistRepo.findOne(id);
+		if (playlist == null)
 			return;
-
-		Playlist playlist = playlistOptional;
 
 		if (user.getId() != playlist.getUser().getId()) {
 			throw new IllegalAccessException("Nie masz uprawnien do usuniece tej playlisty");
@@ -59,37 +81,40 @@ public class PlaylistService {
 			throw new Exception("Musisz podać nazwę playlisty");
 		}
 	}
-	
-	public void deletePlaylistElement(Long id, Long id2) throws IllegalAccessException {
 
-		PlaylistElement playlistElementOptional = playlistElementRepo.findOne(id);
-		if (playlistElementOptional == null)
+	@Transactional
+	public void deletePlaylistElement(Long playlistElId, Long playlistId) throws IllegalAccessException {
+
+		PlaylistElement deletedPlaylistelement = playlistElementRepo.findOne(playlistElId);
+		if (deletedPlaylistelement == null)
 			return;
-
-		PlaylistElement deletedPlaylistelement = playlistElementOptional;
 
 		PlaylistElement deletedPrev = deletedPlaylistelement.getPrevious();
 		PlaylistElement deletedNext = deletedPlaylistelement.getNext();
 
-		Playlist playlist = playlistRepo.findOne(id2);
-		
-		if(deletedPrev == null && deletedNext != null) {
+		// Playlist playlist = playlistRepo.findOne(playlistId);
+
+		if (deletedPrev == null && deletedNext != null) {
 			deletedNext.setPrevious(null);
 		}
-		if(deletedPrev != null && deletedNext == null) {
+		if (deletedPrev != null && deletedNext == null) {
 			deletedPrev.setNext(null);
 		}
-		if(deletedPrev != null && deletedNext != null) {
+		if (deletedPrev != null && deletedNext != null) {
 			deletedPrev.setNext(deletedNext);
 			deletedNext.setPrevious(deletedPrev);
+
+			playlistElementRepo.save(deletedPrev);
+			playlistElementRepo.save(deletedNext);
 		}
-		if(deletedPrev == null && deletedNext == null) {
-			playlist.setElements(null);
+		if (deletedPrev == null && deletedNext == null) {
+			// playlist.setElements(null);
 		}
-		
+
 		deletedPlaylistelement.setNext(null);
 		deletedPlaylistelement.setPrevious(null);
-		
+
 		playlistElementRepo.delete(deletedPlaylistelement);
 	}
+
 }

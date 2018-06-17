@@ -49,7 +49,7 @@
 	
 				
 				<td>
-				<form th:action="@{'/view/playlists/' + ${playlist.id} + '/add-playlist-element'}" method="post">
+				<form th:action="@{'/view/playlists/' + ${playlist.id} + '/add-playlist-element/' + ${serials.id}}" method="post">
 					<button type="submit">Dodaj</button>
 				</form>
 				</td>

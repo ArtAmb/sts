@@ -231,6 +231,13 @@ public class Initializer {
 		PlaylistElement element5 = PlaylistElement.builder().serialElement(serial2).build();
 		PlaylistElement element6 = PlaylistElement.builder().serialElement(serial3).build();
 
+		playlistElementRepo.save(element1);
+		playlistElementRepo.save(element2);
+		playlistElementRepo.save(element3);
+		playlistElementRepo.save(element4);
+		playlistElementRepo.save(element5);
+		playlistElementRepo.save(element6);
+		
 		element1.setPrevious(null);
 		element1.setNext(null);
 		//element2.setPrevious(element1);

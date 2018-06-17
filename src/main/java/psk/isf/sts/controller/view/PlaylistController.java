@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import psk.isf.sts.entity.Playlist;
 import psk.isf.sts.entity.PlaylistElement;
+import psk.isf.sts.entity.SerialElement;
 import psk.isf.sts.entity.SimplePlaylistElement;
 import psk.isf.sts.entity.SimpleSerialElement;
 import psk.isf.sts.entity.registration.Roles;
@@ -147,16 +148,16 @@ public class PlaylistController {
 		return getTemplateDir("add-playlist-element");
 	}
 	
-	@PostMapping("/view/playlists/{id}/add-playlist-element")
-	public String addPlaylistElement(@PathVariable Long id, @ModelAttribute PlaylistElementDTO dto, Principal principal, Model model) {
+	@PostMapping("/view/playlists/{id}/add-playlist-element/{serialElementId}")
+	public String addPlaylistElement(@PathVariable Long id, @PathVariable Long serialElementId, @ModelAttribute PlaylistElementDTO dto, Principal principal, Model model) {
 		
+		SerialElement serialEl = serialService.findById(serialElementId);
+		Playlist playlist = playlistRepository.findOne(id);
 		
-		return getTemplateDir("add-playlist-element");
+		playlistService.addNewPlaylistElement(playlist, serialEl);
+		
+		return "redirect:/view/playlists/" + id;
 	}
-	
-	
-	
-	
 	
 	
 	@GetMapping("/view/add-playlist")
@@ -183,26 +184,7 @@ public class PlaylistController {
 			throws IllegalAccessException {
 
 		playlistService.deletePlaylistElement(idPlaylistElement, idPlaylist);
-
-		Playlist playlist = playlistService.findById(idPlaylist);
-		model.addAttribute("playlist", playlist);
-
-		Collection<PlaylistElement> noSortedPlaylistElement = playlist.getElements();
-		
-		//posortowanie listy  
-		PlaylistElement playlistElement = noSortedPlaylistElement.stream().filter(e->e.getPrevious() == null).findFirst().orElse(null);
-		List<PlaylistElement> sortedPlaylistElements = new LinkedList<>();
-		while(playlistElement != null) { 
-			sortedPlaylistElements.add(playlistElement);
-			playlistElement = playlistElement.getNext();
-		}
-					
-		Collection<SimplePlaylistElement> simplePlaylistElements = sortedPlaylistElements.stream().map(el -> el.toSimplePlaylistElement())
-				.collect(Collectors.toList());
-			
-		model.addAttribute("playlistElements", simplePlaylistElements);
-		
-		return getTemplateDir("playlist-detail");
+		return "redirect:/view/playlists/" + idPlaylist;
 	}
 	
 }
