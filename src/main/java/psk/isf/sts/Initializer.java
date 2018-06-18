@@ -231,12 +231,19 @@ public class Initializer {
 		PlaylistElement element5 = PlaylistElement.builder().serialElement(serial2).build();
 		PlaylistElement element6 = PlaylistElement.builder().serialElement(serial3).build();
 
+		playlistElementRepo.save(element1);
+		playlistElementRepo.save(element2);
+		playlistElementRepo.save(element3);
+		playlistElementRepo.save(element4);
+		playlistElementRepo.save(element5);
+		playlistElementRepo.save(element6);
+		
 		element1.setPrevious(null);
-		element1.setNext(element2);
-		element2.setPrevious(element1);
-		element2.setNext(element3);
-		element3.setPrevious(element2);
-		element3.setNext(null);
+		element1.setNext(null);
+		//element2.setPrevious(element1);
+		//element2.setNext(element3);
+		//element3.setPrevious(element2);
+		//element3.setNext(null);
 
 		element4.setPrevious(null);
 		element4.setNext(element5);
@@ -256,8 +263,6 @@ public class Initializer {
 		List<PlaylistElement> elements2 = new LinkedList<>();
 
 		elements.add(element1);
-		elements.add(element2);
-		elements.add(element3);
 
 		elements2.add(element5);
 		elements2.add(element6);

@@ -1,6 +1,5 @@
 package psk.isf.sts.entity;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,13 +25,16 @@ public class PlaylistElement {
 	@ManyToOne
 	private SerialElement serialElement;
 
-	@ManyToOne(cascade = { CascadeType.ALL })
+	@ManyToOne
 	private PlaylistElement next;
 
 	@ManyToOne
 	private PlaylistElement previous;
 
-	@ManyToOne(cascade = { CascadeType.ALL })
+	@ManyToOne
 	private Playlist playlist;
 
+	public SimplePlaylistElement toSimplePlaylistElement() {
+		return SimplePlaylistElement.builder().id(id).serialElement(serialElement).playlist(playlist).build();
+	}
 }

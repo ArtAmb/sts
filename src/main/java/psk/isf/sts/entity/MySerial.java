@@ -33,6 +33,7 @@ public class MySerial {
 	@ManyToOne
 	private SerialElement serial;
 
+	private boolean watched;
 	private boolean trace;
 	private boolean sendNotifications;
 	private boolean showDescriptions;

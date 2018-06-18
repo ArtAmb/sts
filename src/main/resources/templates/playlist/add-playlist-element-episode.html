@@ -1,0 +1,72 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:replace="head :: head"></div>
+
+<body>
+	<div th:replace="mainMenu :: mainMenu"></div>
+	<div id="playlist-view" class="content">
+
+		<span style="font-size: 22px;">Elementy playlisty: </span> <span
+			style="font-size: 22px;" th:text="${playlist.name}"></span>
+
+		<table style="margin-top: 30px;">
+			<tr th:if="${playlistElements.empty}">
+				<td colspan="4">Na tej playliscie nie ma żadnych elementów</td>
+			</tr>
+			<tr th:each="playlistElements : ${playlistElements}">
+
+				<td><p th:text="${playlistElements.serialElement.title}"></p></td>
+				<td><p th:text="${playlistElements.serialElement.elementType}"></p></td>
+				<td><p th:text="${playlistElements.serialElement.description}"></p></td>
+
+
+				<td><a
+					th:id="'serial-detail' + ${playlistElements.serialElement.id}"
+					th:href="@{'/view/serial/' + ${playlistElements.serialElement.id}}"
+					class="mybutton">Szczegóły</a></td>
+
+			</tr>
+		</table>
+	</div>
+
+
+
+	<div id="serials-view" class="content">
+		<span th:text="${serial.title} + ': '" style="font-size: 22px;"></span>
+		<span style="font-size: 22px;">Odcinki</span>
+		<table style="margin-top: 30px;">
+			<tr th:if="${episodes.empty}">
+				<td colspan="5">Brak odcinków</td>
+			</tr>
+
+
+			<tr th:each="episode: ${episodes}">
+				<td><image th:if="${episode?.thumbnail?.url == null}"
+						th:src="@{/images/no_photo.jpg}" width="100" height="100" /> <image
+						th:if="${episode?.thumbnail?.url != null}"
+						th:src="${episode.thumbnail.url}" width="100" height="100" /></td>
+				<td><p th:text="${episode.title}"></p> Data emisji: <span
+					th:text="${episode.startDate}"></span>
+					<p th:text="${episode.description}"></p></td>
+
+
+				<td>
+					<form
+						th:action="@{'/view/playlists/' + ${playlist.id} + '/add-playlist-element/' + ${episode.id}}"
+						method="post">
+						<button type="submit">Dodaj</button>
+					</form>
+				</td>
+			</tr>
+
+		</table>
+
+	</div>
+
+
+
+	<div th:replace="footer :: footer"></div>
+</body>
+
+</html>

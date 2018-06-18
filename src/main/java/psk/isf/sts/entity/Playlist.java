@@ -1,6 +1,6 @@
 package psk.isf.sts.entity;
 
-import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -31,9 +31,9 @@ public class Playlist {
 
 	@ManyToOne
 	private User user;
-	
-	@OneToMany 
+
+	@OneToMany
 	@JoinColumn(name = "playlist_id")
-	private Collection <PlaylistElement> elements;
-	
+	private List<PlaylistElement> elements;
+
 }

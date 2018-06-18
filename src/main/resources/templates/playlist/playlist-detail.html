@@ -10,9 +10,9 @@
 		<span style="font-size: 22px;">Elementy playlisty: </span> 
 		<span style="font-size: 22px;" th:text="${playlist.name}"></span> 
 		
-		<a href="" class="mybutton">Dodaj element do playlisty</a>
-		<a href="" class="mybutton">Zmień kolejność odcinków</a>
+		<a th:href="@{'/view/playlists/' + ${playlist.id} + '/add-playlist-element-serial'}" class="mybutton">Dodaj element do playlisty</a>
 
+	
 	
 		<table style="margin-top:30px;">
 			<tr th:if="${playlistElements.empty}">
@@ -27,6 +27,25 @@
 				
 				<td><a th:id="'serial-detail' + ${playlistElements.serialElement.id}"
 				th:href="@{'/view/serial/' + ${playlistElements.serialElement.id}}" class="mybutton">Szczegóły</a></td>
+				
+				
+				<td>
+				<form th:action="@{'/view/playlists/' + ${playlist.id} + '/up/' + ${playlistElements.id}}" method="POST">
+					<button type="submit">W góre</button>
+				</form>
+				</td>
+				<td>
+				<form th:action="@{'/view/playlists/' + ${playlist.id} + '/down/' + ${playlistElements.id}}" method="POST">
+					<button type="submit">W dół</button>
+				</form>
+				</td>
+				
+				<td>
+				<form th:action="@{'/view/playlists/' + ${playlist.id} + '/delete/' + ${playlistElements.id}}" method="POST">
+					<button type="submit">Usuń</button>
+				</form>
+				</td>
+				
 		</tr>
 		</table>
 	</div>
