@@ -41,12 +41,7 @@
 						sec:authorize="hasRole('ROLE_ADMIN') OR hasRole('ROLE_PRODUCER')"
 						class="mybutton">Edytuj </a>
 
-						<form
-							sec:authorize="hasRole('ROLE_ADMIN') OR hasRole('ROLE_PRODUCER')"
-							th:action="@{'/view/serial/' + ${serial.id} + '/delete'}"
-							method="POST">
-							<button type="submit">Usuń</button>
-						</form></td>
+					</td>
 
 				</tr>
 			</table>

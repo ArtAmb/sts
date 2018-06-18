@@ -13,7 +13,8 @@
 			th:href="@{add-serial}" class="mybutton">Dodaj serial</a>
 		
 
-			<form sec:authorize="hasRole('ROLE_PRODUCER')" th:action="@{/view/add-serial/by/xml}" method="post" enctype="multipart/form-data">
+			<form style= "margin-top:20px;" sec:authorize="hasRole('ROLE_PRODUCER')" th:action="@{/view/add-serial/by/xml}" method="post" enctype="multipart/form-data">
+                <h2>Dodawanie seriali z pliku xml</h2>
                 <input name="xmlFile" type="file" />
                 <button type="submit">Dodaj serial przez XML</button>
             </form>
