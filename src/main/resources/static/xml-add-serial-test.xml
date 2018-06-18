@@ -1,0 +1,40 @@
+<serial>
+<title> Test serial dodany z XMLA </title>
+<state>COMING</state>
+<season>
+<title> Sezon 1</title>
+
+<episode>
+<title> Odc 1 </title>
+</episode>
+<episode>
+<title> Odc 2 </title>
+</episode>
+<episode>
+<title> Odc 3 </title>
+</episode>
+<episode>
+<title> Odc 4 </title>
+</episode>
+</season>
+
+<season>
+<title> Sezon 2</title>
+
+
+<episode>
+<title> Odc 1 </title>
+</episode>
+<episode>
+<title> Odc 2 </title>
+</episode>
+<episode>
+<title> Odc 3 </title>
+</episode>
+<episode>
+<title> Odc 4 </title>
+</episode>
+
+</season>
+
+</serial>
