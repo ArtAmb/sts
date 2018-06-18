@@ -1,4 +1,4 @@
-package psk.isf.sts.repository;
+package psk.isf.sts.repository.myserial;
 
 import java.util.Collection;
 

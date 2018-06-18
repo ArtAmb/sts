@@ -13,8 +13,8 @@ import psk.isf.sts.entity.playlist.Playlist;
 import psk.isf.sts.entity.playlist.PlaylistElement;
 import psk.isf.sts.entity.registration.User;
 import psk.isf.sts.entity.serial.SerialElement;
-import psk.isf.sts.repository.PlaylistElementRepository;
-import psk.isf.sts.repository.PlaylistRepository;
+import psk.isf.sts.repository.playlist.PlaylistElementRepository;
+import psk.isf.sts.repository.playlist.PlaylistRepository;
 import psk.isf.sts.service.playlist.dto.PlaylistDTO;
 
 @Service

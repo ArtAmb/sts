@@ -22,7 +22,7 @@ import psk.isf.sts.entity.registration.User;
 import psk.isf.sts.entity.serial.SerialElement;
 import psk.isf.sts.entity.serial.SimplePlaylistElement;
 import psk.isf.sts.entity.serial.SimpleSerialElement;
-import psk.isf.sts.repository.PlaylistRepository;
+import psk.isf.sts.repository.playlist.PlaylistRepository;
 import psk.isf.sts.service.authorization.UserService;
 import psk.isf.sts.service.playlist.PlaylistService;
 import psk.isf.sts.service.playlist.dto.PlaylistDTO;

@@ -1,4 +1,4 @@
-package psk.isf.sts.repository;
+package psk.isf.sts.repository.authorization;
 
 import java.util.Collection;
 

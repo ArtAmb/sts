@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import psk.isf.sts.entity.registration.User;
-import psk.isf.sts.repository.UserRepository;
+import psk.isf.sts.repository.authorization.UserRepository;
 import psk.isf.sts.service.cache.AbstractCache;
 import psk.isf.sts.service.cache.CacheManager;
 

@@ -17,7 +17,7 @@ import psk.isf.sts.entity.registration.Roles;
 import psk.isf.sts.entity.registration.User;
 import psk.isf.sts.entity.registration.UserSourceSystem;
 import psk.isf.sts.entity.registration.UserType;
-import psk.isf.sts.repository.UserRepository;
+import psk.isf.sts.repository.authorization.UserRepository;
 import psk.isf.sts.service.authorization.dto.AuthorizationDTO;
 import psk.isf.sts.service.authorization.dto.UserDTO;
 

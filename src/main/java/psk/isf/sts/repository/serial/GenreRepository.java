@@ -1,4 +1,4 @@
-package psk.isf.sts.repository;
+package psk.isf.sts.repository.serial;
 
 import java.util.Collection;
 
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import psk.isf.sts.entity.serial.Genre;
 
 @Repository
-public interface GenreDAO extends CrudRepository<Genre, Long> {
+public interface GenreRepository extends CrudRepository<Genre, Long> {
 
 	Collection<Genre> findByName(String name);
 

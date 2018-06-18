@@ -30,13 +30,13 @@ import psk.isf.sts.entity.serial.SerialElement;
 import psk.isf.sts.entity.serial.SerialElementType;
 import psk.isf.sts.entity.serial.State;
 import psk.isf.sts.repository.ActorRepository;
-import psk.isf.sts.repository.GenreRepository;
 import psk.isf.sts.repository.PictureRepository;
-import psk.isf.sts.repository.PlaylistElementRepository;
-import psk.isf.sts.repository.PlaylistRepository;
-import psk.isf.sts.repository.RoleRepository;
-import psk.isf.sts.repository.SerialRepository;
-import psk.isf.sts.repository.UserRepository;
+import psk.isf.sts.repository.authorization.RoleRepository;
+import psk.isf.sts.repository.authorization.UserRepository;
+import psk.isf.sts.repository.playlist.PlaylistElementRepository;
+import psk.isf.sts.repository.playlist.PlaylistRepository;
+import psk.isf.sts.repository.serial.GenreRepository;
+import psk.isf.sts.repository.serial.SerialRepository;
 import psk.isf.sts.service.PictureService;
 
 @Component

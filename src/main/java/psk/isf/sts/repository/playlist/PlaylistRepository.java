@@ -1,4 +1,4 @@
-package psk.isf.sts.repository;
+package psk.isf.sts.repository.playlist;
 
 import java.util.Collection;
 import java.util.List;

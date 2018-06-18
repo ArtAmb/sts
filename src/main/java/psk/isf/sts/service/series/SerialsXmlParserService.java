@@ -25,8 +25,8 @@ import psk.isf.sts.entity.registration.User;
 import psk.isf.sts.entity.serial.SerialElement;
 import psk.isf.sts.entity.serial.SerialElementType;
 import psk.isf.sts.entity.serial.State;
-import psk.isf.sts.repository.GenreDAO;
-import psk.isf.sts.repository.SerialRepository;
+import psk.isf.sts.repository.serial.GenreRepository;
+import psk.isf.sts.repository.serial.SerialRepository;
 import psk.isf.sts.service.PictureService;
 
 @Service
@@ -39,7 +39,7 @@ public class SerialsXmlParserService {
 	private PictureService pictureService;
 
 	@Autowired
-	private GenreDAO genreDAO;
+	private GenreRepository genreRepository;
 
 	@Autowired
 	private SerialRepository serialRepo;
@@ -107,12 +107,12 @@ public class SerialsXmlParserService {
 
 		SerialElement season = SerialElement.builder().title(title).description(description)
 				.active(active != null ? Boolean.parseBoolean(active) : true).elementType(SerialElementType.SERIAL)
-				.parent(null).thumbnail(pictureService.findNoPhotoPicture()).linkToWatch(
-						linkToWatch)
-				.producer(user).state(state != null ? State.valueOf(state) : State.RUNNING)
+				.parent(null).thumbnail(pictureService.findNoPhotoPicture()).linkToWatch(linkToWatch).producer(
+						user)
+				.state(state != null ? State.valueOf(state) : State.RUNNING)
 				.genres(genres != null
 						? Arrays.stream(genres.split(" "))
-								.map(g -> genreDAO.findByName(g).stream().findFirst().orElse(null))
+								.map(g -> genreRepository.findByName(g).stream().findFirst().orElse(null))
 								.filter(g -> g != null).collect(Collectors.toList())
 						: null)
 				.elements(new LinkedList<>()).build();

@@ -15,7 +15,7 @@ import psk.isf.sts.entity.picture.Picture;
 import psk.isf.sts.entity.registration.User;
 import psk.isf.sts.entity.registration.UserSourceSystem;
 import psk.isf.sts.repository.ContractRepository;
-import psk.isf.sts.repository.UserRepository;
+import psk.isf.sts.repository.authorization.UserRepository;
 import psk.isf.sts.service.PictureService;
 import psk.isf.sts.service.cache.user.UserCacheFacade;
 

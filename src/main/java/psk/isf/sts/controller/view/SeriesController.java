@@ -26,7 +26,7 @@ import psk.isf.sts.entity.serial.Genre;
 import psk.isf.sts.entity.serial.SerialElement;
 import psk.isf.sts.entity.serial.SerialElementType;
 import psk.isf.sts.entity.serial.SimpleSerialElement;
-import psk.isf.sts.repository.SerialRepository;
+import psk.isf.sts.repository.serial.SerialRepository;
 import psk.isf.sts.service.authorization.UserService;
 import psk.isf.sts.service.series.SerialService;
 import psk.isf.sts.service.series.SerialsXmlParserService;
