@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import psk.isf.sts.entity.MySerial;
 import psk.isf.sts.entity.Playlist;
 import psk.isf.sts.entity.PlaylistElement;
 import psk.isf.sts.entity.SerialElement;
@@ -23,7 +22,6 @@ import psk.isf.sts.entity.SimplePlaylistElement;
 import psk.isf.sts.entity.SimpleSerialElement;
 import psk.isf.sts.entity.registration.Roles;
 import psk.isf.sts.entity.registration.User;
-import psk.isf.sts.repository.PlaylistElementRepository;
 import psk.isf.sts.repository.PlaylistRepository;
 import psk.isf.sts.service.authorization.UserService;
 import psk.isf.sts.service.playlist.PlaylistService;
@@ -42,28 +40,29 @@ public class PlaylistController {
 
 	@Autowired
 	private PlaylistRepository playlistRepository;
-	
-	@Autowired
-	private PlaylistElementRepository playlistElementRepository;
 
 	@Autowired
 	private UserService userService;
 
 	public static String templateDirRoot = "playlist/";
 
+	
 	private String getTemplateDir(String templateName) {
 		return templateDirRoot + templateName;
 	}
 
+	
 	@GetMapping("/view/playlists")
 	@PreAuthorize("hasRole('" + Roles.Consts.ROLE_VIEWER + "')")
 	public String playlistView(Model model, Principal principal) {
+	
 		Collection<Playlist> playlists = playlistRepository.findByUser(userService.findByLogin(principal.getName()));
-
 		model.addAttribute("playlists", playlists);
+		
 		return getTemplateDir("playlists");
 	}
 
+	
 	@GetMapping("/view/playlists/{id}")
 	@PreAuthorize("hasRole('" + Roles.Consts.ROLE_VIEWER + "')")
 	public String playlistDetailView(@PathVariable Long id, Principal principal, Model model) {
@@ -83,14 +82,12 @@ public class PlaylistController {
 				
 		Collection<SimplePlaylistElement> simplePlaylistElements = sortedPlaylistElements.stream().map(el -> el.toSimplePlaylistElement())
 				.collect(Collectors.toList());
-		
-		
-		
 		model.addAttribute("playlistElements", simplePlaylistElements);
 
 		return getTemplateDir("playlist-detail");
 	}
 
+	
 	@PostMapping("/view/add-playlist")
 	public String addPlaylist(@ModelAttribute PlaylistDTO dto, Principal principal, Model model) {
 
@@ -111,13 +108,14 @@ public class PlaylistController {
 		}
 
 		model.addAttribute("message", "Playlista została dodana");
-		return getTemplateDir("add-playlist");
+		return "redirect:/view/playlists/";
 	}
 
 	
-	
-	
-	
+	@GetMapping("/view/add-playlist")
+	public String getAddPlaylistView(@ModelAttribute PlaylistDTO dto, Principal principal, Model model) {
+		return getTemplateDir("add-playlist");
+	}
 	
 
 	@GetMapping("/view/playlists/{id}/add-playlist-element-serial")
@@ -150,10 +148,10 @@ public class PlaylistController {
 	}
 	
 	
-	@GetMapping("/view/playlists/{id}/add-playlist-element-season/{id2}")
-	public String addPlaylistElementSeasonView(@PathVariable Long id, @PathVariable Long id2, Model model) {
+	@GetMapping("/view/playlists/{idPlaylist}/add-playlist-element-season/{idSerialElement}")
+	public String addPlaylistElementSeasonView(@PathVariable Long idPlaylist, @PathVariable Long idSerialElement, Model model) {
 
-		Playlist playlist = playlistService.findById(id);
+		Playlist playlist = playlistService.findById(idPlaylist);
 		model.addAttribute("playlist", playlist);
 
 		Collection<PlaylistElement> noSortedPlaylistElement = playlist.getElements();
@@ -166,14 +164,11 @@ public class PlaylistController {
 			playlistElement = playlistElement.getNext();
 		}			 
 		
-
-		
 		Collection<SimplePlaylistElement> simplePlaylistElements = sortedPlaylistElements.stream().map(el -> el.toSimplePlaylistElement())
-				.collect(Collectors.toList());
-				
+				.collect(Collectors.toList());		
 		model.addAttribute("playlistElements", simplePlaylistElements);
 		
-		SerialElement serialElement = serialService.findById(id2);
+		SerialElement serialElement = serialService.findById(idSerialElement);
 		model.addAttribute("serial", serialElement);
 		Collection<SimpleSerialElement> seasons = serialService.findAllSeasonsOfSerial(serialElement).stream()
 				.map(el -> el.toSimpleSerialElement()).collect(Collectors.toList());
@@ -183,12 +178,10 @@ public class PlaylistController {
 	}
 	
 	
-	
-	
-	@GetMapping("/view/playlists/{id}/add-playlist-element-episode/{id2}")
-	public String addPlaylistElementEpisodeView(@PathVariable Long id, @PathVariable Long id2, Model model) {
+	@GetMapping("/view/playlists/{idPlaylist}/add-playlist-element-episode/{idSerialElement}")
+	public String addPlaylistElementEpisodeView(@PathVariable Long idPlaylist, @PathVariable Long idSerialElement, Model model) {
 
-		Playlist playlist = playlistService.findById(id);
+		Playlist playlist = playlistService.findById(idPlaylist);
 		model.addAttribute("playlist", playlist);
 
 		Collection<PlaylistElement> noSortedPlaylistElement = playlist.getElements();
@@ -200,15 +193,13 @@ public class PlaylistController {
 			sortedPlaylistElements.add(playlistElement);
 			playlistElement = playlistElement.getNext();
 		}			 
-		
-
-		
+			
 		Collection<SimplePlaylistElement> simplePlaylistElements = sortedPlaylistElements.stream().map(el -> el.toSimplePlaylistElement())
 				.collect(Collectors.toList());
 				
 		model.addAttribute("playlistElements", simplePlaylistElements);
 		
-		SerialElement serialElement = serialService.findById(id2);
+		SerialElement serialElement = serialService.findById(idSerialElement);
 		model.addAttribute("serial", serialElement);
 		Collection<SimpleSerialElement> episodes = serialService.findAllEpisodesOfSeason(serialElement).stream()
 				.map(el -> el.toSimpleSerialElement()).collect(Collectors.toList());
@@ -218,24 +209,17 @@ public class PlaylistController {
 	}
 	
 	
-	
-	
-	@PostMapping("/view/playlists/{id}/add-playlist-element/{serialElementId}")
-	public String addPlaylistElement(@PathVariable Long id, @PathVariable Long serialElementId, @ModelAttribute PlaylistElementDTO dto, Principal principal, Model model) {
+	@PostMapping("/view/playlists/{idPlaylist}/add-playlist-element/{serialElementId}")
+	public String addPlaylistElement(@PathVariable Long idPlaylist, @PathVariable Long serialElementId, @ModelAttribute PlaylistElementDTO dto, Principal principal, Model model) {
 		
 		SerialElement serialEl = serialService.findById(serialElementId);
-		Playlist playlist = playlistRepository.findOne(id);
+		Playlist playlist = playlistRepository.findOne(idPlaylist);
 		
 		playlistService.addNewPlaylistElement(playlist, serialEl);
 		
-		return "redirect:/view/playlists/" + id;
+		return "redirect:/view/playlists/" + idPlaylist;
 	}
 	
-	
-	@GetMapping("/view/add-playlist")
-	public String getAddPlaylistView(@ModelAttribute PlaylistDTO dto, Principal principal, Model model) {
-		return getTemplateDir("add-playlist");
-	}
 
 	@PostMapping("/view/playlist/{id}/delete")
 	public String deletePlaylist(@PathVariable Long id, Principal principal, Model model)
@@ -251,13 +235,15 @@ public class PlaylistController {
 		return getTemplateDir("playlists");
 	}
 	
+	
 	@PostMapping("/view/playlists/{idPlaylist}/delete/{idPlaylistElement}")
 	public String deletePlaylistElement(@PathVariable Long idPlaylist, @PathVariable Long idPlaylistElement, Model model)
 			throws IllegalAccessException {
 
-		playlistService.deletePlaylistElement(idPlaylistElement, idPlaylist);
+		playlistService.deletePlaylistElement(idPlaylistElement);
 		return "redirect:/view/playlists/" + idPlaylist;
 	}
+	
 	
 	@PostMapping("/view/playlists/{idPlaylist}/up/{idPlaylistElement}")
 	public String upPlaylistElement(@PathVariable Long idPlaylist, @PathVariable Long idPlaylistElement, Model model)
@@ -267,6 +253,7 @@ public class PlaylistController {
 		return "redirect:/view/playlists/" + idPlaylist;
 	}
 	
+	
 	@PostMapping("/view/playlists/{idPlaylist}/down/{idPlaylistElement}")
 	public String downPlaylistElement(@PathVariable Long idPlaylist, @PathVariable Long idPlaylistElement, Model model)
 			throws IllegalAccessException {
@@ -274,5 +261,4 @@ public class PlaylistController {
 		playlistService.downPlaylistElement(idPlaylistElement);
 		return "redirect:/view/playlists/" + idPlaylist;
 	}
-	
 }

@@ -31,8 +31,8 @@
         <form th:action="@{'/view/comment/' + ${detailInfo.id}}" method="POST">
             <div>
                 <h1>Treść</h1>
-                <textarea th:if="${!detailInfo.accepted}" name="content" col="10" row="8" th:text=${detailInfo.content}></textarea>
-                <textarea th:if="${detailInfo.accepted}" col="10" row="8" th:text=${detailInfo.content} disabled></textarea>
+                <textarea th:if="${!detailInfo.accepted}" name="content" col="10" row="8" th:text="${detailInfo.content}"></textarea>
+                <textarea th:if="${detailInfo.accepted}" col="10" row="8" th:text="${detailInfo.content}" disabled="true"></textarea>
             </div>
 
             <button th:if="${!detailInfo.accepted}" type="submit">Akceptuj</button>
@@ -40,7 +40,7 @@
         <form th:action="@{'/view/comment/' + ${detailInfo.id} + '/decline'}" method="POST">
             <div>
                 <label th:if="${!detailInfo.accepted}">Powód odrzucenia</label><br/>
-                <textarea th:if="${!detailInfo.accepted}" name="rejectionCause" col="10" row="8" th:text=${detailInfo.content}></textarea>
+                <textarea th:if="${!detailInfo.accepted}" name="rejectionCause" col="10" row="8" th:text="${detailInfo.content}"></textarea>
             </div>
             <button th:if="${!detailInfo.accepted}" type="submit">Odrzuć</button>
         </form>

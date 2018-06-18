@@ -35,17 +35,23 @@ public class PlaylistService {
 	}
 
 	public Playlist addPlaylist(User user, PlaylistDTO dto) throws Exception {
-
+		
 		Playlist playlist = Playlist.builder().name(dto.getName()).user(user).build();
-
 		validatePlaylist(dto);
 
 		return playlistRepo.save(playlist);
 	}
+	
+	public void validatePlaylist(PlaylistDTO dto) throws Exception {
+		
+		if (StringUtils.isNullOrEmpty(dto.getName())) {
+			throw new Exception("Musisz podać nazwę playlisty");
+		}
+	}
 
 	@Transactional
 	public void addNewPlaylistElement(Playlist playlist, SerialElement serialEl) {
-
+		
 		List<PlaylistElement> elements = playlist.getElements();
 
 		PlaylistElement lastElement = null;
@@ -63,7 +69,7 @@ public class PlaylistService {
 	}
 
 	public void deletePlaylist(User user, Long id) throws IllegalAccessException {
-
+	
 		Playlist playlist = playlistRepo.findOne(id);
 		if (playlist == null)
 			return;
@@ -75,14 +81,8 @@ public class PlaylistService {
 		playlistRepo.delete(playlist);
 	}
 
-	public void validatePlaylist(PlaylistDTO dto) throws Exception {
-		if (StringUtils.isNullOrEmpty(dto.getName())) {
-			throw new Exception("Musisz podać nazwę playlisty");
-		}
-	}
-
 	@Transactional
-	public void deletePlaylistElement(Long playlistElId, Long playlistId) throws IllegalAccessException {
+	public void deletePlaylistElement(Long playlistElId) throws IllegalAccessException {
 
 		PlaylistElement deletedPlaylistelement = playlistElementRepo.findOne(playlistElId);
 		if (deletedPlaylistelement == null)
@@ -90,8 +90,6 @@ public class PlaylistService {
 
 		PlaylistElement deletedPrev = deletedPlaylistelement.getPrevious();
 		PlaylistElement deletedNext = deletedPlaylistelement.getNext();
-
-		// Playlist playlist = playlistRepo.findOne(playlistId);
 
 		if (deletedPrev == null && deletedNext != null) {
 			deletedNext.setPrevious(null);
@@ -107,9 +105,6 @@ public class PlaylistService {
 
 			playlistElementRepo.save(deletedPrev);
 			playlistElementRepo.save(deletedNext);
-		}
-		if (deletedPrev == null && deletedNext == null) {
-			// playlist.setElements(null);
 		}
 
 		deletedPlaylistelement.setNext(null);
