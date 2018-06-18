@@ -275,5 +275,18 @@ public class SerialService {
 	public void addToWatched(MySerial mySerial, User user) {
 		mySerialRepo.save(mySerial);
 	}
+	
+	public int countProgressBar(Collection <SerialElement> allEpisodesOfSeason,Collection <SerialElement> watchedEpisodes )
+	{
+		float numberOfEpisodesOfSeason, numberOfWatchedEpisodes, valueOfProgress  =0;
+		numberOfEpisodesOfSeason = allEpisodesOfSeason.size();
+		numberOfWatchedEpisodes = watchedEpisodes.size();
+		
+		valueOfProgress = numberOfWatchedEpisodes/numberOfEpisodesOfSeason * 100;
+		
+			
+		return (int)Math.round(valueOfProgress);
+		
+	}
 
 }
