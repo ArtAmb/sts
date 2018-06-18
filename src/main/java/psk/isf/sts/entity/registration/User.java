@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,7 +20,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import psk.isf.sts.entity.Contract;
-import psk.isf.sts.entity.Gallery;
 import psk.isf.sts.entity.Picture;
 import psk.isf.sts.entity.SerialElement;
 import psk.isf.sts.entity.UserType;
@@ -46,7 +46,7 @@ public class User {
 	@Column(nullable = true, unique = true)
 	private String email;
 
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER)
 	@Builder.Default
 	private Collection<Role> roles = new LinkedList<>();
 	@Builder.Default
@@ -61,8 +61,8 @@ public class User {
 	@Enumerated(EnumType.STRING)
 	private UserType userType;
 
-	@ManyToMany
-	private Collection<Gallery> galleries;
+	// @ManyToMany(fetch = FetchType.EAGER)
+	// private Collection<Gallery> galleries;
 
 	@ManyToOne(cascade = { CascadeType.ALL })
 	private Picture thumbnail;

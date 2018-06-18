@@ -3,6 +3,7 @@ package psk.isf.sts;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.sql.Date;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -23,6 +24,7 @@ import psk.isf.sts.entity.Playlist;
 import psk.isf.sts.entity.PlaylistElement;
 import psk.isf.sts.entity.SerialElement;
 import psk.isf.sts.entity.SerialElementType;
+import psk.isf.sts.entity.State;
 import psk.isf.sts.entity.UserType;
 import psk.isf.sts.entity.registration.Role;
 import psk.isf.sts.entity.registration.Roles;
@@ -136,6 +138,7 @@ public class Initializer {
 
 		SerialElement mJakMiloscSerial = serialRepository.save(SerialElement.builder()
 				.elementType(SerialElementType.SERIAL).title("M jak miłość")
+				.state(State.RUNNING)
 				.description(
 						"M jak Miłość to serial opisujący zagmatwane losy trzy-pokoleniowej rodziny Mostowiaków. Lucjan i Barbara są rodzicami czworga dorosłych ludzi: Marty, Marka, Małgosi i Marysi. ")
 				.producer(user).active(true)
@@ -143,19 +146,29 @@ public class Initializer {
 				.actors(actorListMJakMilosc).genres(Arrays.asList(dramat, przygodowy)).thumbnail(mJakMilosc).build());
 
 		SerialElement mJakMiloscSeason1 = serialRepository.save(SerialElement.builder()
-				.elementType(SerialElementType.SEASON).parent(mJakMiloscSerial).title("Sezon 1 M jak miłość")
-				.description("Pierwszy sezon...").producer(user).active(true).thumbnail(noPhoto).build());
-
-		serialRepository.save(SerialElement.builder().elementType(SerialElementType.SEASON).parent(mJakMiloscSerial)
-				.title("Sezon 2 M jak miłość").description("Drugi sezon...").producer(user).active(true)
+				.elementType(SerialElementType.SEASON)
+				.parent(mJakMiloscSerial).title("Sezon 1 M jak miłość")
+				.description("Pierwszy sezon...")
+				.producer(user)
+				.active(true)
+				.ordinalNumber(1l)
 				.thumbnail(noPhoto).build());
 
-		serialRepository.save(SerialElement.builder().elementType(SerialElementType.EPISODE).parent(mJakMiloscSeason1)
-				.title("Odcinek 1 - Nie ma jak w domu ").description("Poznajmy rodzinę Mostowiaków! ").producer(user)
+		SerialElement mJakMiloscSeason2 = serialRepository.save(SerialElement.builder().elementType(SerialElementType.SEASON).parent(mJakMiloscSerial)
+				.title("Sezon 2 M jak miłość").ordinalNumber(2l).description("Drugi sezon...").producer(user).active(true)
+				.thumbnail(noPhoto).build());
+		
+		serialRepository.save(SerialElement.builder().elementType(SerialElementType.EPISODE).ordinalNumber(1l).parent(mJakMiloscSeason2)
+				.title("Odcinek 1 - Tejemnicza tajemnica ").description("W tym odcinku dowiecie sie czy przypomienia DZIAŁAJĄ... czy może wciąż NIE? Nie przegapcie! ").producer(user)
+				.startDate(new Date(System.currentTimeMillis()))
 				.active(true).thumbnail(noPhoto).build());
 
 		serialRepository.save(SerialElement.builder().elementType(SerialElementType.EPISODE).parent(mJakMiloscSeason1)
-				.title("Odcinek 2 - Rozterki ").description("Hanka ma probem z kartonami. Czy Marek jej pomoże? ")
+				.title("Odcinek 1 - Nie ma jak w domu ").ordinalNumber(1l).description("Poznajmy rodzinę Mostowiaków! ").producer(user)
+				.active(true).thumbnail(noPhoto).build());
+
+		serialRepository.save(SerialElement.builder().elementType(SerialElementType.EPISODE).parent(mJakMiloscSeason1)
+				.title("Odcinek 2 - Rozterki ").ordinalNumber(2l).description("Hanka ma probem z kartonami. Czy Marek jej pomoże? ")
 				.producer(user).active(true).thumbnail(noPhoto).build());
 
 		serialRepository.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("Pierwsza Miłość")

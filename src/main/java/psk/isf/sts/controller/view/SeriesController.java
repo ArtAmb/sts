@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import psk.isf.sts.entity.Actor;
 import psk.isf.sts.entity.Genre;
 import psk.isf.sts.entity.MySerial;
+import psk.isf.sts.entity.MySerialConfig;
 import psk.isf.sts.entity.SerialElement;
 import psk.isf.sts.entity.SerialElementType;
 import psk.isf.sts.entity.SimpleSerialElement;
@@ -277,7 +278,6 @@ public class SeriesController {
 		boolean czyDodano = false;
 		boolean czyObejrzano = false;
 		SerialElement serialElement = serialService.findById(id);
-		Collection<MySerial> mySerials = serialService.allMySerials();
 		model.addAttribute("serial", serialElement);
 		model.addAttribute("thumbnailUrl", serialElement.getThumbnail().toURL());
 
@@ -296,25 +296,22 @@ public class SeriesController {
 		}
 
 		User user = userService.findByLogin(principal.getName());
-		User user2;
-		SerialElement serial2;
+		Collection<MySerial> mySerials = serialService.findMySerialsConfigByUser(user).stream()
+				.map(MySerialConfig::getSerial).collect(Collectors.toList());
 
 		for (MySerial element : mySerials) {
-			user2 = element.getUser();
-			serial2 = element.getSerial();
-			if (user2.getLogin().equals(principal.getName())) {
-				if ((serial2.getId().equals(id))) {
-					czyDodano = true;
-					if (element.isWatched()) {
+		
+			if ((element.getSerial().getId().equals(id))) {
+				czyDodano = true;
+				if (element.isWatched()) {
 						czyObejrzano = true;
 					}
-					model.addAttribute("czyObejrzano", czyObejrzano);
-					model.addAttribute("czyDodano", czyDodano);
-					model.addAttribute("message2", "Ten serial już został dodany wczesniej!");
-					model.addAttribute("mySerial", element);
-					return getTemplateDir(contextTemplate);
-				}
-
+				
+				model.addAttribute("czyObejrzano", czyObejrzano);
+				model.addAttribute("czyDodano", czyDodano);
+				model.addAttribute("message2", "Ten serial już został dodany wczesniej!");
+				model.addAttribute("mySerial", element);
+				return getTemplateDir(contextTemplate);
 			}
 		}
 
@@ -334,23 +331,17 @@ public class SeriesController {
 			model.addAttribute("serial", serialElement);
 			return getTemplateDir(contextTemplate);
 		}
-		mySerials = serialService.allMySerials();
+		mySerials = serialService.findMySerialsConfigByUser(user).stream()
+				.map(MySerialConfig::getSerial).collect(Collectors.toList());
 		for (MySerial element : mySerials) {
-			user2 = element.getUser();
-			serial2 = element.getSerial();
-			if (user2.getLogin().equals(principal.getName()))
-				;
-			{
-				if ((serial2.getId().equals(id))) {
-					czyDodano = true;
-					if (element.isWatched()) {
+			if ((element.getId().equals(id))) {
+				czyDodano = true;
+				if (element.isWatched()) {
 						czyObejrzano = true;
 					}
-					model.addAttribute("czyObejrzano", czyObejrzano);
-					model.addAttribute("czyDodano", czyDodano);
-					model.addAttribute("mySerial", element);
-				}
-
+				model.addAttribute("czyObejrzano", czyObejrzano);
+				model.addAttribute("czyDodano", czyDodano);
+				model.addAttribute("mySerial", element);
 			}
 		}
 		model.addAttribute("czyDodano", czyDodano);
@@ -1085,14 +1076,24 @@ public class SeriesController {
 				if ((serial2.getId().equals(id))) {
 					czyDodano = true;
 					model.addAttribute("mySerial", element);
-					if (element.isWatched()) {
-						czyObejrzano = true;
-					}
-					model.addAttribute("czyObejrzano", czyObejrzano);
+					
 				}
 
 			}
 		}
+
+for (MySerial element : mySerials) {
+			serial2 = element.getSerial();
+			if ((serial2.getId().equals(id))) {
+				czyDodano = true;
+				model.addAttribute("mySerial", element);
+				if (element.isWatched()) {
+						czyObejrzano = true;
+					}
+				model.addAttribute("czyObejrzano", czyObejrzano);
+			}
+		}
+
 
 		model.addAttribute("czyDodano", czyDodano);
 		model.addAttribute("czyObejrzano", czyObejrzano);

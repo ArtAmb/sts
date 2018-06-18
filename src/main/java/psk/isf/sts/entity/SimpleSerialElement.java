@@ -33,6 +33,7 @@ public class SimpleSerialElement {
 	private User producer;
 	private Gallery gallery;
 	private ViewPicture thumbnail;
+	private Long ordinalNumber;
 	// private Collection<SerialElement> elements;
 	// private SerialElement parent;
 

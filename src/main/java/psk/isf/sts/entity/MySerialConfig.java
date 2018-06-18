@@ -1,5 +1,6 @@
 package psk.isf.sts.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -18,7 +19,7 @@ import psk.isf.sts.entity.registration.User;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MySerial {
+public class MySerialConfig {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -27,8 +28,11 @@ public class MySerial {
 	@ManyToOne
 	private User user;
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	private SerialElement serial;
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	private MySerial serial;
 
-	private boolean watched;
+	private boolean trace;
+	private boolean sendNotifications;
+	private boolean showDescriptions;
+
 }

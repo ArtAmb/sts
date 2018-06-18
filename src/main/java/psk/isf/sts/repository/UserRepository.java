@@ -1,5 +1,7 @@
 package psk.isf.sts.repository;
 
+import java.util.Collection;
+
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -16,5 +18,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
 	User findByLogin(String login);
 
 	User findByExtIdAndSourceSystem(String extId, UserSourceSystem system);
+
+	Collection<User> findAll();
 
 }
