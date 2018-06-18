@@ -31,5 +31,8 @@ public class MySerial {
 	@ManyToOne(fetch = FetchType.EAGER)
 	private SerialElement serial;
 
+	@ManyToOne
+	private MySerialConfig config;
+
 	private boolean watched;
 }

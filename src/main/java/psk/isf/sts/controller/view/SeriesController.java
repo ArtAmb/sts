@@ -6,6 +6,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -272,6 +274,7 @@ public class SeriesController {
 		return getTemplateDir("add-episode");
 	}
 
+	//@Transactional
 	@GetMapping("/view/addToMine/{id}")
 	public String addToMine(@PathVariable Long id, Principal principal, Model model,
 			@RequestParam("context") String contextTemplate) {
@@ -317,14 +320,6 @@ public class SeriesController {
 
 		try {
 			serialService.addToMine(serialElement, user);
-			Collection<SerialElement> sezony = serialService.findAllSeasonsOfSerial(serialElement);
-			for (SerialElement sezon : sezony) {
-				serialService.addToMine(sezon, user);
-				Collection<SerialElement> odcinki = serialService.findAllEpisodesOfSeason(sezon);
-				for (SerialElement odcinek : odcinki) {
-					serialService.addToMine(odcinek, user);
-				}
-			}
 
 		} catch (Exception e) {
 			model.addAttribute("message2", e.getMessage());
@@ -1007,9 +1002,11 @@ public class SeriesController {
 		return getTemplateDir(contextTemplate);
 	}
 
+	@Transactional
 	@GetMapping("/view/deleteFromMine/{id}")
 	public String deleteFromMine(@PathVariable Long id, Principal principal, Model model,
 			@RequestParam("context") String contextTemplate) {
+		User user = userService.findByLogin(principal.getName());
 		boolean czyDodano = true;
 		boolean czyObejrzano = false;
 		MySerial mySerial = serialService.findMySerialById(id);
@@ -1019,15 +1016,7 @@ public class SeriesController {
 		SerialElement serialElement = mySerial.getSerial();
 		model.addAttribute("serial", serialElement);
 		model.addAttribute("thumbnailUrl", serialElement.getThumbnail().toURL());
-		Collection<SerialElement> sezony = serialService.findAllSeasonsOfSerial(mySerial.getSerial());
-		for (SerialElement sezon : sezony) {
-			serialService.deleteFromMine(sezon.getId());
-			Collection<SerialElement> odcinki = serialService.findAllEpisodesOfSeason(sezon);
-			for (SerialElement odcinek : odcinki) {
-				serialService.deleteFromMine(odcinek.getId());
-			}
-		}
-		serialService.deleteFromMine(id);
+		serialService.deleteFromMine(user, serialElement);
 		czyDodano = false;
 		czyObejrzano = false;
 		model.addAttribute("czyDodano", czyDodano);

@@ -14,4 +14,6 @@ public interface MySerialConfigRepository extends CrudRepository<MySerialConfig,
 	Collection<MySerialConfig> findByUser(User user);
 
 	Collection<MySerialConfig> findByUserAndSendNotificationsTrue(User user);
+
+	Collection<MySerialConfig> findByUserAndSerial_serial_id(User user, Long serialId);
 }

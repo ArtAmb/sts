@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import org.h2.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -120,17 +122,60 @@ public class SerialService {
 		return commentRepo.save(comment);
 	}
 
+	@Transactional
 	public void addToMine(SerialElement serialElement, User user) {
-		MySerial serial = MySerial.builder().user(user).serial(serialElement).build();
+		if(!serialElement.getElementType().equals(SerialElementType.SERIAL))
+			throw new IllegalStateException("Dodawnay element musi byc serialem!");
+		
+		MySerial mySerial = MySerial.builder()
+				.user(user)
+				.serial(serialElement)
+				.watched(false)
+				.build();
 
-		MySerialConfig mySerialConfig = MySerialConfig.builder().user(user).serial(serial).sendNotifications(true)
-				.trace(true).showDescriptions(true).build();
+		MySerialConfig mySerialConfig = MySerialConfig.builder()
+				.user(user)
+				.serial(mySerial)
+				.sendNotifications(true)
+				.trace(true)
+				.showDescriptions(true)
+				.build();
 
 		mySerialConfigRepo.save(mySerialConfig);
+		
+		SerialElement serial = serialRepo.findOne(serialElement.getId());
+		for(SerialElement season : serial.getElements()) {
+			MySerial mySeason = MySerial.builder()
+					.user(user)
+					.serial(season)
+					.watched(false)
+					.build();
+
+			mySerialRepo.save(mySeason);
+			
+			for(SerialElement episode : season.getElements()) {
+				MySerial myEp = MySerial.builder()
+						.user(user)
+						.serial(episode)
+						.watched(false)
+						.build();
+
+				mySerialRepo.save(myEp);
+			}
+		}
+		
 	}
 
-	public void deleteFromMine(Long id) {
-		mySerialRepo.delete(id);
+	@Transactional
+	public void deleteFromMine(User user, SerialElement serialElement) {
+		if(!serialElement.getElementType().equals(SerialElementType.SERIAL))
+			throw new IllegalStateException("serialElement musi byc serialem!");
+		
+		MySerialConfig config =  mySerialConfigRepo.findByUserAndSerial_serial_id(user, serialElement.getId()).stream().findFirst().orElse(null);
+		if(config == null)
+			throw new IllegalStateException("NIE ZNALEZIONO MOJEGO SERIALU DLA serialu o id == !" + serialElement.getId());
+		
+		mySerialConfigRepo.delete(config.getId());
 	}
 
 	public void validate(CommentDTO dto) throws Exception {
