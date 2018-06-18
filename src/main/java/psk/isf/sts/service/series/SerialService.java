@@ -141,13 +141,14 @@ public class SerialService {
 				.showDescriptions(true)
 				.build();
 
-		mySerialConfigRepo.save(mySerialConfig);
+		mySerialConfig = mySerialConfigRepo.save(mySerialConfig);
 		
 		SerialElement serial = serialRepo.findOne(serialElement.getId());
 		for(SerialElement season : serial.getElements()) {
 			MySerial mySeason = MySerial.builder()
 					.user(user)
 					.serial(season)
+					.config(mySerialConfig)
 					.watched(false)
 					.build();
 
@@ -157,6 +158,7 @@ public class SerialService {
 				MySerial myEp = MySerial.builder()
 						.user(user)
 						.serial(episode)
+						.config(mySerialConfig)
 						.watched(false)
 						.build();
 
@@ -175,7 +177,7 @@ public class SerialService {
 		if(config == null)
 			throw new IllegalStateException("NIE ZNALEZIONO MOJEGO SERIALU DLA serialu o id == !" + serialElement.getId());
 		
-		mySerialConfigRepo.delete(config.getId());
+		mySerialConfigRepo.delete(config);
 	}
 
 	public void validate(CommentDTO dto) throws Exception {
