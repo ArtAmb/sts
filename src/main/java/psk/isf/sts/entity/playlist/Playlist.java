@@ -1,4 +1,4 @@
-package psk.isf.sts.entity;
+package psk.isf.sts.entity.playlist;
 
 import java.util.List;
 

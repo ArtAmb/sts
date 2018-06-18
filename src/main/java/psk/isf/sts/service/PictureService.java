@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import psk.isf.sts.entity.Picture;
+import psk.isf.sts.entity.picture.Picture;
 import psk.isf.sts.repository.PictureRepository;
 
 @Service

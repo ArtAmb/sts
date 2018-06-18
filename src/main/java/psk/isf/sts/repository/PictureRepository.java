@@ -5,7 +5,7 @@ import java.util.Collection;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import psk.isf.sts.entity.Picture;
+import psk.isf.sts.entity.picture.Picture;
 
 @Repository
 public interface PictureRepository extends CrudRepository<Picture, Long> {

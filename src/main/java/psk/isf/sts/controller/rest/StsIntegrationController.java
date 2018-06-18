@@ -18,11 +18,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import psk.isf.sts.entity.Contract;
-import psk.isf.sts.entity.Task;
-import psk.isf.sts.entity.TaskState;
-import psk.isf.sts.entity.TaskType;
+import psk.isf.sts.entity.contract.Contract;
 import psk.isf.sts.entity.registration.User;
+import psk.isf.sts.entity.task.Task;
+import psk.isf.sts.entity.task.TaskState;
+import psk.isf.sts.entity.task.TaskType;
 import psk.isf.sts.repository.ContractRepository;
 import psk.isf.sts.repository.TaskRepository;
 import psk.isf.sts.service.contract.ContractService;

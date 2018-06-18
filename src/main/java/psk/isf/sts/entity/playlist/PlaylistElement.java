@@ -1,4 +1,4 @@
-package psk.isf.sts.entity;
+package psk.isf.sts.entity.playlist;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,6 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import psk.isf.sts.entity.serial.SerialElement;
+import psk.isf.sts.entity.serial.SimplePlaylistElement;
 
 @Entity
 @Data

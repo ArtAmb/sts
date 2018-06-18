@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import psk.isf.sts.entity.SerialElement;
+import psk.isf.sts.entity.serial.SerialElement;
 import psk.isf.sts.repository.SerialRepository;
 import psk.isf.sts.service.cache.AbstractCache;
 import psk.isf.sts.service.cache.CacheManager;

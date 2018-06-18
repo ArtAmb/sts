@@ -9,8 +9,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Service;
 
-import psk.isf.sts.entity.Task;
-import psk.isf.sts.entity.TaskState;
+import psk.isf.sts.entity.task.Task;
+import psk.isf.sts.entity.task.TaskState;
 import psk.isf.sts.repository.TaskRepository;
 import psk.isf.sts.service.general.dto.PageDTO;
 import psk.isf.sts.service.general.dto.Row;

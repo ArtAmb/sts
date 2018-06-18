@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import psk.isf.sts.entity.Picture;
+import psk.isf.sts.entity.picture.Picture;
 import psk.isf.sts.entity.registration.User;
 import psk.isf.sts.repository.PictureRepository;
 import psk.isf.sts.service.authorization.UserService;

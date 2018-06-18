@@ -1,4 +1,4 @@
-package psk.isf.sts.entity;
+package psk.isf.sts.entity.task;
 
 import java.sql.Timestamp;
 
@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import psk.isf.sts.entity.contract.Contract;
 import psk.isf.sts.entity.registration.User;
 
 @Builder

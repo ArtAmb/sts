@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import psk.isf.sts.entity.ContractState;
-import psk.isf.sts.entity.Task;
+import psk.isf.sts.entity.contract.ContractState;
 import psk.isf.sts.entity.registration.User;
+import psk.isf.sts.entity.task.Task;
 import psk.isf.sts.repository.TaskRepository;
 import psk.isf.sts.service.TaskService;
 import psk.isf.sts.service.authorization.UserService;

@@ -1,4 +1,4 @@
-package psk.isf.sts.entity;
+package psk.isf.sts.entity.serial;
 
 import java.sql.Date;
 import java.util.Collection;
@@ -21,6 +21,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import psk.isf.sts.entity.Actor;
+import psk.isf.sts.entity.Comment;
+import psk.isf.sts.entity.picture.Gallery;
+import psk.isf.sts.entity.picture.Picture;
 import psk.isf.sts.entity.registration.User;
 
 @Entity

@@ -1,4 +1,4 @@
-package psk.isf.sts.entity;
+package psk.isf.sts.entity.contract;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;

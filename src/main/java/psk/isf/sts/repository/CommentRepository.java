@@ -8,7 +8,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 import psk.isf.sts.entity.Comment;
-import psk.isf.sts.entity.SerialElement;
+import psk.isf.sts.entity.serial.SerialElement;
 
 @Repository
 public interface CommentRepository extends PagingAndSortingRepository<Comment, Long> {

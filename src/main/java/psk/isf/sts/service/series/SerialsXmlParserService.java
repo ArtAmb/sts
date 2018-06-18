@@ -21,10 +21,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import psk.isf.sts.entity.SerialElement;
-import psk.isf.sts.entity.SerialElementType;
-import psk.isf.sts.entity.State;
 import psk.isf.sts.entity.registration.User;
+import psk.isf.sts.entity.serial.SerialElement;
+import psk.isf.sts.entity.serial.SerialElementType;
+import psk.isf.sts.entity.serial.State;
 import psk.isf.sts.repository.GenreDAO;
 import psk.isf.sts.repository.SerialRepository;
 import psk.isf.sts.service.PictureService;

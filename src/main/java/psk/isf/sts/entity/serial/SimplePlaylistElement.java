@@ -1,9 +1,10 @@
-package psk.isf.sts.entity;
+package psk.isf.sts.entity.serial;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import psk.isf.sts.entity.playlist.Playlist;
 
 
 @Data

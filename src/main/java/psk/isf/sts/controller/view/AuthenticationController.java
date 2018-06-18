@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import psk.isf.sts.entity.Contract;
-import psk.isf.sts.entity.UserType;
+import psk.isf.sts.entity.contract.Contract;
 import psk.isf.sts.entity.registration.Roles;
 import psk.isf.sts.entity.registration.User;
 import psk.isf.sts.entity.registration.UserSourceSystem;
+import psk.isf.sts.entity.registration.UserType;
 import psk.isf.sts.service.TaskService;
 import psk.isf.sts.service.authorization.AuthorizationService;
 import psk.isf.sts.service.authorization.UserService;

@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import lombok.Builder;
 import lombok.Data;
-import psk.isf.sts.entity.MySerial;
+import psk.isf.sts.entity.myserial.MySerial;
 import psk.isf.sts.entity.registration.User;
 
 @Data

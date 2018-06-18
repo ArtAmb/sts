@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import psk.isf.sts.entity.Playlist;
-import psk.isf.sts.entity.PlaylistElement;
-import psk.isf.sts.entity.SerialElement;
-import psk.isf.sts.entity.SimplePlaylistElement;
-import psk.isf.sts.entity.SimpleSerialElement;
+import psk.isf.sts.entity.playlist.Playlist;
+import psk.isf.sts.entity.playlist.PlaylistElement;
 import psk.isf.sts.entity.registration.Roles;
 import psk.isf.sts.entity.registration.User;
+import psk.isf.sts.entity.serial.SerialElement;
+import psk.isf.sts.entity.serial.SimplePlaylistElement;
+import psk.isf.sts.entity.serial.SimpleSerialElement;
 import psk.isf.sts.repository.PlaylistRepository;
 import psk.isf.sts.service.authorization.UserService;
 import psk.isf.sts.service.playlist.PlaylistService;

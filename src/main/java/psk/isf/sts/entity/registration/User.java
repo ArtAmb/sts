@@ -19,10 +19,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import psk.isf.sts.entity.Contract;
-import psk.isf.sts.entity.Picture;
-import psk.isf.sts.entity.SerialElement;
-import psk.isf.sts.entity.UserType;
+import psk.isf.sts.entity.contract.Contract;
+import psk.isf.sts.entity.picture.Picture;
+import psk.isf.sts.entity.serial.SerialElement;
 
 @Entity
 @Data

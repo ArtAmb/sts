@@ -30,8 +30,8 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfWriter;
 
-import psk.isf.sts.entity.Contract;
-import psk.isf.sts.entity.ContractState;
+import psk.isf.sts.entity.contract.Contract;
+import psk.isf.sts.entity.contract.ContractState;
 import psk.isf.sts.entity.registration.User;
 import psk.isf.sts.repository.ContractRepository;
 import psk.isf.sts.service.contract.dto.ContractDTO;

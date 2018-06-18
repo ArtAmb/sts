@@ -5,7 +5,7 @@ import java.util.Collection;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import psk.isf.sts.entity.MySerial;
+import psk.isf.sts.entity.myserial.MySerial;
 import psk.isf.sts.entity.registration.User;
 
 @Repository

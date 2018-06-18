@@ -2,8 +2,8 @@ package psk.isf.sts.service.authorization.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import psk.isf.sts.entity.UserType;
 import psk.isf.sts.entity.registration.Role;
+import psk.isf.sts.entity.registration.UserType;
 
 @Data
 @Builder

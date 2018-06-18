@@ -10,8 +10,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import psk.isf.sts.entity.Contract;
-import psk.isf.sts.entity.Picture;
+import psk.isf.sts.entity.contract.Contract;
+import psk.isf.sts.entity.picture.Picture;
 import psk.isf.sts.entity.registration.User;
 import psk.isf.sts.entity.registration.UserSourceSystem;
 import psk.isf.sts.repository.ContractRepository;

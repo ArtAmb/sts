@@ -1,4 +1,4 @@
-package psk.isf.sts.entity;
+package psk.isf.sts.entity.serial;
 
 public enum State {
 	FINISHED("Zakonczony"), RUNNING("W trakcie"), COMING("Nadchodzacy");

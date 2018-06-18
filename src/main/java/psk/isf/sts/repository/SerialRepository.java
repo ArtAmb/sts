@@ -5,8 +5,8 @@ import java.util.Collection;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import psk.isf.sts.entity.SerialElement;
-import psk.isf.sts.entity.SerialElementType;
+import psk.isf.sts.entity.serial.SerialElement;
+import psk.isf.sts.entity.serial.SerialElementType;
 
 @Repository
 public interface SerialRepository extends CrudRepository<SerialElement, Long> {

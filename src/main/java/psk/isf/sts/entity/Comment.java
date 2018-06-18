@@ -11,6 +11,7 @@ import javax.persistence.ManyToOne;
 
 import lombok.Data;
 import psk.isf.sts.entity.registration.User;
+import psk.isf.sts.entity.serial.SerialElement;
 
 @Entity
 @Data

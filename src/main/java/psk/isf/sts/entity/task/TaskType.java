@@ -1,4 +1,4 @@
-package psk.isf.sts.entity;
+package psk.isf.sts.entity.task;
 
 public enum TaskType {
 	ACCEPT_CONTRACT("Akceptacja umowy"), ERROR_SERVICE("Obsługa błędów");

@@ -11,12 +11,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import psk.isf.sts.entity.Picture;
-import psk.isf.sts.entity.UserType;
+import psk.isf.sts.entity.picture.Picture;
 import psk.isf.sts.entity.registration.Role;
 import psk.isf.sts.entity.registration.Roles;
 import psk.isf.sts.entity.registration.User;
 import psk.isf.sts.entity.registration.UserSourceSystem;
+import psk.isf.sts.entity.registration.UserType;
 import psk.isf.sts.repository.UserRepository;
 import psk.isf.sts.service.authorization.dto.AuthorizationDTO;
 import psk.isf.sts.service.authorization.dto.UserDTO;

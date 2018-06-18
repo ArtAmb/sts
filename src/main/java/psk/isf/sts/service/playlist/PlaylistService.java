@@ -9,10 +9,10 @@ import org.h2.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import psk.isf.sts.entity.Playlist;
-import psk.isf.sts.entity.PlaylistElement;
-import psk.isf.sts.entity.SerialElement;
+import psk.isf.sts.entity.playlist.Playlist;
+import psk.isf.sts.entity.playlist.PlaylistElement;
 import psk.isf.sts.entity.registration.User;
+import psk.isf.sts.entity.serial.SerialElement;
 import psk.isf.sts.repository.PlaylistElementRepository;
 import psk.isf.sts.repository.PlaylistRepository;
 import psk.isf.sts.service.playlist.dto.PlaylistDTO;

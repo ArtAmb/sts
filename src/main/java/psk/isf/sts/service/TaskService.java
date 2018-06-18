@@ -7,12 +7,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import psk.isf.sts.entity.Contract;
-import psk.isf.sts.entity.ContractState;
-import psk.isf.sts.entity.Task;
-import psk.isf.sts.entity.TaskState;
-import psk.isf.sts.entity.TaskType;
+import psk.isf.sts.entity.contract.Contract;
+import psk.isf.sts.entity.contract.ContractState;
 import psk.isf.sts.entity.registration.User;
+import psk.isf.sts.entity.task.Task;
+import psk.isf.sts.entity.task.TaskState;
+import psk.isf.sts.entity.task.TaskType;
 import psk.isf.sts.repository.ContractRepository;
 import psk.isf.sts.repository.TaskRepository;
 

@@ -10,10 +10,10 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import psk.isf.sts.entity.MySerial;
-import psk.isf.sts.entity.MySerialConfig;
-import psk.isf.sts.entity.SerialElement;
+import psk.isf.sts.entity.myserial.MySerial;
+import psk.isf.sts.entity.myserial.MySerialConfig;
 import psk.isf.sts.entity.registration.User;
+import psk.isf.sts.entity.serial.SerialElement;
 import psk.isf.sts.repository.MySerialConfigRepository;
 import psk.isf.sts.repository.MySerialRepository;
 import psk.isf.sts.service.authorization.UserService;

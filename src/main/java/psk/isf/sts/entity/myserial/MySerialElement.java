@@ -1,4 +1,4 @@
-package psk.isf.sts.entity;
+package psk.isf.sts.entity.myserial;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 import lombok.Data;
+import psk.isf.sts.entity.serial.SerialElement;
 
 @Entity
 @Data
