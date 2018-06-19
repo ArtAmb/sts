@@ -556,7 +556,7 @@ public class SeriesController {
 
 	@GetMapping("/view/addEpisodeToWatched/{id}")
 	public String addEpisodeToWatched(@PathVariable Long id, Principal principal, Model model,
-			@RequestParam("context") String contextTemplate) {
+			@RequestParam("context") String contextTemplate, @RequestParam("continueUrl") String continueUrl) {
 		boolean czyDodano = false;
 		boolean czyObejrzano = false;
 		SerialElement serialElement = serialService.findById(id);
@@ -644,7 +644,7 @@ public class SeriesController {
 					model.addAttribute("czyObejrzano", czyObejrzano);
 					if (czyObejrzano == false)
 						model.addAttribute("message3", "Musisz najpierw dodać serial do Moich!");
-					return getTemplateDir(contextTemplate);
+					return continueUrl != null ? "redirect:"+continueUrl: getTemplateDir(contextTemplate);
 				}
 
 			}
@@ -886,7 +886,7 @@ public class SeriesController {
 
 	@GetMapping("/view/deleteEpisodeFromWatched/{id}")
 	public String deleteEpisodeToWatched(@PathVariable Long id, Principal principal, Model model,
-			@RequestParam("context") String contextTemplate) {
+			@RequestParam("context") String contextTemplate, @RequestParam("continueUrl") String continueUrl) {
 		boolean czyDodano = false;
 		boolean czyObejrzano = false;
 		SerialElement serialElement = serialService.findById(id);
@@ -972,7 +972,7 @@ public class SeriesController {
 						model.addAttribute("czyObejrzano", czyObejrzano);
 					}
 					model.addAttribute("czyObejrzano", czyObejrzano);
-					return getTemplateDir(contextTemplate);
+					return continueUrl != null ? "redirect:"+continueUrl: getTemplateDir(contextTemplate);
 				}
 
 			}

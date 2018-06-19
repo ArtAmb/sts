@@ -51,13 +51,13 @@
 					<td>
 					<div th:if="${episode.watched == false}">
 					<a sec:authorize="hasRole('ROLE_VIEWER')"
-						th:href="@{'/view/addEpisodeToWatched/' + ${episode.ep.id} +'?context=' + 'season-detail'}"
+						th:href="@{'/view/addEpisodeToWatched/' + ${episode.ep.id} +'?context=' + 'season-detail&amp;continueUrl=/view/serial/'+${serial.parent.id}+'/season/'+${episode.ep.parent.id}}"
 						type="submit" class="mybutton">Dodaj do obejrzanych </a>
 
 				</div>
 				<div th:if="${episode.watched == true}">
 					<a sec:authorize="hasRole('ROLE_VIEWER')"
-						th:href="@{'/view/deleteEpisodeFromWatched/' + ${episode.ep.id}+'?context=' + 'season-detail'}"
+						th:href="@{'/view/deleteEpisodeFromWatched/' + ${episode.ep.id}+'?context=' + 'season-detail&amp;continueUrl=/view/serial/'+${serial.parent.id}+'/season/'+${episode.ep.parent.id}}"
 						type="submit" class="mybutton">Usun z obejrzanych </a>
 				</div>
 				<div id="message" th:text="${message}">
