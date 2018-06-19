@@ -82,6 +82,8 @@ public class User {
 
 	@ManyToOne
 	private SerialElement currentlyWatchedEpisode;
+	
+	private Long watchingEpisodeStartTimeInMs;
 
 	public boolean hasRole(String roleName) {
 		for (Role role : roles) {

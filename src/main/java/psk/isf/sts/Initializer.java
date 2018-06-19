@@ -159,8 +159,13 @@ public class Initializer {
 				.thumbnail(noPhoto).build());
 		
 		serialRepository.save(SerialElement.builder().elementType(SerialElementType.EPISODE).ordinalNumber(1l).parent(mJakMiloscSeason2)
-				.title("Odcinek 1 - Tejemnicza tajemnica ").description("W tym odcinku dowiecie sie czy przypomienia DZIAŁAJĄ... czy może wciąż NIE? Nie przegapcie! ").producer(user)
+				.title("Odcinek 1 - Tajemnicza tajemnica ").description("W tym odcinku dowiecie sie czy przypomienia DZIAŁAJĄ... czy może wciąż NIE? Nie przegapcie! ").producer(user)
 				.startDate(new Date(System.currentTimeMillis())).durationInSec(1440l)
+				.active(true).thumbnail(noPhoto).build());
+		
+		serialRepository.save(SerialElement.builder().elementType(SerialElementType.EPISODE).ordinalNumber(1l).parent(mJakMiloscSeason2)
+				.title("Odcinek 2 - Magiczna magia").description("W tym odcinku dowiecie sie czy ogladaj teraz DZIAŁA... czy może wciąż NIE? Nie przegapcie! ").producer(user)
+				.startDate(new Date(System.currentTimeMillis())).durationInSec(20l)
 				.active(true).thumbnail(noPhoto).build());
 
 		serialRepository.save(SerialElement.builder().elementType(SerialElementType.EPISODE).parent(mJakMiloscSeason1)

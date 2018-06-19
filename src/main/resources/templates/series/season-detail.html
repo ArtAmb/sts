@@ -60,15 +60,20 @@
 						th:href="@{'/view/deleteEpisodeFromWatched/' + ${episode.ep.id}+'?context=' + 'season-detail'}"
 						type="submit" class="mybutton">Usun z obejrzanych </a>
 				</div>
-
-				<div id="message" th:text="${message}"></div>
-				 <a sec:authorize="hasRole('ROLE_VIEWER')"
-						class="mybutton">Oglądaj teraz </a> <a
-						sec:authorize="hasRole('ROLE_ADMIN') OR hasRole('ROLE_PRODUCER')"
-						class="mybutton">Edytuj </a>
-
-					</td>
-
+				<div id="message" th:text="${message}">
+				</div>
+				<button th:id="${'watchNow' + {episode.ep.id}}" sec:authorize="hasRole('ROLE_VIEWER')" class="mybutton">Oglądaj teraz </button>
+				<a sec:authorize="hasRole('ROLE_ADMIN') OR hasRole('ROLE_PRODUCER')" class="mybutton">Edytuj </a>
+				
+				</td>
+				<script sec:authorize="hasRole('ROLE_VIEWER')" th:inline="javascript">
+						$('#watchNow' + [[${episode.ep.id}]]).click(function() {
+							var url = "/rest/serialElement/" + [[${episode.ep.id}]] + "/watchNow";
+							$.post(url, function(response) {
+								alert(response);
+							});
+						});
+				</script>
 				</tr>
 			</table>
 
