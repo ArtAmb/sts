@@ -90,6 +90,7 @@ public class SeriesController {
 		return getTemplateDir("my-serials");
 	}
 
+	@Transactional
 	@GetMapping("/view/serial/{id}/season/{id}")
 	public String seasonView(@PathVariable Long id, Principal principal, Model model) {
 
@@ -1030,6 +1031,7 @@ public class SeriesController {
 	}
 
 	@GetMapping("/view/serial/{id}")
+	@Transactional
 	public String serialsDetailView(@PathVariable Long id, Principal principal, Model model) {
 		boolean czyDodano = false;
 		boolean czyObejrzano = false;
@@ -1146,6 +1148,7 @@ for (MySerial element : mySerials) {
 		return getTemplateDir("serial-detail");
 	}
 
+	@Transactional
 	@PreAuthorize("hasRole('" + Roles.Consts.ROLE_PRODUCER + "')")
 	@GetMapping("/view/serial/{id}/actors")
 	public String actorsView(@PathVariable Long id, Model model) {

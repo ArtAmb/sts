@@ -54,16 +54,16 @@ public class SerialService {
 
 	@Autowired
 	private ActorRepository actorRepo;
-	
+
 	@Autowired
 	private CommentRepository commentRepo;
 
 	@Autowired
 	private PictureService pictureService;
-	
+
 	@Autowired
 	private SerialCacheService serialCacheService;
-	
+
 	@Value("${serial.cache.enabled}")
 	private Boolean isCacheEnabled;
 
@@ -97,18 +97,19 @@ public class SerialService {
 		return serialRepo.findByParentAndElementType(serial, SerialElementType.SEASON);
 	}
 
+	@Transactional
 	public SerialElement findById(Long id) {
-		if(isCacheEnabled) {
+		if (isCacheEnabled) {
 			return serialCacheService.get(id);
 		}
-		
+
 		return serialRepo.findOne(id);
 	}
 
 	public MySerial findMySerialById(Long id) {
 		return mySerialRepo.findOne(id);
 	}
-	
+
 	public Comment addComment(SerialElement serialElement, User user, CommentDTO dto) throws Exception {
 		validate(dto);
 
@@ -124,59 +125,44 @@ public class SerialService {
 
 	@Transactional
 	public void addToMine(SerialElement serialElement, User user) {
-		if(!serialElement.getElementType().equals(SerialElementType.SERIAL))
+		if (!serialElement.getElementType().equals(SerialElementType.SERIAL))
 			throw new IllegalStateException("Dodawnay element musi byc serialem!");
-		
-		MySerial mySerial = MySerial.builder()
-				.user(user)
-				.serial(serialElement)
-				.watched(false)
-				.build();
 
-		MySerialConfig mySerialConfig = MySerialConfig.builder()
-				.user(user)
-				.serial(mySerial)
-				.sendNotifications(true)
-				.trace(true)
-				.showDescriptions(true)
-				.build();
+		MySerial mySerial = MySerial.builder().user(user).serial(serialElement).watched(false).build();
+
+		MySerialConfig mySerialConfig = MySerialConfig.builder().user(user).serial(mySerial).sendNotifications(true)
+				.trace(true).showDescriptions(true).build();
 
 		mySerialConfig = mySerialConfigRepo.save(mySerialConfig);
-		
+
 		SerialElement serial = serialRepo.findOne(serialElement.getId());
-		for(SerialElement season : serial.getElements()) {
-			MySerial mySeason = MySerial.builder()
-					.user(user)
-					.serial(season)
-					.config(mySerialConfig)
-					.watched(false)
+		for (SerialElement season : serial.getElements()) {
+			MySerial mySeason = MySerial.builder().user(user).serial(season).config(mySerialConfig).watched(false)
 					.build();
 
 			mySerialRepo.save(mySeason);
-			
-			for(SerialElement episode : season.getElements()) {
-				MySerial myEp = MySerial.builder()
-						.user(user)
-						.serial(episode)
-						.config(mySerialConfig)
-						.watched(false)
+
+			for (SerialElement episode : season.getElements()) {
+				MySerial myEp = MySerial.builder().user(user).serial(episode).config(mySerialConfig).watched(false)
 						.build();
 
 				mySerialRepo.save(myEp);
 			}
 		}
-		
+
 	}
 
 	@Transactional
 	public void deleteFromMine(User user, SerialElement serialElement) {
-		if(!serialElement.getElementType().equals(SerialElementType.SERIAL))
+		if (!serialElement.getElementType().equals(SerialElementType.SERIAL))
 			throw new IllegalStateException("serialElement musi byc serialem!");
-		
-		MySerialConfig config =  mySerialConfigRepo.findByUserAndSerial_serial_id(user, serialElement.getId()).stream().findFirst().orElse(null);
-		if(config == null)
-			throw new IllegalStateException("NIE ZNALEZIONO MOJEGO SERIALU DLA serialu o id == !" + serialElement.getId());
-		
+
+		MySerialConfig config = mySerialConfigRepo.findByUserAndSerial_serial_id(user, serialElement.getId()).stream()
+				.findFirst().orElse(null);
+		if (config == null)
+			throw new IllegalStateException(
+					"NIE ZNALEZIONO MOJEGO SERIALU DLA serialu o id == !" + serialElement.getId());
+
 		mySerialConfigRepo.delete(config);
 	}
 
@@ -219,7 +205,6 @@ public class SerialService {
 			throw new Exception("Status nie może być pusty!");
 		}
 
-	
 	}
 
 	public Collection<Genre> allGenres() {
@@ -238,17 +223,11 @@ public class SerialService {
 			picture = pictureService.savePicture(login, thumbnail);
 		}
 
-
 		Long ordinalNumber = (long) parentElement.getElements().size();
-		
-		SerialElement season = SerialElement.builder()
-				.title(dto.getTitle())
-				.description(dto.getDescription())
-				.active(true).elementType(SerialElementType.SEASON)
-				.parent(parentElement)
-				.thumbnail(picture)
-				.ordinalNumber(ordinalNumber)
-				.producer(user).build();
+
+		SerialElement season = SerialElement.builder().title(dto.getTitle()).description(dto.getDescription())
+				.active(true).elementType(SerialElementType.SEASON).parent(parentElement).thumbnail(picture)
+				.ordinalNumber(ordinalNumber).producer(user).build();
 
 		return serialRepo.save(season);
 	}
@@ -276,18 +255,10 @@ public class SerialService {
 		}
 
 		Long ordinalNumber = (long) parentElement.getElements().size();
-		
-		SerialElement episode = SerialElement.builder()
-				.title(dto.getTitle())
-				.description(dto.getDescription())
-				.active(true)
-				.elementType(SerialElementType.EPISODE)
-				.parent(parentElement)
-				.thumbnail(picture)
-				.producer(user)
-				.startDate(dto.getStartDate())
-				.ordinalNumber(ordinalNumber)
-				.build();
+
+		SerialElement episode = SerialElement.builder().title(dto.getTitle()).description(dto.getDescription())
+				.active(true).elementType(SerialElementType.EPISODE).parent(parentElement).thumbnail(picture)
+				.producer(user).startDate(dto.getStartDate()).ordinalNumber(ordinalNumber).build();
 
 		return serialRepo.save(episode);
 	}
@@ -339,22 +310,21 @@ public class SerialService {
 		Actor actor = actorRepo.findOne(id);
 		if (actor == null)
 			return;
-		
+
 		actorRepo.delete(actor);
 	}
 
 	public void deleteSerialElement(User user, Long id) throws IllegalAccessException {
 
 		SerialElement element = serialRepo.findOne(id);
-		
+
 		if (element == null)
 			return;
-		
+
 		serialRepo.delete(element);
 	}
-	
-	public void checkIfMine(SerialElement serialElement, User user) throws IllegalAccessException
-	{
+
+	public void checkIfMine(SerialElement serialElement, User user) throws IllegalAccessException {
 		if (user.getId() != serialElement.getProducer().getId()) {
 			throw new IllegalAccessException("Nie masz uprawnień do zarządzania tym serialem!");
 		}
@@ -363,18 +333,17 @@ public class SerialService {
 	public void addToWatched(MySerial mySerial, User user) {
 		mySerialRepo.save(mySerial);
 	}
-	
-	public int countProgressBar(Collection <SerialElement> allEpisodesOfSeason,Collection <SerialElement> watchedEpisodes )
-	{
-		float numberOfEpisodesOfSeason, numberOfWatchedEpisodes, valueOfProgress  =0;
+
+	public int countProgressBar(Collection<SerialElement> allEpisodesOfSeason,
+			Collection<SerialElement> watchedEpisodes) {
+		float numberOfEpisodesOfSeason, numberOfWatchedEpisodes, valueOfProgress = 0;
 		numberOfEpisodesOfSeason = allEpisodesOfSeason.size();
 		numberOfWatchedEpisodes = watchedEpisodes.size();
-		
-		valueOfProgress = numberOfWatchedEpisodes/numberOfEpisodesOfSeason * 100;
-		
-			
-		return (int)Math.round(valueOfProgress);
-		
+
+		valueOfProgress = numberOfWatchedEpisodes / numberOfEpisodesOfSeason * 100;
+
+		return (int) Math.round(valueOfProgress);
+
 	}
 
 	public SerialElement findNextEpisodeDate(SerialElement serial) {
@@ -383,8 +352,7 @@ public class SerialService {
 			return null;
 
 		List<SerialElement> seasons = serial.getElements().stream()
-				.sorted((s1, s2) -> Long.compare(s1.getId(), s2.getId()))
-				.collect(Collectors.toList());
+				.sorted((s1, s2) -> Long.compare(s1.getId(), s2.getId())).collect(Collectors.toList());
 
 		if (seasons.isEmpty())
 			return null;
@@ -400,6 +368,29 @@ public class SerialService {
 		SerialElement lastEpisode = episodes.get(episodes.size() - 1);
 
 		return lastEpisode;
+	}
+
+	@Transactional
+	public Long countProgressForSeason(Long serialElId, User user) {
+		Double watchedTime = 0.0;
+		Long fullTime = 0l;
+
+		SerialElement serailElParent = findById(serialElId);
+
+		Collection<MySerial> mySerials = mySerialRepo.findByUserAndSerial_parent(user, serailElParent);
+
+		for (MySerial mySerial : mySerials) {
+			fullTime += mySerial.getSerial().getDurationInSec();
+			if (mySerial.isWatched()) {
+				watchedTime += mySerial.getSerial().getDurationInSec();
+			}
+
+		}
+
+		if (fullTime == 0l)
+			return 0l;
+
+		return (long) (watchedTime / fullTime * 100);
 	}
 
 }

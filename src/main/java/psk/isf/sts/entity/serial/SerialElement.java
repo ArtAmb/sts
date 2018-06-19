@@ -17,6 +17,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -54,10 +57,11 @@ public class SerialElement {
 	@JoinColumn(name = "parent_id")
 	private Collection<SerialElement> elements;
 
-	@ManyToMany //(cascade=CascadeType.ALL)
+	@ManyToMany
+	@LazyCollection(LazyCollectionOption.FALSE)
 	private Collection<Actor> actors;
 
-	@ManyToOne //(cascade=CascadeType.ALL)
+	@ManyToOne
 	private SerialElement parent;
 
 	@ManyToMany
@@ -68,7 +72,8 @@ public class SerialElement {
 	private Collection<Comment> comments;
 
 	private Date startDate;
-	private Long durationInSec;
+	@Builder.Default
+	private Long durationInSec = 0l;
 
 	private Long daysToNextEpisode;
 	@Builder.Default
@@ -85,27 +90,11 @@ public class SerialElement {
 	private Picture thumbnail;
 
 	public SimpleSerialElement toSimpleSerialElement() {
-		return SimpleSerialElement.builder()
-				.id(id)
-				.title(title)
-				.description(description)
-				.state(state)
-				.elementType(elementType)
-				.rating(rating)
-				.elementType(elementType)
-				.actors(actors)
-				.parent(parent)
-				.genres(genres)
-				.comments(comments)
-				.startDate(startDate)
-				.durationInSec(durationInSec)
-				.daysToNextEpisode(daysToNextEpisode)
-				.active(active)
-				.linkToWatch(linkToWatch)
-				.producer(producer)
-				.gallery(gallery)
-				.thumbnail(thumbnail != null ? thumbnail.toViewPicture() : null)
-				.ordinalNumber(ordinalNumber)
-				.build();
+		return SimpleSerialElement.builder().id(id).title(title).description(description).state(state)
+				.elementType(elementType).rating(rating).elementType(elementType).actors(actors).parent(parent)
+				.genres(genres).comments(comments).startDate(startDate).durationInSec(durationInSec)
+				.daysToNextEpisode(daysToNextEpisode).active(active).linkToWatch(linkToWatch).producer(producer)
+				.gallery(gallery).thumbnail(thumbnail != null ? thumbnail.toViewPicture() : null)
+				.ordinalNumber(ordinalNumber).build();
 	}
 }

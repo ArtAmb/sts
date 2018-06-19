@@ -11,8 +11,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import psk.isf.sts.entity.picture.Picture;
 import psk.isf.sts.entity.registration.User;
+import psk.isf.sts.entity.serial.SerialElement;
 import psk.isf.sts.repository.PictureRepository;
 import psk.isf.sts.service.authorization.UserService;
+import psk.isf.sts.service.series.SerialService;
 
 @RestController
 public class MainRestController {
@@ -22,6 +24,9 @@ public class MainRestController {
 
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private SerialService serialService;
 
 	@GetMapping("rest/")
 	public MultipartFile getFileByPictureId(@PathVariable Long id) {
@@ -34,5 +39,12 @@ public class MainRestController {
 	@GetMapping("/rest/user/instance")
 	public User getUserInstance(Principal principal) {
 		return userService.findByLogin(principal.getName());
+	}
+
+	@GetMapping("/rest/serialElement/{id}/progress")
+	public Long countProgress(@PathVariable Long id, Principal principal) {
+		User user = userService.findByLogin(principal.getName());
+		
+		return serialService.countProgressForSeason(id, user);
 	}
 }

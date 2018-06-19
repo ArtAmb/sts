@@ -160,15 +160,15 @@ public class Initializer {
 		
 		serialRepository.save(SerialElement.builder().elementType(SerialElementType.EPISODE).ordinalNumber(1l).parent(mJakMiloscSeason2)
 				.title("Odcinek 1 - Tejemnicza tajemnica ").description("W tym odcinku dowiecie sie czy przypomienia DZIAŁAJĄ... czy może wciąż NIE? Nie przegapcie! ").producer(user)
-				.startDate(new Date(System.currentTimeMillis()))
+				.startDate(new Date(System.currentTimeMillis())).durationInSec(1440l)
 				.active(true).thumbnail(noPhoto).build());
 
 		serialRepository.save(SerialElement.builder().elementType(SerialElementType.EPISODE).parent(mJakMiloscSeason1)
-				.title("Odcinek 1 - Nie ma jak w domu ").ordinalNumber(1l).description("Poznajmy rodzinę Mostowiaków! ").producer(user)
+				.title("Odcinek 1 - Nie ma jak w domu ").ordinalNumber(1l).description("Poznajmy rodzinę Mostowiaków! ").producer(user).durationInSec(1440l)
 				.active(true).thumbnail(noPhoto).build());
 
 		serialRepository.save(SerialElement.builder().elementType(SerialElementType.EPISODE).parent(mJakMiloscSeason1)
-				.title("Odcinek 2 - Rozterki ").ordinalNumber(2l).description("Hanka ma probem z kartonami. Czy Marek jej pomoże? ")
+				.title("Odcinek 2 - Rozterki ").ordinalNumber(2l).description("Hanka ma probem z kartonami. Czy Marek jej pomoże? ").durationInSec(1440l)
 				.producer(user).active(true).thumbnail(noPhoto).build());
 
 		serialRepository.save(SerialElement.builder().elementType(SerialElementType.SERIAL).title("Pierwsza Miłość")
