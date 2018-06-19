@@ -19,7 +19,7 @@
 
 			<div>
 				<label>Status:</label> <br /> <select th:name="state">
-					<option th:each="state : ${T(psk.isf.sts.entity.State).values()}"
+					<option th:each="state : ${T(psk.isf.sts.entity.serial.State).values()}"
 						th:value="${state}"  th:text="${state.displayName}" ></option>
 				</select>
 			</div>

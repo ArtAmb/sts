@@ -45,7 +45,7 @@
         <form th:if="${contractPath != null}" th:action="@{'/view/task/' + ${detailInfo.id} + '/rejectContract'}" method="POST">
             <button type="submit">Odrzuć</button>
         </form>
-
+		</div>
         <div th:replace="footer :: footer"> </div>
 </body>
 

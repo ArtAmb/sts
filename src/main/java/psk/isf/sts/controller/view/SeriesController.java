@@ -199,6 +199,7 @@ public class SeriesController {
 	}
 
 	@PreAuthorize("hasRole('" + Roles.Consts.ROLE_PRODUCER + "')")
+	@Transactional
 	@GetMapping("/view/serial/{id}/add-season")
 	public String addSeasonView(@PathVariable Long id, Model model) {
 
