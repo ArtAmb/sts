@@ -27,7 +27,7 @@
 
             <form th:action="@{/view/my-profile}" method="post" enctype="multipart/form-data">
                 <label>Profilowe: </label>
-                <input name="picture" type="file" />
+                <input style="width: 250px;" name="picture" type="file" />
                 <button type="submit">Ustaw profilowe</button>
             </form>
             <form th:action="@{/view/my-profile/delete-thumbnail}" method="post">
