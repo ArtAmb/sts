@@ -280,9 +280,7 @@ input[type="text"]:focus, textarea:focus, input[type=password]:focus {
 	background-color: #fdf8ff;
 }
 
-button {
-	margin-top: 10px;
-}
+
 
 .comment {
 	background-color: #efefef;
@@ -333,6 +331,13 @@ button {
 }
 
 .mybutton, button, input[type=file] {
+	line-height:150%;
+	width:160px;
+	
+	text-align:center;
+	min-height:15px;
+	margin: 5px 0;
+	display:block;
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 14px;
 	color: #ffffff;

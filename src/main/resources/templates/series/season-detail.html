@@ -16,13 +16,13 @@
 		<span style="font-size: 32px; margin: 10px; float: left;"
 			th:text="${serial.title}"></span> 
 			
-			<div th:if="${czyObejrzano == false}">
+			<div style="float:left;" th:if="${czyObejrzano == false}">
 					<a sec:authorize="hasRole('ROLE_VIEWER')"
 						th:href="@{'/view/addSeasonToWatched/' + ${serial.id} +'?context=' + 'season-detail'}"
 						type="submit" class="mybutton">Dodaj do obejrzanych </a>
 
 				</div>
-				<div th:if="${czyObejrzano == true}">
+				<div style="float:left;" th:if="${czyObejrzano == true}">
 					<a sec:authorize="hasRole('ROLE_VIEWER')"
 						th:href="@{'/view/deleteSeasonFromWatched/' + ${serial.id}+'?context=' + 'season-detail'}"
 						type="submit" class="mybutton">Usun z obejrzanych </a>
@@ -30,7 +30,7 @@
 
 				<div id="message" th:text="${message}"></div>
 			
-			<a th:href="@{'/view/serial/' + ${serial.id} + '/add-episode' }"
+			<a style="float:left;" th:href="@{'/view/serial/' + ${serial.id} + '/add-episode' }"
 			sec:authorize="hasRole('ROLE_PRODUCER')" class="mybutton">Dodaj
 			odcinek </a>
 		<div style="clear: both;"></div>
@@ -51,13 +51,13 @@
 					<td>
 					<div th:if="${episode.watched == false}">
 					<a sec:authorize="hasRole('ROLE_VIEWER')"
-						th:href="@{'/view/addEpisodeToWatched/' + ${episode.ep.id} +'?context=' + 'season-detail'}"
+						th:href="@{'/view/addEpisodeToWatched/' + ${episode.ep.id} +'?context=' + 'season-detail&amp;continueUrl=/view/serial/'+${serial.parent.id}+'/season/'+${episode.ep.parent.id}}"
 						type="submit" class="mybutton">Dodaj do obejrzanych </a>
 
 				</div>
 				<div th:if="${episode.watched == true}">
 					<a sec:authorize="hasRole('ROLE_VIEWER')"
-						th:href="@{'/view/deleteEpisodeFromWatched/' + ${episode.ep.id}+'?context=' + 'season-detail'}"
+						th:href="@{'/view/deleteEpisodeFromWatched/' + ${episode.ep.id}+'?context=' + 'season-detail&amp;continueUrl=/view/serial/'+${serial.parent.id}+'/season/'+${episode.ep.parent.id}}"
 						type="submit" class="mybutton">Usun z obejrzanych </a>
 				</div>
 				<div id="message" th:text="${message}">

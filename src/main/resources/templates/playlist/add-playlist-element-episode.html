@@ -20,12 +20,6 @@
 				<td><p th:text="${playlistElements.serialElement.elementType}"></p></td>
 				<td><p th:text="${playlistElements.serialElement.description}"></p></td>
 
-
-				<td><a
-					th:id="'serial-detail' + ${playlistElements.serialElement.id}"
-					th:href="@{'/view/serial/' + ${playlistElements.serialElement.id}}"
-					class="mybutton">Szczegóły</a></td>
-
 			</tr>
 		</table>
 	</div>
