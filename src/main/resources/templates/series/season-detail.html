@@ -70,7 +70,9 @@
 						$('#watchNow' + [[${episode.ep.id}]]).click(function() {
 							var url = "/rest/serialElement/" + [[${episode.ep.id}]] + "/watchNow";
 							$.post(url, function(response) {
-								alert(response);
+								if(response.linkToWatch != null)
+									window.open(response.linkToWatch);
+								alert(response.message);
 							});
 						});
 				</script>

@@ -66,7 +66,7 @@ public class MainRestController {
 	}
 
 	@PostMapping("/rest/serialElement/{id}/watchNow")
-	public String watchNow(@PathVariable Long id, Principal principal) {
+	public WatchNowDTO watchNow(@PathVariable Long id, Principal principal) {
 		User user = userService.findByLogin(principal.getName());
 		SerialElement episode = serialService.findById(id);
 		try {
@@ -75,20 +75,21 @@ public class MainRestController {
 				long leftTimeMS = userService.updateCurentlyWatchedEpisodeAndReturnLeftTime(user);
 				if (leftTimeMS <= 0) {
 					userService.watchNow(user, episode);
-					return "Ogladasz teraz " + episode.getTitle();
+					return WatchNowDTO.builder().message("Ogladasz teraz " + episode.getTitle()).linkToWatch(episode.getLinkToWatch()).build();
 				}
 				float leftTimeSEC = leftTimeMS / 1000.0f;
 				float leftTimeMin = leftTimeSEC / 60;
 
-				return "Obecnie ogladasz " + user.getCurrentlyWatchedEpisode().getTitle() + ". Spróbuj za "
-						+ (int) leftTimeMin + " minuty " + (int) (leftTimeSEC - (60 * (int) leftTimeMin)) + " sekund.";
+				return WatchNowDTO.builder().message("Obecnie ogladasz " + user.getCurrentlyWatchedEpisode().getTitle() + ". Spróbuj za "
+						+ (int) leftTimeMin + " minuty " + (int) (leftTimeSEC - (60 * (int) leftTimeMin)) + " sekund.")
+						.linkToWatch(null).build();
 			}
 
 			userService.watchNow(user, episode);
 		} catch (IllegalStateException e) {
-			return e.getMessage();
+			return WatchNowDTO.builder().message(e.getMessage()).build();
 		}
-		return "Ogladasz teraz " + episode.getTitle();
+		return WatchNowDTO.builder().message("Ogladasz teraz " + episode.getTitle()).linkToWatch(episode.getLinkToWatch()).build();
 	}
 
 	@PostMapping("/rest/logout")
