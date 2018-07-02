@@ -3,6 +3,8 @@ package psk.isf.sts.controller.rest;
 import java.io.File;
 import java.security.Principal;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,7 +44,15 @@ public class MainRestController {
 	}
 
 	@GetMapping("/rest/user/instance")
-	public User getUserInstance(Principal principal) {
+	public User getUserInstance(HttpSession session, Principal principal) {
+		// User user = userService.findByLogin(principal.getName());
+		// if(user.getSourceSystem().equals(UserSourceSystem.FACEBOOK) &&
+		// connectionRepository.findPrimaryConnection(Facebook.class) == null) {
+		// System.out.println("getUserInstance -> connection with FB has been cut. I am
+		// invalidating session!");
+		// session.invalidate();
+		// }
+
 		return userService.findByLogin(principal.getName());
 	}
 
@@ -80,4 +90,19 @@ public class MainRestController {
 		}
 		return "Ogladasz teraz " + episode.getTitle();
 	}
+
+	@PostMapping("/rest/logout")
+	public void logout(HttpSession session, Principal principal) {
+		session.invalidate();
+
+		// connectionRepository.findPrimaryConnection(Facebook.class);
+		// MultiValueMap<String, Connection<?>> connections =
+		// connectionRepository.findAllConnections();
+		// for (Entry<String, List<Connection<?>>> con : connections.entrySet()) {
+		// System.out.println(con.getKey());
+		//
+		// }
+		// restTemplate.postForEntity(selfUrl + "/logout", null, Void.class);
+	}
+
 }

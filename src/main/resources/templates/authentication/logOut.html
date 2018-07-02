@@ -1,0 +1,19 @@
+<div th:replace="head :: head"> </div>
+
+<form th:action="@{/logout}" method="post">
+    <button id="logoutButton" type="submit">Wyloguj</button>
+</form>
+
+<form action='/connect/facebook' method="post">
+    <button id="logoutFbButton" type="submit">Disconnect</button>
+    <input type="hidden" name="_method" value="delete" />
+</form>
+
+<form action='/rest/logout' method="post">
+    <button  type="submit">My logout</button>
+</form>
+
+<script th:inline='javascript'>
+    $('#logoutFbButton').click();
+    $('#logoutButton').click();
+</script>

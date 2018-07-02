@@ -32,7 +32,7 @@ public class StsApplication {
 	@Scheduled(cron = "${reminder.cron.expression}")
 	public void startCheckAndCreateRemindersThenSendNotifications() {
 		if (isReminderEnabled) {
-			System.out.println("Zamiarzm wyslac przypomienia");
+			System.out.println("Zamierzm wyslac przypomienia");
 			reminderService.startCheckAndCreateRemindersThenSendNotifications();
 		}
 	}

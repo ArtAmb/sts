@@ -6,6 +6,8 @@ import java.security.Principal;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.social.connect.ConnectionRepository;
+import org.springframework.social.facebook.api.Facebook;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,6 +56,9 @@ public class AuthenticationController {
 	@Autowired
 	private TaskService taskService;
 
+	@Autowired
+	private FbController fbController;
+
 	@GetMapping("/view/sign-in")
 	public String singIn() {
 		return getTemplateDir("logIn");
@@ -69,7 +74,16 @@ public class AuthenticationController {
 	public String myProfile(
 			@RequestParam(name = activateUserControlParam, required = false) String requestParamControlParam,
 			HttpSession session, Model model, Principal principal) {
+		if (principal == null) {
+			return "redirect:/view/sign-in";
+		}
+
 		User user = userService.findByLogin(principal.getName());
+
+//		if (user.getSourceSystem().equals(UserSourceSystem.FACEBOOK) && !fbController.isConnectionWithFb()) {
+//			return getTemplateDir("logOutFromStsSystem");
+//		}
+
 		model.addAttribute("userLogin", user.getDisplayLogin());
 		model.addAttribute("isFromOurSystem", user.getSourceSystem().equals(UserSourceSystem.STS));
 
@@ -193,6 +207,12 @@ public class AuthenticationController {
 
 		model.addAttribute("message", "Anulowano rejestracje konta dla producenta");
 		return getTemplateDir("logIn");
+	}
+
+	@PostMapping("/view/logout")
+	public String logout() {
+
+		return getTemplateDir("logOut");
 	}
 
 }

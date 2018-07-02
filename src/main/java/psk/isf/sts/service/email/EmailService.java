@@ -78,7 +78,7 @@ public class EmailService {
 		mailSender.setHost("smtp.wp.pl");
 		mailSender.setPort(465);
 		mailSender.setUsername("psk-isf-sts@wp.pl");
-		mailSender.setPassword("psk_isf_sts_2018");
+		mailSender.setPassword("psk_isf_sts_2018_2");
 
 		Properties props = mailSender.getJavaMailProperties();
 		props.put("mail.transport.protocol", "smtps");

@@ -23,6 +23,11 @@
 
 <script sec:authorize="isAuthenticated()" th:inline='javascript'>
     $.get("/rest/user/instance", function (response) {
+        if(response == null){
+            location.reload();
+            return;
+        }
+
         if (response.thumbnail == null)
             $("#tumbnail").attr("src", "/images/default-face.png");
         else{

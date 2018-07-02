@@ -1,0 +1,9 @@
+<div th:replace="head :: head"> </div>
+
+<form th:action="@{/logout}" method="post">
+    <button id="logoutButton" type="submit">Wyloguj</button>
+</form>
+
+<script th:inline='javascript'>
+    $('#logoutButton').click();
+</script>

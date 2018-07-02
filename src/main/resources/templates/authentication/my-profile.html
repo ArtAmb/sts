@@ -9,10 +9,21 @@
         Welcome,
         <span th:text="${userLogin}"></span>
 
-        <form th:action="@{/logout}" method="post">
-            <button type="submit">Wyloguj</button>
-        </form>
 
+        <th:block th:if="${isFromOurSystem}">
+            <form th:action="@{/view/logout}" method="post">
+                <button id="logoutButton" type="submit">Wyloguj</button>
+            </form>
+        </th:block>
+        <th:block th:if="${!isFromOurSystem}">
+            <form action='/remove/con/fb' method="post">
+                <button type="submit">Wyloguj z systemu i rozlacz z FB</button>
+            </form>
+        </th:block>
+
+        <!-- <form action='/rest/logout' method="post">
+            <button  type="submit">My logout</button>
+        </form> -->
         <br/>
         <br/>
         <th:block th:if="!${isFromOurSystem}">
